@@ -1,0 +1,32 @@
+#
+# 数据库设置，选择你需要使用的数据储存方式，sqlite,mysql
+# 默认: sqlite
+data_storage:
+  use_type: sqlite
+  mysql:
+    host: '127.0.0.1'
+    port: 3306
+    database: 'server_Mail'
+    username: 'root'
+    password: '123456'
+    params: '?autoReconnect=true&useSSL=false'
+  hikari_settings:
+    maximum_pool_size: 10
+    minimum_idle: 10
+    maximum_lifetime: 1800000
+    keepalive_time: 0
+    connection_timeout: 5000
+
+# 邮件种类显示名称转换
+MailType:
+  MONEY_MAIL:
+    tag: "&e金币"
+  POINTS_MAIL:
+    tag: "&b点券"
+  EXP_MAIL:
+    tag: "&a经验"
+  TEXT_MAIL:
+    tag: "&f文本"
+  ITEM_MAIL:
+    tag: "&6物品"
+    

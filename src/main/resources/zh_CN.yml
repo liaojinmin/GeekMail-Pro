@@ -1,0 +1,56 @@
+Msg:
+  sender: |-
+    &1
+    &7&l  Geek&f&lMail &8>&7>&f>
+    &l
+    &b    你的邮件已发送至 [target]
+    &l
+  target: |-
+    &1
+    &7&l  Geek&f&lMail &8>&7>&f>
+    &l
+    &B    你有新邮件待查看 点击下方标题
+    &B       [title]
+    &a
+  join: |-
+    &l
+    &7&l  Geek&f&lMail &8>&7>&f>
+    &l
+    &7&l    你有 {0} 封未读邮件！
+    &b
+    &l                  [action]
+    &B
+  demMail: |-
+    &l
+    &7&l  Geek&f&lMail &8>&7>&f>
+    &l
+    &c&l    你没有足够的 &f{0} &c&l发送这封邮件！
+    &B
+action:
+  run:
+    getItem: |-
+      &l
+      &7&l  Geek&f&lMail &8>&7>&f>
+      &l
+      &a&l    成功领取附件，获得以下物品
+      &f      [item]
+      &b
+    delete: |-
+      &l
+      &7&l  Geek&f&lMail &8>&7>&f>
+      &l
+      &a&l    你已成功删除该邮件！
+      &b
+  deny:
+    getItem: |-
+      &l
+      &7&l  Geek&f&lMail &8>&7>&f>
+      &l
+      &c&l    这个附件你已经领取过了！
+      &b
+    delete: |-
+      &l
+      &7&l  Geek&f&lMail &8>&7>&f>
+      &l
+      &c&l    你不能删除该邮件，请先领取附件内容！
+      &b
