@@ -1,7 +1,7 @@
-package me.Geek.Command
+package me.Geek.Command.player
 
 import com.google.common.base.Joiner
-import me.Geek.GeekMail
+import me.Geek.Command.CmdExp
 
 import me.Geek.Libs.Kether.sub.KetherAPI
 import me.Geek.Libs.Template.Template
@@ -34,13 +34,13 @@ object CmdPack: CmdExp {
                     Bukkit.getOnlinePlayers().map { it.name }
                 }
 
-                execute<CommandSender> { sender, context, _ ->
+                execute<Player> { sender, context, _ ->
                     val value = Joiner.on(",").join(context.args()).split(",")
                     val pack = Template.getTempPack(value[1])
                     val target: UUID
                     if (value[2] != "Global") {
                         target = Bukkit.getOfflinePlayer(value[2]).uniqueId
-                        if (KetherAPI.instantKether(sender as Player, pack.condition).any as Boolean) {
+                        if (KetherAPI.instantKether(sender, pack.condition).any as Boolean) {
                             val uuid = sender.uniqueId
                             val type = pack.type
                             val title = pack.title
@@ -95,7 +95,6 @@ object CmdPack: CmdExp {
 
     private fun action(pack: String, player: Player) {
         if (pack != "null") {
-          //  GeekMail.say(pack)
             KetherAPI.instantKether(player, pack)
         }
     }

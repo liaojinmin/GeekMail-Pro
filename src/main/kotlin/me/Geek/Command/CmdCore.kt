@@ -1,6 +1,9 @@
 package me.Geek.Command
 
 
+import me.Geek.Command.admin.*
+import me.Geek.Command.player.CmdMail
+import me.Geek.Command.player.CmdPack
 import taboolib.common.platform.command.CommandBody
 import taboolib.common.platform.command.CommandHeader
 import taboolib.common.platform.command.PermissionDefault

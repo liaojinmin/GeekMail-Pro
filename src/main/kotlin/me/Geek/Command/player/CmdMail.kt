@@ -1,15 +1,12 @@
-package me.Geek.Command
+package me.Geek.Command.player
 
 
 import com.google.common.base.Joiner
+import me.Geek.Command.CmdExp
 import me.Geek.Configuration.ConfigManager
 import me.Geek.Configuration.LangManager.demMail
 import me.Geek.GeekMail
-import me.Geek.Libs.Menu.MItem
-import me.Geek.Modules.MailExp
-import me.Geek.Modules.MailMoney
-import me.Geek.Modules.MailPoints
-import me.Geek.Modules.MailText
+import me.Geek.Modules.MailManage
 import me.Geek.api.hook.hookPlugin
 import me.Geek.api.mail.MailType
 import me.Geek.api.mail.MailType.*
@@ -46,51 +43,24 @@ object CmdMail: CmdExp {
                         suggestion<CommandSender>(uncheck = true) { _, _ ->
                             listOf("[邮件内容]")
                         }
-                            execute<Player> { sender, context, _ ->
-                                val value = Joiner.on(",").join(context.args()).replace("&", "§").split(",")
-                                val type = valueOf(value[1])
-                                val uuid: UUID = sender.uniqueId
-                                val all = value[4].split(" ")
-                                val vars = if (all.size >= 2) all[1] else " "
-                                if (hasPerm(sender, type, vars)) {
-                                    val target = Bukkit.getOfflinePlayer(value[2]).uniqueId
-                                    val title = value[3]
-                                    val text = all[0]
-                                    when (type) {
-                                        MONEY_MAIL -> {
-                                            MailMoney(
-                                                UUID.randomUUID(), uuid, target, title, text, add(all[1])
-                                            ).SendMail()
-                                            return@execute
-                                        }
-                                        POINTS_MAIL -> {
-                                            MailPoints(
-                                                UUID.randomUUID(), uuid, target, title, text,
-                                                all[1].filter { it.isDigit() }.toInt()
-                                            ).SendMail()
-                                            return@execute
-                                        }
-                                        EXP_MAIL -> {
-                                            MailExp(
-                                                UUID.randomUUID(), uuid, target, title, text, all[1].filter { it.isDigit() }.toInt()
-                                            ).SendMail()
-                                            return@execute
+                        execute<Player> { sender, context, _ ->
+                            val value = Joiner.on(",").join(context.args()).replace("&", "§").split(",")
+                            val type = valueOf(value[1])
+                            val uuid: UUID = sender.uniqueId
+                            val all = value[4].split(" ")
+                            val vars = if (all.size >= 2) all[1] else "0"
 
-                                        }
-                                        TEXT_MAIL -> {
-                                            MailText(
-                                                UUID.randomUUID(), uuid, target, title, text,
-                                            ).SendMail()
-                                            return@execute
-                                        }
-                                        ITEM_MAIL -> {
-                                            MItem(
-                                                sender, uuid, target, title, text,
-                                            )
-                                            return@execute
-                                        }
-                                    }
+                            if (hasPerm(sender, type, vars)) {
+                                val target = Bukkit.getOfflinePlayer(value[2]).uniqueId
+                                val title = value[3]
+                                val text = all[0]
+
+                                if (type == MONEY_MAIL) {
+                                    MailManage.SendMail(type, UUID.randomUUID(), uuid, target, title, text, add(vars), false)
+                                } else {
+                                    MailManage.SendMail(type, UUID.randomUUID(), uuid, target, title, text, vars.filter { it.isDigit() }.toInt(), false, sender)
                                 }
+                            }
                         }
                     }
                 }
@@ -167,7 +137,7 @@ object CmdMail: CmdExp {
                 if (player.hasPermission("mail.send.text")) {
                     a = true
                 } else {
-                    GeekMail.say("&4玩家 &f${player.name} &4执行命令缺少权限&f mail.send.exp")
+                    GeekMail.say("&4玩家 &f${player.name} &4执行命令缺少权限&f mail.send.text")
                 }
                 return a
             }

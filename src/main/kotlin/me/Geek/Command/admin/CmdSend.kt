@@ -1,6 +1,7 @@
-package me.Geek.Command
+package me.Geek.Command.admin
 
 import com.google.common.base.Joiner
+import me.Geek.Command.CmdExp
 import me.Geek.Configuration.ConfigManager
 import me.Geek.Libs.Menu.MItem
 import me.Geek.Modules.MailExp

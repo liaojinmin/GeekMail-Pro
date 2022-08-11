@@ -15,6 +15,9 @@ import java.util.*;
  **/
 public abstract class MailSub implements Mail{
 
+    /**
+     * 提取附件 - 将邮件附件发送给玩家
+     */
     public void giveAppendix() {
         if (this.getState().equals("未提取")) {
             switch (this.getMailType()) {

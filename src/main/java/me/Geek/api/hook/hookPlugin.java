@@ -1,5 +1,6 @@
 package me.Geek.api.hook;
 
+import dev.lone.itemsadder.api.CustomStack;
 import me.Geek.GeekMail;
 import net.milkbowl.vault.economy.Economy;
 import org.black_ixx.playerpoints.PlayerPoints;
@@ -18,6 +19,9 @@ public final class hookPlugin {
     public static Economy money;
     public static PlayerPointsAPI points;
 
+    public static ItemStack getItemsAdder(String id) {
+        return CustomStack.getInstance(id).getItemStack();
+    }
 
     public static void onHook() {
         hookEconomy();

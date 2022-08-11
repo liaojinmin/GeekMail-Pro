@@ -1,19 +1,16 @@
-package me.Geek.Command
+package me.Geek.Command.admin
 
 import com.google.common.base.Joiner
+import me.Geek.Command.CmdExp
 import me.Geek.Configuration.ConfigManager
-import me.Geek.Libs.Menu.MItem
 import me.Geek.Libs.Template.Template
 import me.Geek.Modules.MailExp
 import me.Geek.Modules.MailMoney
 import me.Geek.Modules.MailPoints
 import me.Geek.Modules.MailText
-import me.Geek.api.mail.MailType
 import me.Geek.api.mail.MailType.*
 import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
 import taboolib.common.platform.command.subCommand
-import java.util.*
 import java.util.regex.Pattern
 
 /**

@@ -3,11 +3,14 @@ package me.Geek.Modules;
 import me.Geek.Configuration.ConfigManager;
 import me.Geek.Configuration.LangManager;
 import me.Geek.GeekMail;
+import me.Geek.Libs.Menu.MItem;
 import me.Geek.api.mail.Mail;
+import me.Geek.api.mail.MailType;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import taboolib.common.platform.ProxyPlayer;
 import taboolib.common.platform.function.AdapterKt;
@@ -124,6 +127,69 @@ public final class MailManage {
 
     public static boolean hasTargetCache(UUID uuid) {
         return targetCache.containsKey(uuid);
+    }
+
+
+    /**
+     * 发送邮件
+     * @param type 邮件种类
+     * @param MailID 邮件唯一ID
+     * @param sender 发送者
+     * @param target 接收者
+     * @param title 标题
+     * @param text 文本
+     * @param Ex 扩展参数， 可为 int， double
+     * @param global 是否全局发送
+     * @param players 玩家(为 ITEM_MAIL 打开GUI提供)
+     */
+    public static void SendMail(MailType type, UUID MailID, UUID sender, UUID target, String title, String text, Object Ex, Boolean global, Player... players) {
+        int ints = 0;
+        double doubles = 0.0;
+        if (Ex instanceof Double) {
+            doubles = (Double) Ex;
+        }
+        if (Ex instanceof Integer) {
+            ints = (Integer) Ex;
+        }
+        switch (type) {
+            case MONEY_MAIL: {
+                if (global) {
+                    new MailMoney(MailID, sender, target, title, text, doubles).SendGlobalMail();
+                } else {
+                    new MailMoney(MailID, sender, target, title, text, doubles).SendMail();
+                }
+                return;
+            }
+            case POINTS_MAIL: {
+                if (global) {
+                    new MailPoints(MailID, sender, target, title, text, ints).SendGlobalMail();
+                } else {
+                    new MailPoints(MailID, sender, target, title, text, ints).SendMail();
+                }
+                return;
+            }
+            case EXP_MAIL: {
+                if (global) {
+                    new MailExp(MailID, sender, target, title, text, ints).SendGlobalMail();
+                } else {
+                    new MailExp(MailID, sender, target, title, text, ints).SendMail();
+                }
+                return;
+            }
+            case TEXT_MAIL: {
+                if (global) {
+                    new MailText(MailID, sender, target, title, text).SendGlobalMail();
+                } else {
+                    new MailText(MailID, sender, target, title, text).SendMail();
+                }
+                return;
+            }
+            case ITEM_MAIL: {
+                new MItem(players[0], sender, target, title, text);
+            }
+        }
+
+
     }
 
     public static void SendMailMessage(@NotNull Mail mail, Player... player) {

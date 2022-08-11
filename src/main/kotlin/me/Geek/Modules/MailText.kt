@@ -5,7 +5,6 @@ import me.Geek.api.mail.MailSub
 import me.Geek.api.mail.MailType
 import me.Geek.Configuration.ConfigManager
 import me.Geek.Libs.DataBase.DataManage
-import me.Geek.Modules.MailManage
 import org.bukkit.Bukkit
 
 /**

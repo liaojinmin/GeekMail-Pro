@@ -1,6 +1,7 @@
-package me.Geek.Command
+package me.Geek.Command.admin
 
 import com.google.common.base.Joiner
+import me.Geek.Command.CmdExp
 import me.Geek.GeekMail.say
 import me.Geek.Libs.Kether.sub.KetherAPI
 import org.bukkit.command.CommandSender

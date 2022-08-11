@@ -1,5 +1,6 @@
-package me.Geek.Command
+package me.Geek.Command.admin
 
+import me.Geek.Command.CmdExp
 import me.Geek.GeekMail
 import me.Geek.Modules.MailManage
 import org.bukkit.Bukkit

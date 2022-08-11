@@ -6,8 +6,6 @@ import me.Geek.GeekMail;
 import me.Geek.Libs.Menu.Sub.IconType;
 import me.Geek.Libs.Menu.Sub.MTag;
 import me.Geek.Libs.Menu.Sub.Micon;
-import me.Geek.Libs.Menu.MAction;
-import me.Geek.api.hook.hookItemsAdder;
 import me.Geek.api.hook.hookPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -183,7 +181,7 @@ public final class Menu {
                     try {
                         if (icon.getMats().contains("IA:")) {
                             String[] meta = icon.getMats().split(":");
-                            itemStack = hookItemsAdder.getItemsAdder(meta[1]);
+                            itemStack = hookPlugin.getItemsAdder(meta[1]);
                         } else {
                             itemStack = new ItemStack(Material.valueOf(icon.getMats()), 1, (short) icon.getData());
                         }

@@ -1,5 +1,6 @@
-package me.Geek.Command
+package me.Geek.Command.admin
 
+import me.Geek.Command.CmdExp
 import me.Geek.Configuration.ConfigManager
 import me.Geek.Configuration.LangManager
 import me.Geek.GeekMail

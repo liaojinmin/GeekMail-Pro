@@ -2,6 +2,7 @@ package me.Geek.api.hook
 
 import dev.lone.itemsadder.api.Events.ItemsAdderFirstLoadEvent
 import me.Geek.GeekMail
+import me.Geek.GeekMail.say
 import me.Geek.Libs.Menu.Menu
 import taboolib.common.platform.event.SubscribeEvent
 
@@ -14,7 +15,7 @@ object hookia {
 
     @SubscribeEvent
     fun onHook(e: ItemsAdderFirstLoadEvent) {
-        hookItemsAdder.hook()
+        say("&7软依赖 &fItemsAdder &7已兼容.")
         GeekMail.menu = Menu()
     }
 }

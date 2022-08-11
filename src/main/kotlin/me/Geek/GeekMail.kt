@@ -5,7 +5,6 @@ import me.Geek.Configuration.LangManager
 import me.Geek.Libs.DataBase.DataManage
 import me.Geek.Libs.Menu.Menu
 import me.Geek.Libs.Template.Template
-import me.Geek.Modules.MailManage
 import me.Geek.api.Bukkit.MaterialChinese
 import me.Geek.api.hook.hookPlugin
 import org.bukkit.Bukkit
@@ -13,7 +12,6 @@ import taboolib.common.env.RuntimeDependencies
 import taboolib.common.env.RuntimeDependency
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
-import taboolib.module.nms.MinecraftVersion
 import taboolib.platform.BukkitPlugin
 
 
@@ -26,7 +24,7 @@ import taboolib.platform.BukkitPlugin
 object GeekMail : Plugin() {
 
     val instance by lazy { BukkitPlugin.getInstance() }
-    public const val VERSION = 1.06
+    const val VERSION = 1.08
     var plugin_status: Boolean = false
     lateinit var menu: Menu
     lateinit var lang: MaterialChinese

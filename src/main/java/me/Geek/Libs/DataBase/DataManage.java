@@ -27,7 +27,6 @@ public final class DataManage {
     private static DataSub dataSub;
 
 
-  //  public DataManage() { start();}
 
     public static Connection getConnection() throws SQLException {
         return dataSub.getConnection();
@@ -92,7 +91,6 @@ public final class DataManage {
             try (PreparedStatement p = connection.prepareStatement(
                     "INSERT INTO mail_data(`mail_id`,`state`,`type`,`sender`,`target`,`title`,`text`,`money`,`points`,`exp`,`item`,`commands`) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)"))
             {
-              //  GeekMail.say("insert- 开始插入数据库");
                 String mailId;
                 final String state = mailDate.getState();
                 final MailType type = mailDate.getMailType();
@@ -135,7 +133,6 @@ public final class DataManage {
 
                 }
                 p.executeBatch();
-               // GeekMail.say("insert- 多条插入完成");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -149,10 +146,8 @@ public final class DataManage {
     public static void delete(@NotNull UUID mail_id) {
         try (Connection c = getConnection()) {
             try (PreparedStatement s = c.prepareStatement("DELETE FROM `mail_data` WHERE `mail_id`=?;")) {
-               // GeekMail.say("delete- 开始执行 删除: "+ mail_id);
                 s.setString(1, String.valueOf(mail_id));
                 s.execute();
-               // GeekMail.say("delete- 执行完成");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -165,11 +160,9 @@ public final class DataManage {
     public static void delete(@NotNull UUID targetID, String state) {
         try (Connection c = getConnection()) {
             try (PreparedStatement s = c.prepareStatement("DELETE FROM `mail_data` WHERE `target`=? AND `state`=?;")) {
-                // GeekMail.say("delete- 开始执行 删除: "+ mail_id);
                 s.setString(1, String.valueOf(targetID));
                 s.setString(2, state);
                 s.execute();
-                // GeekMail.say("delete- 执行完成");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -217,11 +210,9 @@ public final class DataManage {
     public static void update(@NotNull UUID mail_id) {
         try (Connection c = getConnection()) {
             try (PreparedStatement s = c.prepareStatement("UPDATE `mail_data` SET `state`=? WHERE `mail_id`=?;")) {
-               // GeekMail.say("update- 开始更新数据库");
                 s.setString(1, "已提取");
                 s.setString(2, String.valueOf(mail_id));
                 s.executeUpdate();
-              //  GeekMail.say("update- 更新完毕");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -231,7 +222,6 @@ public final class DataManage {
     private static void forType(List<Mail> mail, UUID MailID, String state, MailType type, UUID sender, UUID target, String title, String text, double money, int points, int exp, ItemStack[] itemStacks, List<String> commands) {
         switch (type) {
             case MONEY_MAIL: {
-                //   GeekMail.say(" 添加数据 MONEY_MAIL");
                 mail.add(new MailMoney(MailID, state, sender, target, title, text, money));
                 break;
             }
