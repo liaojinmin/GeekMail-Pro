@@ -86,13 +86,6 @@ class MailMoney : MailSub {
         this.state = state
     }
 
-    override fun setTarget(target: UUID) {
-        this.Target = target
-    }
-
-    override fun setMailID(mailID: UUID) {
-       this.MailID = mailID
-    }
 
     // 更改
     fun setTitle(title: String) {
@@ -119,7 +112,7 @@ class MailMoney : MailSub {
                 if (target != null) {
                     MailManage.addTargetCache(getTarget(), this)
                 }
-                MailManage.SendMailMessage(this, null, target)
+                MailManage.SendMailMessage(this.title, this.text, null, target)
             } else {
                 super.SendMail()
             }

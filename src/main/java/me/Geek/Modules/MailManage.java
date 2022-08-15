@@ -68,6 +68,7 @@ public final class MailManage {
             targetCache.forEach((key, value) -> {
                 if (key.equals(targetUuid)) {
                     value.add(mail);
+                    GeekMail.debug("addTargetCache-已存在缓存.新增-UUID: "+targetUuid + " 邮件ID：" +mail.getMailID());
                 }
             });
         } else {
@@ -75,6 +76,7 @@ public final class MailManage {
             List<Mail> mail1 = new ArrayList<>();
             mail1.add(mail);
             targetCache.put(targetUuid, mail1);
+            GeekMail.debug("addTargetCache-不在缓存.新增-UUID: "+targetUuid + " 邮件ID：" +mail.getMailID());
         }
     }
 
@@ -111,9 +113,16 @@ public final class MailManage {
     }
 
     public static List<Mail> getTargetCache(UUID uuid) {
+        GeekMail.debug("--------------------------");
+        GeekMail.debug("准备获取玩家; "+uuid+" 的邮件");
         if (targetCache.containsKey(uuid)) {
+            targetCache.get(uuid).forEach( (vlaue) -> {
+                GeekMail.debug("邮件ID; "+vlaue.getMailID());
+            });
+            GeekMail.debug("--------------------------");
             return new ArrayList<>(targetCache.get(uuid));
         }
+        GeekMail.debug("--------------------------");
        return new ArrayList<>();
     }
 
@@ -194,7 +203,7 @@ public final class MailManage {
 
     }
 
-    public static void SendMailMessage(@NotNull Mail mail, Player... player) {
+    public static void SendMailMessage(@NotNull String title, @NotNull String text, Player... player) {
         try {
 
             if (player[0] != null) {
@@ -218,8 +227,8 @@ public final class MailManage {
                     if (msg.contains("[title]")) {
                         tellrawJson
                                 .append(msg
-                                        .replace("[title]", mail.getTitle() + "\n"))
-                                .hoverText(mail.getText())
+                                        .replace("[title]", title + "\n"))
+                                .hoverText(text)
                                 .runCommand("/" + GeekMail.menu.cmd);
                     } else {
                         tellrawJson.append(msg + "\n");

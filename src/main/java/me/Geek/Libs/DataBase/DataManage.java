@@ -103,15 +103,28 @@ public final class DataManage {
                 final int exp = mailDate.getExp();
                 final String command = Joiner.on(",").join(mailDate.getCommand());
 
+                Mail temporary = mailDate;
+
                 for (Player player1 : players) {
                     uuid = player1.getUniqueId();
-                    // 获取邮件唯一ID
                     mailId = UUID.randomUUID();
-                    mailDate.setMailID(mailId);
-                    // 修改邮件目标
-                    mailDate.setTarget(uuid);
+                    if (mailDate instanceof MailMoney) {
+                        temporary = new MailMoney(mailId, mailDate.getSender(), uuid, title, text, money);
+                    } else if (mailDate instanceof MailPoints) {
+                        temporary = new MailPoints(mailId, mailDate.getSender(), uuid, title, text, points);
+                    } else if (mailDate instanceof MailExp) {
+                        temporary = new MailExp(mailId, mailDate.getSender(), uuid, title, text, exp);
+                    } else if (mailDate instanceof MailText) {
+                        temporary = new MailText(mailId, mailDate.getSender(), uuid, title, text);
+                    } else if (mailDate instanceof MailItem) {
+                        temporary = new MailItem(mailId, mailDate.getSender(), uuid, title, text, itemStacks);
+                    }
                     // 添加目标玩家缓存
-                    MailManage.addTargetCache(uuid, mailDate);
+                    GeekMail.debug("===================");
+                    GeekMail.debug("添加缓存: 玩家: "+ temporary.getTarget()+ " 邮件ID: "+temporary.getMailID());
+                    GeekMail.debug("===================");
+
+                    MailManage.addTargetCache(uuid, temporary);
                     // 上库操作
                     p.setString(1, mailId.toString());
                     p.setString(2, state);
@@ -130,7 +143,9 @@ public final class DataManage {
                         p.setString(11, "null");
                     }
                     p.setString(12, command);
-                    MailManage.SendMailMessage(mailDate, null, player1);
+
+                    MailManage.SendMailMessage(title, text, null, player1);
+
                     p.addBatch();
 
                 }

@@ -72,13 +72,7 @@ class MailExp : MailSub {
     override fun setState(state: String) {
         this.state = state
     }
-    override fun setTarget(target: UUID) {
-        this.Target = target
-    }
 
-    override fun setMailID(mailID: UUID) {
-        this.MailID = mailID;
-    }
 
     override fun getAppendix(): String {
         return exp.toString() + " " + ConfigManager.EXP_MAIL
@@ -99,7 +93,7 @@ class MailExp : MailSub {
             if (target != null) {
                 MailManage.addTargetCache(getTarget(), this)
             }
-            MailManage.SendMailMessage(this, null, target)
+            MailManage.SendMailMessage(this.title, this.text, null, target)
         } else {
             super.SendMail()
         }

@@ -62,6 +62,7 @@ class MAction(
 
     private fun action() {
         GeekMail.menu.isOpen.add(player)
+        GeekMail.debug("为玩家: ${player.uniqueId} 打开UI")
         if (mail.isNotEmpty()) {
             Build()
         }
@@ -184,6 +185,7 @@ class MAction(
         if (mail.isNotEmpty()) {
             for ((i, m) in mail.withIndex()) {
                 if (value(index, m.mailID) == cache[key(index, page)]) {
+                    GeekMail.debug("槽位索引: $index - 邮件ID: ${m.mailID}")
                     if (m.state == "未提取") {
 
                         if (view && m.mailType == MailType.ITEM_MAIL) {

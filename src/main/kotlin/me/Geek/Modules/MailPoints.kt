@@ -79,13 +79,7 @@ class MailPoints : MailSub {
     override fun setState(state: String) {
         this.state = state
     }
-    override fun setTarget(target: UUID) {
-        this.Target = target
-    }
 
-    override fun setMailID(mailID: UUID) {
-        this.mailID = mailID
-    }
 
     override fun getAppendix(): String {
         return points.toString() + " " + ConfigManager.POINTS_MAIL
@@ -103,7 +97,7 @@ class MailPoints : MailSub {
                 // 如果目标玩家在线则载入缓存
                 MailManage.addTargetCache(getTarget(), this)
             }
-            MailManage.SendMailMessage(this, null, target)
+            MailManage.SendMailMessage(this.title, this.text, null, target)
         } else {
             super.SendMail()
         }

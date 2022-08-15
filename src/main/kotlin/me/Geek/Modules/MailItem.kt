@@ -122,12 +122,6 @@ class MailItem : MailSub {
     override fun getItemStacks(): Array<ItemStack> {
         return item
     }
-    override fun setTarget(target: UUID) {
-        this.Target = target
-    }
-    override fun setMailID(mailID: UUID) {
-        this.mailID = mailID;
-    }
 
     override fun SendMail() {
         Bukkit.getScheduler().scheduleAsyncDelayedTask(instance) {
@@ -137,7 +131,7 @@ class MailItem : MailSub {
                 if (target != null) {
                     MailManage.addTargetCache(getTarget(), this)
                 }
-                MailManage.SendMailMessage(this, null, target)
+                MailManage.SendMailMessage(this.title, this.text, null, target)
             } else {
                 super.SendMail()
             }

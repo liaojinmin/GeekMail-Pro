@@ -28,8 +28,6 @@ public interface Mail extends Cloneable {
 
     void setState(String state);
 
-    void setTarget(UUID target);
-    void setMailID(UUID mailID);
 
     String getAppendix();
     String getType();

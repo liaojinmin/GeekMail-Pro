@@ -57,7 +57,7 @@ public abstract class MailSub implements Mail{
             // 如果发送者在线则载入缓存
             MailManage.addSenderCache(getSender(), this);
         }
-        MailManage.SendMailMessage(this, send, target);
+        MailManage.SendMailMessage(this.getTitle(), this.getText(), send, target);
     }
     public void SendGlobalMail() {
         Collection<? extends Player> player = Bukkit.getOnlinePlayers();
