@@ -12,7 +12,7 @@ import org.bukkit.Bukkit
  * 时间: 2022/8/6
  */
 class MailText(
-    private val MailID: UUID,
+    private var MailID: UUID,
     private val sender: UUID,
     private var Target: UUID,
     private val title: String,
@@ -51,6 +51,10 @@ class MailText(
     override fun setState(state: String) {}
     override fun setTarget(target: UUID) {
         this.Target = target
+    }
+
+    override fun setMailID(mailID: UUID) {
+        this.MailID = mailID
     }
     override fun getAppendix(): String {
         return ""

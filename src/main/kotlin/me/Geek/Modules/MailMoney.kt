@@ -13,7 +13,7 @@ import org.bukkit.Bukkit
  * 时间: 2022/7/24
  */
 class MailMoney : MailSub {
-    private val MailID: UUID
+    private var MailID: UUID
     private val type = MailType.MONEY_MAIL
 
     private var title: String
@@ -88,6 +88,10 @@ class MailMoney : MailSub {
 
     override fun setTarget(target: UUID) {
         this.Target = target
+    }
+
+    override fun setMailID(mailID: UUID) {
+       this.MailID = mailID
     }
 
     // 更改

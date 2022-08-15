@@ -71,5 +71,11 @@ object GeekMail : Plugin() {
         fun title(msg: String) {
             console().sendMessage(msg)
         }
+    @JvmStatic
+    fun debug(msg: String) {
+        if(ConfigManager.DeBug) {
+            console().sendMessage("§8[§6§lGeekMail§8] ${msg.replace("&", "§")}")
+        }
+    }
 
 }

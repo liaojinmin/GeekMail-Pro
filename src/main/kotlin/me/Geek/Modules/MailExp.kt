@@ -12,7 +12,7 @@ import org.bukkit.Bukkit
  * 时间: 2022/8/6
  */
 class MailExp : MailSub {
-    private val MailID: UUID
+    private var MailID: UUID
     private val type = MailType.EXP_MAIL
     private var title: String
     private val sender: UUID
@@ -74,6 +74,10 @@ class MailExp : MailSub {
     }
     override fun setTarget(target: UUID) {
         this.Target = target
+    }
+
+    override fun setMailID(mailID: UUID) {
+        this.MailID = mailID;
     }
 
     override fun getAppendix(): String {

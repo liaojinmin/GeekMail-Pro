@@ -64,12 +64,14 @@ public final class MailManage {
      */
     public static void addTargetCache(UUID targetUuid, Mail mail) {
         if (targetCache.containsKey(targetUuid)) {
+            GeekMail.debug("addTargetCache-已存在缓存-UUID: "+targetUuid + " 邮件ID：" +mail.getMailID());
             targetCache.forEach((key, value) -> {
                 if (key.equals(targetUuid)) {
                     value.add(mail);
                 }
             });
         } else {
+            GeekMail.debug("addTargetCache-不在缓存-UUID: "+targetUuid + " 邮件ID：" +mail.getMailID());
             List<Mail> mail1 = new ArrayList<>();
             mail1.add(mail);
             targetCache.put(targetUuid, mail1);

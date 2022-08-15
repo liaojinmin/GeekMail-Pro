@@ -91,7 +91,8 @@ public final class DataManage {
             try (PreparedStatement p = connection.prepareStatement(
                     "INSERT INTO mail_data(`mail_id`,`state`,`type`,`sender`,`target`,`title`,`text`,`money`,`points`,`exp`,`item`,`commands`) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)"))
             {
-                String mailId;
+                UUID mailId;
+                UUID uuid;
                 final String state = mailDate.getState();
                 final MailType type = mailDate.getMailType();
                 final String sender = mailDate.getSender().toString();
@@ -103,15 +104,16 @@ public final class DataManage {
                 final String command = Joiner.on(",").join(mailDate.getCommand());
 
                 for (Player player1 : players) {
-                    UUID uuid = player1.getUniqueId();
+                    uuid = player1.getUniqueId();
                     // 获取邮件唯一ID
-                    mailId = UUID.randomUUID().toString();
+                    mailId = UUID.randomUUID();
+                    mailDate.setMailID(mailId);
                     // 修改邮件目标
                     mailDate.setTarget(uuid);
                     // 添加目标玩家缓存
                     MailManage.addTargetCache(uuid, mailDate);
                     // 上库操作
-                    p.setString(1, mailId);
+                    p.setString(1, mailId.toString());
                     p.setString(2, state);
                     p.setString(3, type.toString());
                     p.setString(4, sender);

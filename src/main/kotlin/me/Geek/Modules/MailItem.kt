@@ -18,7 +18,7 @@ import kotlin.collections.ArrayList
  * 时间: 2022/8/6
  */
 class MailItem : MailSub {
-    private val mailID: UUID
+    private var mailID: UUID
     private val type = MailType.ITEM_MAIL
     private var title: String
     private val sender: UUID
@@ -124,6 +124,9 @@ class MailItem : MailSub {
     }
     override fun setTarget(target: UUID) {
         this.Target = target
+    }
+    override fun setMailID(mailID: UUID) {
+        this.mailID = mailID;
     }
 
     override fun SendMail() {

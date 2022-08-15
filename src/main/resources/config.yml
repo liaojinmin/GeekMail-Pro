@@ -1,3 +1,4 @@
+debug: false
 #
 # 数据库设置，选择你需要使用的数据储存方式，sqlite,mysql
 # 默认: sqlite

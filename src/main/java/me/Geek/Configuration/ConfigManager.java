@@ -22,6 +22,8 @@ public final class ConfigManager {
     public static void Load() {
         plugin.saveDefaultConfig();
         FileConfiguration config = YamlConfiguration.loadConfiguration(yml);
+
+        DeBug = config.getBoolean("debug", false);
         //sql
         DATA_TYPE = config.getString("data_storage.use_type", "sqlite");
         MYSQL_HOST = config.getString("data_storage.mysql.host", "127.0.0.1");
@@ -52,6 +54,7 @@ public final class ConfigManager {
     }
 
 
+    public static Boolean DeBug;
     // SQL set
     public static String DATA_TYPE;
     // MYSQL

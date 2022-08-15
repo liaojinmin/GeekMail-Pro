@@ -61,6 +61,10 @@ class MailPack: MailSub {
         TODO("Not yet implemented")
     }
 
+    override fun setMailID(mailID: UUID?) {
+        TODO("Not yet implemented")
+    }
+
     override fun getAppendix(): String {
         TODO("Not yet implemented")
     }
