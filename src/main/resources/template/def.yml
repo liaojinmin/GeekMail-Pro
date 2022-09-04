@@ -28,6 +28,5 @@ Template:
       &B&l 里面有一万大洋哦！
       &B
     type: MONEY_MAIL
-    # 如果是物品库，则填写物品库 物品ID
     appendix: 10000
 

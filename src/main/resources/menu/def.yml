@@ -21,6 +21,8 @@ Icons:
       lore:
         - ''
         - ' &7发件人: &f[sender]'
+        - ' &7发送时间: &f[senderTime]'
+        - ' &7领取时间: &f[getTime]'
         - ' &7邮件种类: &f[type]'
         - ' &7邮件内容:'
         - '    [text]'
@@ -63,5 +65,3 @@ Icons:
       mats: BLACK_STAINED_GLASS_PANE
       data: 0
       name: '&b&l 挡板'
-      lore:
-        - '&0我只是一个挡板'

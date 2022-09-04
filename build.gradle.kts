@@ -11,8 +11,6 @@ taboolib {
         "common-5",
         "module-metrics",
         "platform-bukkit",
-        "module-nms",
-        "module-nms-util",
         "module-chat",
         "module-kether",
         "expansion-command-helper"
@@ -30,8 +28,8 @@ taboolib {
         }
     }
 
-    relocate("me.Geek", group.toString())
-    relocate("com.zaxxer.hikari", "com.zaxxer.hikari_4_0_3")
+    relocate("me.geek.mail", group.toString())
+    relocate("com.zaxxer.hikari", "com.zaxxer.hikari_4_0_3_mail")
     classifier = null
     version = "6.0.9-57"
 }
