@@ -1,18 +1,17 @@
-package me.geek.mail.common.Menu
+package me.geek.mail.common.menu
 
 import com.google.common.base.Joiner
 import me.geek.mail.Configuration.ConfigManager
-import me.geek.mail.Configuration.LangManager
 import me.geek.mail.GeekMail
 import me.geek.mail.GeekMail.say
 import me.geek.mail.common.DataBase.DataManage
 
-import me.geek.mail.common.Menu.Sub.IconType.*
+import me.geek.mail.common.menu.sub.IconType.*
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.api.utils.HexUtils
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.api.utils.Expiry
-import me.geek.mail.common.Menu.Sub.Msession
+import me.geek.mail.common.menu.sub.Session
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -26,6 +25,9 @@ import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import taboolib.common.platform.function.adaptPlayer
+import taboolib.common.platform.function.console
+import taboolib.module.lang.sendLang
 import java.util.*
 
 /**
@@ -34,7 +36,7 @@ import java.util.*
  */
 class MAction(
     private val player: Player, // 会话默认图标缓存
-    private val tag: Msession, // 会话界面
+    private val tag: Session, // 会话界面
     private val inv: Inventory
 ) {
     // 邮件索引缓存， key = 邮件所在槽位， value = 邮件唯一标识
@@ -45,14 +47,14 @@ class MAction(
     private val contents: MutableList<Array<ItemStack>> = ArrayList()
     private val air = ItemStack(Material.AIR)
 
-    private val icon = tag.miconObj
+    private val icon = tag.micon
     // 插件实列
     private val plugin = GeekMail.instance
     // 会话邮件缓存
     private val mail: MutableList<MailSub> = MailManage.getTargetCache(player.uniqueId)
 
-
     private var view: Boolean = false
+    private val poxPlayer = adaptPlayer(player)
 
     init {
         //      long start = System.currentTimeMillis();
@@ -61,7 +63,7 @@ class MAction(
     }
 
     private fun action() {
-        GeekMail.menu.isOpen.add(player)
+        Menu.isOpen.add(player)
         GeekMail.debug("为玩家: ${player.uniqueId} 打开UI")
         if (mail.isNotEmpty()) {
             Build()
@@ -82,12 +84,12 @@ class MAction(
                     if (e.view.title != tag.title || e.view.player !== player) return
                     if (e.rawSlot < 0) return
                     e.isCancelled = true
-                    if (e.rawSlot < tag.layout.length) {
+                    if (e.rawSlot < tag.stringLayout.length) {
                         if (view) {
                             inv.contents = contents[page]
                             view = false
                         }
-                        val id = tag.layout[e.rawSlot].toString()
+                        val id = tag.stringLayout[e.rawSlot].toString()
                         for (micon in icon) {
                             if (micon.icon == id) {
                                 when (micon.type) {
@@ -166,7 +168,7 @@ class MAction(
                 player.updateInventory()
                 if (player === e.player) {
                     HandlerList.unregisterAll(this)
-                    GeekMail.menu.isOpen.removeIf { it === player }
+                    Menu.isOpen.removeIf { it === player }
                 }
             }
         }, plugin)
@@ -220,19 +222,12 @@ class MAction(
                         // 异步更新数据库
                         Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin) { DataManage.update(mail) }
 
-                        for (out in LangManager.RUN_GET_ITEM) {
-                            player.sendMessage(out.replace("[item]", mail.appendixInfo))
-                        }
+                        poxPlayer.sendLang("玩家-领取附件-成功", mail.appendixInfo)
 
-                        MailManage.Sound(player, "ENTITY_LLAMA_CHEST",1f, 1f)
-                        MailManage.Sound(player, "ENTITY_EXPERIENCE_ORB_PICKUP",1f, 1f)
                     } else {
                         if (mail.state != "无") {
-                            for (out in LangManager.DENY_GET_ITEM) {
-                                player.sendMessage(out)
-                            }
+                            poxPlayer.sendLang("玩家-领取附件-失败")
                         }
-                        MailManage.Sound(player, "BLOCK_NOTE_BLOCK_DIDGERIDOO",1f, 1f)
                     }
                 }
             }
@@ -261,15 +256,13 @@ class MAction(
                     Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin) { DataManage.delete(m.mailID) }
 
                     // 发送邮件删除消息
-                    for (out in LangManager.RUN_DELETE) {
-                        player.sendMessage(out)
-                    }
+                    poxPlayer.sendLang("玩家-删除邮件-成功")
+
                     MailManage.Sound(player, "BLOCK_NOTE_BLOCK_DIDGERIDOO",1f, 2f)
                 } else {
                     // 发送邮件不可删除消息
-                    for (out in LangManager.DENY_DELETE) {
-                        player.sendMessage(out)
-                    }
+
+                    poxPlayer.sendLang("玩家-删除邮件-失败")
                     MailManage.Sound(player, "BLOCK_NOTE_BLOCK_DIDGERIDOO",1f, 1f)
                 }
             }
@@ -297,7 +290,7 @@ class MAction(
     // 构建邮件图标
     private fun Build() {
         var item = inv.contents
-        val layout = tag.layout
+        val layout = tag.stringLayout
         var index = layout.indexOf("M")
         val end = layout.lastIndexOf("M")
         if (index != -1 && end != -1) {

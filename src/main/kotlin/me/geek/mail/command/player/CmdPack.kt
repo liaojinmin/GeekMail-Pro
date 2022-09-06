@@ -1,16 +1,17 @@
 package me.geek.mail.command.player
 
-import com.google.common.base.Joiner
+import me.geek.mail.api.mail.MailManage
 import me.geek.mail.command.CmdExp
 
 
 import me.geek.mail.common.Kether.sub.KetherAPI
+import me.geek.mail.common.template.Template
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.subCommand
+import taboolib.library.reflex.Reflex.Companion.invokeConstructor
 import java.util.*
-import java.util.regex.Pattern
 
 /**
  * 作者: 老廖
@@ -21,28 +22,25 @@ object CmdPack: CmdExp {
     override val command = subCommand {
         dynamic("模板ID") {
             suggestion<CommandSender> { _, _ ->
-                me.geek.mail.common.Template.Template.getTempPackMap().map { it.key }
+                Template.tempPackMap.map { it.key }
             }
             dynamic("目标玩家") {
                 suggestion<CommandSender>(uncheck = true) {_, _ ->
                     Bukkit.getOnlinePlayers().map { it.name }
                 }
-
-                execute<Player> { sender, context, _ ->
-                    val value = Joiner.on(",").join(context.args()).split(",")
-                    val pack = me.geek.mail.common.Template.Template.getTempPack(value[1])
-                    val target: UUID
-                    if (value[2] != "Global") {
-                        target = Bukkit.getOfflinePlayer(value[2]).uniqueId
-                        if (KetherAPI.instantKether(sender, pack.condition).any as Boolean) {
-                            val uuid = sender.uniqueId
-                           // val type = pack.type
-                            val title = pack.title
-                            val text = pack.text
-                            val app = pack.appendix
-                        } else {
-                            if (!pack.deny.equals("null")) {
-                                KetherAPI.instantKether(sender, pack.deny)
+                execute<Player> { senders, context, _ ->
+                    val pack = Template.getTempPack(context.args()[1])
+                    if (context.args()[2] != "Global") {
+                        MailManage.getMailData(pack.type)?.let {
+                            if (KetherAPI.instantKether(senders, pack.condition).any as Boolean) {
+                                KetherAPI.instantKether(senders, pack.action)
+                                val target = Bukkit.getOfflinePlayer(context.args()[2]).uniqueId
+                                it.javaClass.invokeConstructor(arrayOf(
+                                    UUID.randomUUID().toString(), pack.title, pack.text,
+                                    senders.uniqueId.toString(), target.toString(), "未提取",
+                                    pack.additional, System.currentTimeMillis().toString(), "0", pack.itemStacks, pack.command)).sendMail()
+                            } else {
+                                KetherAPI.instantKether(senders, pack.deny)
                             }
                         }
                     }
@@ -50,19 +48,4 @@ object CmdPack: CmdExp {
             }
         }
     }
-
-    private fun action(pack: String, player: Player) {
-        if (pack != "null") {
-            KetherAPI.instantKether(player, pack)
-        }
-    }
-    private fun add(num1: Any): Double {
-        val matcher = Pattern.compile("\\d+\\.?\\d?\\d").matcher(num1.toString())
-        var var1 = 0.0
-        if (matcher.find()) {
-            var1 = matcher.group().toDouble()
-        }
-        return var1
-    }
-
 }

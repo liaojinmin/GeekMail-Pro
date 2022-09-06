@@ -1,12 +1,12 @@
-package me.geek.mail.Modules
+package me.geek.mail.modules
 
 import com.google.common.base.Joiner
-import me.geek.mail.Configuration.ConfigManager
 import me.geek.mail.GeekMail
 import me.geek.mail.api.utils.ChineseMaterial
 import me.geek.mail.api.mail.MailManage
-import me.geek.mail.common.DataBase.DataManage
 import me.geek.mail.api.mail.MailSub
+import me.geek.mail.common.menu.Menu
+import me.geek.mail.common.serialize.base64.StreamSerializer
 import java.util.UUID
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -41,39 +41,46 @@ class Mail_Item(
     ) : MailSub() {
 
 
-    constructor(mailID: UUID, Title: String, Text: String, sende: UUID, targe: UUID, state: String, exp: String) : this(
-        mailID,
+    constructor() : this(
+        UUID.fromString("00000000-0000-0000-0000-000000000001"),
         "物品邮件",
-        Title,
-        Text,
-        sende,
-        targe,
-        state,
         "",
+        "",
+        UUID.fromString("00000000-0000-0000-0000-000000000001"),
+        UUID.fromString("00000000-0000-0000-0000-000000000001"),
+        "",
+        "-",
         null,
-        senderTime = System.currentTimeMillis().toString(),
+        senderTime = "",
         getTime = ""
     )
-    constructor(mailID: UUID, Title: String, Text: String, sende: UUID, targe: UUID, state: String, exp: String,  item: Array<ItemStack>?, command: List<String>?, time: Array<Any>) : this(
-        mailID,
+    constructor(args: Array<String>) : this(
+        UUID.fromString(args[0]),
         "物品邮件",
-        Title,
-        Text,
-        sende,
-        targe,
-        state,
+        title = args[1],
+        text = args[2],
+        sender = UUID.fromString(args[3]),
+        target = UUID.fromString(args[4]),
+        state = args[5],
         "",
-        itemStacks = item,
-        senderTime = time[0].toString(),
-        getTime = time[1].toString()
+        itemStacks = null,
+        senderTime = args[7],
+        getTime = args[8]
     ) {
-        appendixInfo = appendixInfo()
+        if (args.size >= 10) {
+            itemStacks = StreamSerializer.deserializeItemStacks(args[9])
+            appendixInfo = runAppendixInfo()
+        }
     }
 
 
     override fun sendMail() {
-        Bukkit.getPlayer(this.sender)?.let {
-            action(it)
+        if (itemStacks == null) {
+            Bukkit.getPlayer(this.sender)?.let {
+                action(it)
+            }
+        } else {
+            super.sendMail()
         }
     }
 
@@ -85,10 +92,10 @@ class Mail_Item(
         }
     }
     private fun action(player: Player) {
-        GeekMail.menu.isOpen.add(player)
+        Menu.isOpen.add(player)
         player.openInventory(Bukkit.createInventory(player, 9, "§0§l放入物品 §7| §0§l关闭菜单 "))
         MailManage.Sound(player, "BLOCK_NOTE_BLOCK_HARP", 1f, 1f)
-        GeekMail.say("开启物品UI")
+        GeekMail.debug("开启物品UI")
         Bukkit.getPluginManager().registerEvents(object : Listener {
             @EventHandler
             fun onDrag(e: InventoryDragEvent) {
@@ -106,7 +113,7 @@ class Mail_Item(
             @EventHandler
             fun onClose(e: InventoryCloseEvent) {
                 if (player == e.player) {
-                    GeekMail.menu.isOpen.removeIf { it == player }
+                    Menu.isOpen.removeIf { it == player }
                     if (GeekMail.plugin_status) {
                         val item = e.inventory.contents
                         val i1: MutableList<ItemStack> = java.util.ArrayList()
@@ -132,14 +139,13 @@ class Mail_Item(
                 }
             }
         }, GeekMail.instance)
-        GeekMail.say("关闭物品UI")
     }
     private fun sender() {
-        appendixInfo = appendixInfo()
+        appendixInfo = runAppendixInfo()
         super.sendMail()
     }
 
-    private fun appendixInfo(): String {
+    private fun runAppendixInfo(): String {
         val lore: MutableList<String> = ArrayList()
         lore.clear()
         var index = 0
@@ -152,7 +158,7 @@ class Mail_Item(
                     } else {
                         val manes = ChineseMaterial.translate(Stack.type)
                         if (manes != "null") {
-                            lore.add(ChineseMaterial.translate(Stack.type) + " §7* §f" + Stack.amount)
+                            lore.add(manes + " §7* §f" + Stack.amount)
                         } else {
                             index++
                         }

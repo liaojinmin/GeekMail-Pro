@@ -1,7 +1,7 @@
 package me.geek.mail.common.listener
 
-import me.geek.mail.GeekMail
-import me.geek.mail.common.Menu.MAction
+import me.geek.mail.common.menu.MAction
+import me.geek.mail.common.menu.Menu
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
@@ -13,12 +13,10 @@ object MenuOpen {
     fun onCommand(e: PlayerCommandPreprocessEvent) {
         val message = e.message.removePrefix("/")
         if (message.isNotBlank()) {
-            if (GeekMail.menu.getMenuCommand(message) != null) {
-                val player = e.player
-                val m = GeekMail.menu.getMenuCommand(message)
-                MAction(player, GeekMail.menu.getMenuTag(m), GeekMail.menu.Build(player, m))
+            Menu.getMenuCommand(message)?.let {
                 e.isCancelled = true
-                return
+                val player = e.player
+                MAction(player, Menu.getSession(it), Menu.Build(player, it))
             }
         }
     }

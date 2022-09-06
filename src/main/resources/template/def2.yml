@@ -1,0 +1,33 @@
+Template:
+  # 模板唯一展示ID
+  ID: "中秋节大礼包"
+  Require:
+    # 发送该邮件前判断条件 需要扣除玩家 900 金币
+    condition: 'Money hasTake *1900'
+    # 条件通过 发送 Kether Tell 消息
+    action: |-
+      tell "&a"
+      tell "&7&l  Geek&f&lMail &8>&7>&f>"
+      tell "&a"
+      tell "&B    发送成功 扣除 1900 金币！"
+      tell "&a"
+    # 条件不通过 发送 Kether Tell 消息
+    deny: |-
+      tell "&a"
+      tell "&7&l  Geek&f&lMail &8>&7>&f>"
+      tell "&a"
+      tell "&c    你无法使用这个邮件模板"
+      tell "&a"
+      
+
+  package:
+    title: "&e点券包"
+    text: |-
+      &l
+      &B&l 中秋节大礼包;
+      &B&l 里面有 100 点券;
+      &B
+    type: MAIL_POINTS
+    appendix:
+      additional: 100
+

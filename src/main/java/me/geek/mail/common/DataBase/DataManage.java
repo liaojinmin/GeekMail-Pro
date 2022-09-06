@@ -2,15 +2,12 @@ package me.geek.mail.common.DataBase;
 
 import com.google.common.base.Joiner;
 import me.geek.mail.Configuration.ConfigManager;
-
 import me.geek.mail.api.mail.MailManage;
 import me.geek.mail.common.serialize.base64.StreamSerializer;
-
 import me.geek.mail.api.mail.MailSub;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -123,25 +120,26 @@ public final class DataManage {
                 if (!r.isBeforeFirst()) return null;
                 mail = new ArrayList<>();
                 while (r.next()) {
-                    final UUID MailID = UUID.fromString(r.getString("mail_id"));
+                    final String MailID = r.getString("mail_id");
                     final String state = r.getString("state");
                     final String type = r.getString("type");
-                    final UUID sender = UUID.fromString(r.getString("sender"));
-                    final UUID target = UUID.fromString(r.getString("target"));
+                    final String sender = r.getString("sender");
+                    final String target = r.getString("target");
                     final String title = r.getString("title");
                     final String text = r.getString("text");
                     final String additional = r.getString("additional");
-                    final ItemStack[] itemStacks = StreamSerializer.deserializeItemStacks(r.getString("item"));
-                    final List<String> commands = Arrays.asList(r.getString("commands").split(","));
+                  //  final ItemStack[] itemStacks = StreamSerializer.deserializeItemStacks(r.getString("item"));
+                  //  final List<String> commands = Arrays.asList(r.getString("commands").split(","));
+                    final String itemStacks = r.getString("item");
+                    final String commands = r.getString("commands");
                     final String senderTime = r.getString("sendertime");
                     final String getTime = r.getString("gettime");
-                    final String[] time = {senderTime, getTime};
-                    final MailSub data = MailManage.buildMailClass(MailID, type, title, text, sender, target, state, additional, itemStacks, commands, time);
+                    final MailSub data = MailManage.buildMailClass(MailID, type, title, text, sender, target, state, additional, senderTime, getTime, itemStacks, commands);
                     mail.add(data);
                 }
                 return mail;
             }
-        } catch (SQLException | IOException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;

@@ -4,20 +4,14 @@ package me.geek.mail.api.mail
 import me.geek.mail.GeekMail.debug
 
 import me.geek.mail.GeekMail.say
-import taboolib.common.platform.function.adaptPlayer
-
-import me.geek.mail.GeekMail
-import me.geek.mail.Configuration.LangManager
-import taboolib.module.chat.TellrawJson
-import me.geek.mail.Configuration.ConfigManager
-import org.bukkit.configuration.file.FileConfiguration
-import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
 import org.jetbrains.annotations.NotNull
+import taboolib.common.platform.function.adaptPlayer
+import taboolib.common.platform.function.console
 import taboolib.library.reflex.Reflex.Companion.invokeConstructor
 import taboolib.library.xseries.XSound
-import java.io.IOException
+import taboolib.module.lang.sendLang
+import taboolib.platform.util.asLangText
 import java.lang.IllegalArgumentException
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -32,30 +26,38 @@ object MailManage {
     private val targetCache: MutableMap<UUID, MutableList<MailSub>> = ConcurrentHashMap()
     private val MailData: MutableMap<String, MailSub> = HashMap()
 
+    @JvmStatic
     fun register(@NotNull mail: MailSub) {
       MailData[mail.name] = mail
     }
+    @JvmStatic
     fun getMailData(mailType: String) : MailSub? =
         MailData[mailType]
     @JvmStatic
     fun getMailDataMap(): MutableMap<String, MailSub> {
         return MailData
     }
-    @JvmStatic
-    fun buildMailClass(mailID: UUID, mailType: String, title: String, text: String, sender: UUID, target: UUID,
-                       state: String , args: String, item: Array<ItemStack>, cmd: List<String>, time: Array<String>): MailSub? {
-        debug("邮件ID: $mailID")
-        debug("邮件种类: $mailType")
-        debug("邮件标题: $title")
-        debug("邮件文本: $text")
-        debug("邮件发送者: $sender")
-        debug("邮件接收者: $target")
-        debug("已注册邮件查找: ${MailData[mailType]}")
-        return MailData[mailType]?.javaClass?.invokeConstructor(
-            mailID, title, text, sender, target, state ,args, item, cmd, time
-        )
-    }
 
+    /**
+     * @param mailID = 邮件ID
+     * @param mailType = 邮件种类
+     * @param title = 标题
+     * @param text = 文本
+     * @param sender  = 发送者UUID
+     * @param target = 接收者UUID
+     * @param state = 邮件状态
+     * @param additional = 附件
+     * @param senderTime = 发生时间
+     * @param getTime = 附件领取时间
+     * @param item = 物品类型附件
+     * @param cmd = 指令类型附件
+     */
+    @JvmStatic
+    fun buildMailClass(mailID: String, mailType: String, title: String, text: String, sender: String, target: String,
+                       state: String , additional: String, senderTime: String, getTime: String, item: String, cmd: String): MailSub? {
+        val args = arrayOf(mailID, title, text, sender, target, state, additional, senderTime, getTime, item, cmd)
+        return MailData[mailType]?.javaClass?.invokeConstructor(args)
+    }
     /**
      * 此方法会先判断缓存中是否存在对应 目标UID 的数据 再进行存入
      *
@@ -103,7 +105,7 @@ object MailManage {
     }
 
     // 直接替换缓存中的数据
-    fun UpTargetCache(targetUuid: UUID, mail: MutableList<MailSub>) {
+    fun upTargetCache(targetUuid: UUID, mail: MutableList<MailSub>) {
         targetCache[targetUuid] = mail
     }
 
@@ -137,53 +139,21 @@ object MailManage {
 
     @JvmStatic
     fun sendMailMessage(title: String, text: String, vararg player: Player?) {
+        // 0 发送者  1 接收者
         try {
-            if (player[0] != null) {
-                for (msg in LangManager.SENDER_MSG) {
-                    if (msg.contains("[target]")) {
-                        if (player[1] == null) {
-                            player[0]?.sendMessage(msg.replace("[target]", ""))
-                        } else {
-                            player[0]!!.sendMessage(msg.replace("[target]", player[1]!!.name))
-                        }
-                    } else {
-                        player[0]!!.sendMessage(msg)
-                    }
-                    Sound(player[0]!!, "BLOCK_NOTE_BLOCK_HARP", 1f, 1f)
-                }
+            player[0]?.let{
+                adaptPlayer(it).sendLang("玩家-发送邮件", player[1]!!.name)
             }
-            if (player[1] != null) {
-                val json = TellrawJson()
-                val proxyPlayer = adaptPlayer(player[1]!!)
-                for (msg in LangManager.TARGET_MSG) {
-                    if (msg.contains("[title]")) {
-                        json.append(msg.replace("[title]", title +"\n"))
-                            .hoverText(text+"\n")
-                            .runCommand("/" + GeekMail.menu.cmd)
-                    } else {
-                        json.append(msg+"\n")
-                    }
-                }
+            player[1]?.let { v ->
+                adaptPlayer(v).sendLang("玩家-接收邮件", title)
                 /**
                  * if (MinecraftVersion.INSTANCE.getMajorLegacy() >= 11300) {
                  * NMSKt.sendToast(player[1], Material.BOOK,"你有新的邮件待查看！", ToastFrame.TASK, ToastBackground.END);
                  * } */
-                proxyPlayer.playSound(proxyPlayer.location, "BLOCK_NOTE_BLOCK_HARP", 1f, 1f)
-                proxyPlayer.sendRawMessage(json.toRawMessage())
             }
         } catch (ignored: IllegalArgumentException) { }
     }
 
-    fun createBlock(location: String?) {
-        try {
-            val data: FileConfiguration = YamlConfiguration.loadConfiguration(ConfigManager.getYml())
-            data["Block"] = location
-            data.save(ConfigManager.getYml())
-            ConfigManager.location = location
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
 
     fun Sound(player: Player, name: String, volume: Float, potch: Float) {
         val sound: XSound = try {

@@ -37,7 +37,7 @@ class GPoints(private val  action: String, private val context: ParsedAction<*>)
     }
     companion object {
         /**
-         * Money 100 take
+         * Points 100 take
          */
         @KetherParser(value = ["Points"], namespace = "GeekMail", shared = true)
         fun parser() = scriptParser {

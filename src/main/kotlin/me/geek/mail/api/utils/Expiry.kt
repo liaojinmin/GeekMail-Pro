@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat
  **/
 object Expiry {
 
-    private val format = SimpleDateFormat("yyyy-MM-dd-HH:mm:ss")
+    private val format = SimpleDateFormat("yyyy年 MM月 dd日 HH:mm:ss")
     /**
      * @param start 传入的是否是启动时间
      * 列如：

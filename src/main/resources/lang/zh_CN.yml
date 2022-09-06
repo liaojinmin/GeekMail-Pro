@@ -1,0 +1,111 @@
+玩家-发送邮件:
+  - type: sound
+    sound: 'BLOCK_NOTE_BLOCK_HARP'
+    volume: 1
+    pitch: 1
+  - type: TEXT
+    text:
+      - '&1'
+      - '&7&l  Geek&f&lMail &8>&7>&f>'
+      - '&l'
+      - '&b    你的邮件已发送至 {0}'
+      - '&l'
+玩家-接收邮件:
+  - type: sound
+    sound: 'BLOCK_NOTE_BLOCK_HARP'
+    volume: 1
+    pitch: 1
+  - type: JSON
+    text:
+      - ' '
+      - '&7&l  Geek&f&lMail &8>&7>&f>'
+      - '&l'
+      - '&B    你有新邮件待查看!'
+      - '&B    {0}'
+      - '&l             §8[§a§l点击查看§8]'
+      - ''
+    args:
+      - hover: '§8点击查看'
+        command: '/邮件'
+
+玩家-加入游戏-提醒:
+  - type: sound
+    sound: 'UI_LOOM_TAKE_RESULT'
+    volume: 1
+    pitch: 1
+  - type: JSON
+    text:
+      - ' '
+      - '&7&l  Geek&f&lMail &8>&7>&f>'
+      - '&l'
+      - '&B    你有 {0} 封未读邮件！'
+      - '&B'
+      - '&l             §8[§a§l点击查看§8]'
+      - ''
+    args:
+      - hover: '§8点击查看'
+        command: '/邮件'
+
+
+
+玩家-发送邮件-阻止: |-
+  &l
+  &7&l  Geek&f&lMail &8>&7>&f>
+  &l
+  &c&l    你没有足够的 &f{0} &c&l发送这封邮件！
+  &B
+
+
+玩家-领取附件-成功:
+  - type: sound
+    sound: 'ENTITY_LLAMA_CHEST'
+    volume: 1
+    pitch: 1
+  - type: sound
+    sound: 'ENTITY_EXPERIENCE_ORB_PICKUP'
+    volume: 1
+    pitch: 1
+  - type: TEXT
+    text:
+      - '&1'
+      - '&7&l  Geek&f&lMail &8>&7>&f>'
+      - '&l'
+      - '&b    成功领取附件，获得以下物品:'
+      - '&f    {0}'
+玩家-领取附件-失败:
+  - type: sound
+    sound: 'BLOCK_NOTE_BLOCK_DIDGERIDOO'
+    volume: 1
+    pitch: 1
+  - type: TEXT
+    text:
+      - '&1'
+      - '&7&l  Geek&f&lMail &8>&7>&f>'
+      - '&l'
+      - '&b    这个附件你已经领取过了！'
+      - '&f'
+      -
+玩家-删除邮件-成功:
+  - type: sound
+    sound: 'BLOCK_NOTE_BLOCK_DIDGERIDOO'
+    volume: 1
+    pitch: 2
+  - type: TEXT
+    text:
+      - '&1'
+      - '&7&l  Geek&f&lMail &8>&7>&f>'
+      - '&l'
+      - '&a&l    你已成功删除该邮件！'
+      - '&f'
+玩家-删除邮件-失败:
+  - type: sound
+    sound: 'BLOCK_NOTE_BLOCK_DIDGERIDOO'
+    volume: 1
+    pitch: 1
+  - type: TEXT
+    text:
+      - '&1'
+      - '&7&l  Geek&f&lMail &8>&7>&f>'
+      - '&l'
+      - '&c&l    你不能删除该邮件，请先领取附件内容！'
+      - '&f'

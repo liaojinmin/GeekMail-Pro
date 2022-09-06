@@ -1,9 +1,7 @@
 package me.geek.mail.command.admin
 
-import com.google.common.base.Joiner
 import me.geek.mail.command.CmdExp
 import me.geek.mail.Configuration.ConfigManager
-import me.geek.mail.Modules.Mail_Exp
 import me.geek.mail.api.mail.MailManage
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
@@ -11,7 +9,6 @@ import org.bukkit.entity.Player
 import taboolib.common.platform.command.subCommand
 import taboolib.library.reflex.Reflex.Companion.invokeConstructor
 import java.util.UUID
-import java.util.regex.Pattern
 
 
 /**
@@ -39,20 +36,17 @@ object CmdSend: CmdExp {
                             listOf("[邮件内容]")
                         }
                         execute<CommandSender> { sender, context, _ ->
-                            val text = Joiner.on(",").join(context.args()).replace("&", "§").split(",")
-                            val target = Bukkit.getOfflinePlayer(text[1])
-                            val exp = text[4].replace("&", "§").split(" ")
-                            val uuid: UUID = if (sender is Player) sender.uniqueId else ConfigManager.Console
-                            val time = arrayOf(System.currentTimeMillis(), 0L)
-                            try {
-                                MailManage.getMailData(text[2])?.javaClass?.invokeConstructor(
-                                    UUID.randomUUID(), text[3], exp[0], uuid, target.uniqueId, "未提取", exp[1], null, null, time
-                                )?.sendMail()
+                            val mailType = context.args()[2]
+                            val title = context.args()[3].replace("&", "§")
+                            val args = context.args()[4].replace("&", "§").split(" ", limit = 2)
+                            val target = Bukkit.getOfflinePlayer(context.args()[1])
+                            val senders = if (sender is Player) sender.uniqueId else ConfigManager.Console
+                            val pack = try {
+                                arrayOf(UUID.randomUUID().toString(), title, args[0], senders.toString(), target.uniqueId.toString(), "未提取", args[1], System.currentTimeMillis().toString(), "0")
                             } catch (e: IndexOutOfBoundsException) {
-                                MailManage.getMailData(text[2])?.javaClass?.invokeConstructor(
-                                    UUID.randomUUID(), text[3], exp[0], uuid, target.uniqueId, "未提取", "0", null, null, time
-                                )?.sendMail()
+                                arrayOf(UUID.randomUUID().toString(), title, args[0], senders.toString(), target.uniqueId.toString(), "未提取", "0", System.currentTimeMillis().toString(), "0")
                             }
+                            MailManage.getMailData(mailType)?.javaClass?.invokeConstructor(pack)?.sendMail()
                         }
                     }
                 }

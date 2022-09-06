@@ -11,7 +11,9 @@ taboolib {
         "common-5",
         "module-metrics",
         "platform-bukkit",
+        "module-configuration",
         "module-chat",
+        "module-lang",
         "module-kether",
         "expansion-command-helper"
     )

@@ -1,18 +1,22 @@
 package me.geek.mail.command.admin
 
 
+import me.geek.mail.Configuration.ConfigManager
 import me.geek.mail.command.CmdExp
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailManage
 
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
+import org.bukkit.configuration.file.FileConfiguration
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.event.EventHandler
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEvent
 import taboolib.common.platform.command.subCommand
 import taboolib.common.platform.function.adaptPlayer
+import java.io.IOException
 
 /**
  * 作者: 老廖
@@ -33,7 +37,15 @@ object CmdSetBlock : CmdExp {
                             val x = loc.blockX
                             val y = loc.blockY
                             val z = loc.blockZ
-                            MailManage.createBlock("$world,$x,$y,$z")
+                            val location = "$world,$x,$y,$z"
+                            try {
+                                val data: FileConfiguration = YamlConfiguration.loadConfiguration(ConfigManager.getYml())
+                                data["Block"] = location
+                                data.save(ConfigManager.getYml())
+                                ConfigManager.location = location
+                            } catch (e: IOException) {
+                                e.printStackTrace()
+                            }
                             HandlerList.unregisterAll(this)
                             e.player.sendMessage("§8[§6§lGeekMail§8] §f设置完毕")
                         }
