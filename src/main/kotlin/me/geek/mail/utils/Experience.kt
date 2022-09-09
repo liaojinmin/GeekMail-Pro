@@ -1,4 +1,4 @@
-package me.geek.mail.api.utils
+package me.geek.mail.utils
 
 
 import org.bukkit.entity.Player
@@ -33,6 +33,15 @@ object Experience {
         player.exp = 0.0f
         player.totalExperience = 0
         player.giveExp(exp2 + exp)
+    }
+    fun hasTotalExperience(player: Player, exp: Int, take: Boolean = false): Boolean {
+        if (getTotalExperience(player) >= exp) {
+            if (take) {
+                takeTotalExperience(player, exp)
+            }
+            return true
+        }
+       return false
     }
 
     /**

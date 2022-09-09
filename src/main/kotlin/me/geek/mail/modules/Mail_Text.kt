@@ -1,11 +1,10 @@
 package me.geek.mail.modules
 
-import me.geek.mail.Configuration.ConfigManager
-import me.geek.mail.api.mail.MailManage
-import me.geek.mail.common.DataBase.DataManage
+
 import me.geek.mail.api.mail.MailSub
+import me.geek.mail.common.kether.sub.KetherAPI
+import org.bukkit.entity.Player
 import java.util.UUID
-import org.bukkit.Bukkit
 
 /**
  * 作者: 老廖
@@ -24,6 +23,7 @@ class Mail_Text(
     override val appendixInfo: String,
     override val senderTime: String,
     override var getTime: String,
+    override val permission: String = "mail.exp.text",
 
     ) : MailSub() {
 
@@ -56,5 +56,9 @@ class Mail_Text(
 
 
     override fun giveAppendix() {
+    }
+
+    override fun condition(player: Player, appendix: String): Boolean {
+        return true
     }
 }

@@ -1,7 +1,10 @@
 package me.geek.mail.modules
 
 import me.geek.mail.api.mail.MailSub
+import me.geek.mail.common.kether.sub.KetherAPI
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
+import taboolib.platform.compat.replacePlaceholder
 import java.util.*
 
 /**
@@ -21,11 +24,12 @@ class Mail_Cmd(
     override var command: List<String>?,
     override val senderTime: String,
     override var getTime: String,
+    override val permission: String = "mail.exp.command",
 
     ) : MailSub() {
     private lateinit var cmds: String
 
-    constructor() : this(
+    constructor() : this (
         UUID.fromString("00000000-0000-0000-0000-000000000001"),
         "指令邮件",
         "",
@@ -65,12 +69,14 @@ class Mail_Cmd(
     }
 
     override fun giveAppendix() {
-        val player = Bukkit.getPlayer(target)
-        val name = player?.name
+        Bukkit.getPlayer(target)?.let { cmds.replacePlaceholder(it) }
         for (out in command!!) {
-            val b = out.replace("{player_uuid}", target.toString()).replace("{player_name}", name!!)
+            val b = out
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), b)
         }
+    }
+    override fun condition(player: Player, appendix: String): Boolean {
+        return player.isOp
     }
 
 }

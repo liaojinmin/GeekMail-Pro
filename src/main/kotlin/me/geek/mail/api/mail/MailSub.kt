@@ -2,6 +2,7 @@ package me.geek.mail.api.mail
 
 import me.geek.mail.Configuration.ConfigManager
 import me.geek.mail.GeekMail
+import me.geek.mail.api.mail.event.MailSenderEvent
 import me.geek.mail.common.DataBase.DataManage
 import org.bukkit.Bukkit
 import java.util.*
@@ -15,33 +16,34 @@ abstract class MailSub : Mail {
 
 
     override fun sendMail() {
+
+        val event = MailSenderEvent(this)
+        event.call()
+        if (event.isCancelled) return
+
         Bukkit.getScheduler().scheduleAsyncDelayedTask(GeekMail.instance) {
+            val send = Bukkit.getPlayer(sender)
+            val targets = Bukkit.getPlayer(target)
             if (sender == ConfigManager.Console) {
-                val targets = Bukkit.getPlayer(target)
-                DataManage.insert(this, null)
                 if (targets != null) {
                     MailManage.addTargetCache(target, this)
                 }
-                MailManage.sendMailMessage(this.title, this.text, null, targets)
             } else {
-                val send = Bukkit.getPlayer(sender)
-                val targets = Bukkit.getPlayer(target)
-                DataManage.insert(this, itemStacks)
                 if (targets != null) {
-                    // 如果目标玩家在线则载入缓存
                     MailManage.addTargetCache(target, this)
                 }
                 if (send != null) {
-                    // 如果发送者在线则载入缓存
                     MailManage.addSenderCache(sender, this)
                 }
-                MailManage.sendMailMessage(title, text, send, targets)
             }
+            MailManage.WebMail.onSender(title, text, appendixInfo,targets?.name ?: Bukkit.getOfflinePlayer(target).name ?: Bukkit.getOfflinePlayer(target).uniqueId.toString())
+            MailManage.sendMailMessage(title, text, send, targets)
+            DataManage.insert(this)
         }
     }
 
-    fun SendGlobalMail() {
-        val player = Bukkit.getOnlinePlayers()
-        //DataManage.insert(this, player, itemStacks)
+    fun sendGlobalMail() {
+        val player = Bukkit.getOfflinePlayers()
+        DataManage.insert(this, player)
     }
 }

@@ -8,10 +8,11 @@ import me.geek.mail.common.DataBase.DataManage
 
 import me.geek.mail.common.menu.sub.IconType.*
 import me.geek.mail.api.mail.MailManage
-import me.geek.mail.api.utils.HexUtils
+import me.geek.mail.utils.HexUtils
 import me.geek.mail.api.mail.MailSub
-import me.geek.mail.api.utils.Expiry
+import me.geek.mail.utils.Expiry
 import me.geek.mail.common.menu.sub.Session
+import me.geek.mail.utils.colorify
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -332,28 +333,28 @@ class MAction(
                 val itemStack = ItemStack(Material.valueOf(micon.mats))
                 val itemMeta = itemStack.itemMeta
                 if (itemMeta != null) {
-                    itemMeta.setDisplayName(HexUtils.colorify(name.replace("[title]", mail.title)))
+                    itemMeta.setDisplayName(name.replace("[title]", mail.title).colorify())
                     lore = if (mail.sender == ConfigManager.Console) {
                         val var100 = "系统"
                         listOf(
-                            *HexUtils.colorify(Joiner.on(",").join(lore).replace("[type]", mail.mailType)
+                            *Joiner.on(",").join(lore).replace("[type]", mail.mailType)
                                 .replace("[sender]", var100)
                                 .replace("[senderTime]", Expiry.getExpiryFoData(mail.senderTime.toLong()))
                                 .replace("[getTime]", Expiry.getExpiryFoData(mail.getTime.toLong()))
                                 .replace("[text]", mail.text.replace(";",","))
                                 .replace("[state]", mail.state)
-                                .replace("[item]", mail.appendixInfo)).split(",").toTypedArray()
+                                .replace("[item]", mail.appendixInfo).colorify().split(",").toTypedArray()
                         )
                     } else {
                         val var100 = Bukkit.getOfflinePlayer(mail.sender).name
                         listOf(
-                            *HexUtils.colorify(Joiner.on(",").join(lore).replace("[type]", mail.mailType)
+                            *Joiner.on(",").join(lore).replace("[type]", mail.mailType)
                                 .replace("[sender]", var100!!)
                                 .replace("[senderTime]", Expiry.getExpiryFoData(mail.senderTime.toLong()))
                                 .replace("[getTime]", Expiry.getExpiryFoData(mail.getTime.toLong()))
                                 .replace("[text]", mail.text.replace(";",","))
                                 .replace("[state]", mail.state)
-                                .replace("[item]", mail.appendixInfo)).split(",").toTypedArray()
+                                .replace("[item]", mail.appendixInfo).colorify().split(",").toTypedArray()
                         )
                     }
                     itemMeta.lore = lore

@@ -1,7 +1,7 @@
-package me.geek.mail.common.Kether
+package me.geek.mail.common.kether
 
 
-import me.geek.mail.common.Kether.sub.KetherSub
+import me.geek.mail.common.kether.sub.KetherSub
 import me.geek.mail.api.hook.hookPlugin
 import taboolib.library.kether.ParsedAction
 import taboolib.library.kether.QuestContext

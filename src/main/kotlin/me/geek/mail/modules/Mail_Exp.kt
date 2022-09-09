@@ -2,8 +2,10 @@ package me.geek.mail.modules
 
 import me.geek.mail.Configuration.ConfigManager
 import me.geek.mail.api.mail.MailSub
+import me.geek.mail.common.kether.sub.KetherAPI
 import java.util.UUID
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 
 /**
  * 作者: 老廖
@@ -21,6 +23,7 @@ class Mail_Exp(
     override val appendixInfo: String,
     override val senderTime: String,
     override var getTime: String,
+    override val permission: String = "mail.exp.exp",
 
     ) : MailSub() {
 
@@ -37,6 +40,7 @@ class Mail_Exp(
         senderTime = "",
         getTime = ""
     )
+
     constructor(args: Array<String>) : this(
         mailID = UUID.fromString(args[0]), // 邮件 UUID
         mailType = "经验邮件",
@@ -54,5 +58,11 @@ class Mail_Exp(
 
     override fun giveAppendix() {
         Bukkit.getPlayer(this.target)?.giveExp(this.additional.toInt())
+    }
+
+    override fun condition(player: Player, appendix: String): Boolean {
+        val d = KetherAPI.instantKether(player, "Exp hasTake $appendix").any as Boolean
+        if (!d) player.sendMessage("[!] 你没有足够的经验值")
+        return d
     }
 }

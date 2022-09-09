@@ -3,8 +3,10 @@ package me.geek.mail.modules
 import me.geek.mail.Configuration.ConfigManager
 import me.geek.mail.api.hook.hookPlugin
 import me.geek.mail.api.mail.MailSub
+import me.geek.mail.common.kether.sub.KetherAPI
 import java.util.UUID
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 
 /**
  * 作者: 老廖
@@ -22,6 +24,7 @@ class Mail_Money(
     override val appendixInfo: String,
     override val senderTime: String,
     override var getTime: String,
+    override val permission: String = "mail.exp.money",
 ) : MailSub() {
 
     constructor() : this(
@@ -55,5 +58,11 @@ class Mail_Money(
 
     override fun giveAppendix() {
         hookPlugin.money.depositPlayer(Bukkit.getOfflinePlayer(target), this.additional.toDouble());
+    }
+
+    override fun condition(player: Player, appendix: String): Boolean {
+        val d = KetherAPI.instantKether(player, "Money hasTake $appendix").any as Boolean
+        if (!d) player.sendMessage("[!] 你没有足够的金币")
+        return d
     }
 }

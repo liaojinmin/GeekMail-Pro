@@ -1,15 +1,22 @@
+玩家-没有权限-发送邮件:
+  - type: sound
+    sound: 'BLOCK_NOTE_BLOCK_DIDGERIDOO'
+    volume: 1
+    pitch: 1
+  - type: title
+    title: '&c&l你没有权限使用这个类型'
+    subtitle: '&3&l请联系管理员授权.'
+
 玩家-发送邮件:
   - type: sound
     sound: 'BLOCK_NOTE_BLOCK_HARP'
     volume: 1
     pitch: 1
-  - type: TEXT
-    text:
-      - '&1'
-      - '&7&l  Geek&f&lMail &8>&7>&f>'
-      - '&l'
-      - '&b    你的邮件已发送至 {0}'
-      - '&l'
+  - '&1'
+  - '&7&l  Geek&f&lMail &8>&7>&f>'
+  - '&l'
+  - '&b    你的邮件已发送至 {0}'
+  - '&l'
 玩家-接收邮件:
   - type: sound
     sound: 'BLOCK_NOTE_BLOCK_HARP'
@@ -65,47 +72,38 @@
     sound: 'ENTITY_EXPERIENCE_ORB_PICKUP'
     volume: 1
     pitch: 1
-  - type: TEXT
-    text:
-      - '&1'
-      - '&7&l  Geek&f&lMail &8>&7>&f>'
-      - '&l'
-      - '&b    成功领取附件，获得以下物品:'
-      - '&f    {0}'
+  - '&1'
+  - '&7&l  Geek&f&lMail &8>&7>&f>'
+  - '&l'
+  - '&b    成功领取附件，获得以下物品:'
+  - '&f    {0}'
 玩家-领取附件-失败:
   - type: sound
     sound: 'BLOCK_NOTE_BLOCK_DIDGERIDOO'
     volume: 1
     pitch: 1
-  - type: TEXT
-    text:
-      - '&1'
-      - '&7&l  Geek&f&lMail &8>&7>&f>'
-      - '&l'
-      - '&b    这个附件你已经领取过了！'
-      - '&f'
-      -
+  - '&1'
+  - '&7&l  Geek&f&lMail &8>&7>&f>'
+  - '&l'
+  - '&b    这个附件你已经领取过了！'
+  - '&f'
 玩家-删除邮件-成功:
   - type: sound
     sound: 'BLOCK_NOTE_BLOCK_DIDGERIDOO'
     volume: 1
     pitch: 2
-  - type: TEXT
-    text:
-      - '&1'
-      - '&7&l  Geek&f&lMail &8>&7>&f>'
-      - '&l'
-      - '&a&l    你已成功删除该邮件！'
-      - '&f'
+  - '&1'
+  - '&7&l  Geek&f&lMail &8>&7>&f>'
+  - '&l'
+  - '&a&l    你已成功删除该邮件！'
+  - '&f'
 玩家-删除邮件-失败:
   - type: sound
     sound: 'BLOCK_NOTE_BLOCK_DIDGERIDOO'
     volume: 1
     pitch: 1
-  - type: TEXT
-    text:
-      - '&1'
-      - '&7&l  Geek&f&lMail &8>&7>&f>'
-      - '&l'
-      - '&c&l    你不能删除该邮件，请先领取附件内容！'
-      - '&f'
+  - '&1'
+  - '&7&l  Geek&f&lMail &8>&7>&f>'
+  - '&l'
+  - '&c&l    你不能删除该邮件，请先领取附件内容！'
+  - '&f'

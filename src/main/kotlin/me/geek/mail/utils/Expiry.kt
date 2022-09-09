@@ -1,4 +1,4 @@
-package me.geek.mail.api.utils
+package me.geek.mail.utils
 
 import me.geek.mail.GeekMail
 import java.text.SimpleDateFormat

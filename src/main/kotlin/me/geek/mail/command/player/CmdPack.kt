@@ -4,7 +4,7 @@ import me.geek.mail.api.mail.MailManage
 import me.geek.mail.command.CmdExp
 
 
-import me.geek.mail.common.Kether.sub.KetherAPI
+import me.geek.mail.common.kether.sub.KetherAPI
 import me.geek.mail.common.template.Template
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
@@ -32,6 +32,7 @@ object CmdPack: CmdExp {
                     val pack = Template.getTempPack(context.args()[1])
                     if (context.args()[2] != "Global") {
                         MailManage.getMailData(pack.type)?.let {
+
                             if (KetherAPI.instantKether(senders, pack.condition).any as Boolean) {
                                 KetherAPI.instantKether(senders, pack.action)
                                 val target = Bukkit.getOfflinePlayer(context.args()[2]).uniqueId

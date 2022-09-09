@@ -1,4 +1,4 @@
-package me.geek.mail.api.utils
+package me.geek.mail.utils
 
 import org.bukkit.Material
 
@@ -7,10 +7,10 @@ import org.bukkit.Material
  * 时间: 2022/9/4
  *
  **/
-object ChineseMaterial {
+class ChineseMaterial {
     private val translateMap: MutableMap<String, String> = HashMap()
 
-    fun MaterialChinese() {
+    init {
         enable()
     }
     private fun enable() {

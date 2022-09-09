@@ -1,11 +1,11 @@
 package me.geek.mail.common.menu
 
 import me.geek.mail.api.hook.hookPlugin.getItemsAdder
-import me.geek.mail.api.utils.HexUtils.colorify
 import me.geek.mail.common.menu.sub.Session
 import me.geek.mail.common.menu.sub.Micon
 import me.geek.mail.GeekMail
 import me.geek.mail.common.menu.sub.IconType
+import me.geek.mail.utils.colorify
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -92,7 +92,7 @@ object Menu {
                 icon.clear()
                 menu = SecuredFile.loadConfiguration(file)
                 menuTag = file.name.substring(0, file.name.indexOf("."))
-                title = colorify(menu.getString("TITLE")!!)
+                title = menu.getString("TITLE")!!.colorify()
                 type = menu.getString("TYPE")!!
                 layout = menu.getStringList("Layout").toString()
                     .replace("[", "")
@@ -151,7 +151,7 @@ object Menu {
                 }
                 val itemMeta = itemStack.itemMeta
                 if (itemMeta != null) {
-                    itemMeta.setDisplayName(colorify(icon.name))
+                    itemMeta.setDisplayName(icon.name.colorify())
                     if (icon.lore.size == 1 && icon.lore[0].isEmpty()) {
                         itemMeta.lore = null
                     } else {
@@ -187,4 +187,5 @@ object Menu {
         }
         dir
     }
+    fun Player.openMenu(MenuID: String) = MAction(this, getSession(MenuID), Build(this, MenuID))
 }

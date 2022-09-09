@@ -2,10 +2,12 @@ package me.geek.mail.common.DataBase;
 
 import com.google.common.base.Joiner;
 import me.geek.mail.Configuration.ConfigManager;
+
 import me.geek.mail.api.mail.MailManage;
 import me.geek.mail.common.serialize.base64.StreamSerializer;
 import me.geek.mail.api.mail.MailSub;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.OfflinePlayer;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -42,7 +44,7 @@ public final class DataManage {
         }
     }
 
-    public static void insert(@NotNull MailSub mailDate, ItemStack[] s) {
+    public synchronized static void insert(@NotNull MailSub mailDate) {
         try (Connection connection = getConnection()) {
             try (PreparedStatement p = connection.prepareStatement(
                     "INSERT INTO maildata(`mail_id`,`state`,`type`,`sender`,`target`,`title`,`text`,`additional`,`item`,`commands`,`sendertime`,`gettime`) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)")) {
@@ -54,8 +56,8 @@ public final class DataManage {
                 p.setString(6, mailDate.getTitle());
                 p.setString(7, mailDate.getText());
                 p.setString(8, mailDate.getAdditional());
-                if (s != null) {
-                    p.setString(9, StreamSerializer.serializeItemStacks(s));
+                if (mailDate.getItemStacks() != null) {
+                    p.setString(9, StreamSerializer.serializeItemStacks(mailDate.getItemStacks()));
                 } else {
                     p.setString(9, "null");
                 }
@@ -111,7 +113,7 @@ public final class DataManage {
      * @param targetUid 目标玩家
      * @return 邮件合集
      */
-    public static List<MailSub> selectTarget(@NotNull UUID targetUid) {
+    public synchronized static List<MailSub> selectTarget(@NotNull UUID targetUid) {
         List<MailSub> mail;
         try (Connection c = getConnection()) {
             try (PreparedStatement s = c.prepareStatement("SELECT * FROM `maildata` WHERE target=?;")) {
@@ -128,8 +130,6 @@ public final class DataManage {
                     final String title = r.getString("title");
                     final String text = r.getString("text");
                     final String additional = r.getString("additional");
-                  //  final ItemStack[] itemStacks = StreamSerializer.deserializeItemStacks(r.getString("item"));
-                  //  final List<String> commands = Arrays.asList(r.getString("commands").split(","));
                     final String itemStacks = r.getString("item");
                     final String commands = r.getString("commands");
                     final String senderTime = r.getString("sendertime");
@@ -146,7 +146,7 @@ public final class DataManage {
     }
 
     // 邮件ID
-    public static void update(@NotNull MailSub mail) {
+    public synchronized static void update(@NotNull MailSub mail) {
         try (Connection c = getConnection()) {
             try (PreparedStatement s = c.prepareStatement("UPDATE `maildata` SET `state`=?,`getTime`=? WHERE `mail_id`=?;")) {
                 s.setString(1, mail.getState());
@@ -160,6 +160,52 @@ public final class DataManage {
     }
 
 
+
+    public synchronized static void insert(@NotNull MailSub mailDate, @NotNull OfflinePlayer[] players) {
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement p = connection.prepareStatement(
+                    "INSERT INTO maildata(`mail_id`,`state`,`type`,`sender`,`target`,`title`,`text`,`additional`,`item`,`commands`,`sendertime`,`gettime`) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)"))
+            {
+                final String sender = mailDate.getSender().toString();
+                String items = "null";
+                String command = "";
+                for (OfflinePlayer ps : players) {
+                    final String mailID = UUID.randomUUID().toString();
+                    final String target = ps.getUniqueId().toString();
+                    p.setString(1, mailID);
+                    p.setString(2, mailDate.getState());
+                    p.setString(3, mailDate.getName());
+                    p.setString(4, sender);
+                    p.setString(5, target);
+                    p.setString(6, mailDate.getTitle());
+                    p.setString(7, mailDate.getText());
+                    p.setString(8, mailDate.getAdditional());
+                    if (mailDate.getItemStacks() != null) {
+                        items = StreamSerializer.serializeItemStacks(mailDate.getItemStacks());
+                    }
+                    p.setString(9, items);
+                    if (mailDate.getCommand() != null) {
+                        command = Joiner.on(",").join(mailDate.getCommand());
+                    }
+                    p.setString(10, command);
+
+                    p.setString(11, mailDate.getSenderTime());
+                    p.setString(12, mailDate.getGetTime());
+                    if (ps.isOnline()) {
+                        MailManage.addTargetCache(ps.getUniqueId(), MailManage.buildMailClass(
+                                mailID, mailDate.getName(), mailDate.getTitle(), mailDate.getText(), sender, target, mailDate.getState(),
+                                mailDate.getAdditional(), mailDate.getSenderTime(), mailDate.getGetTime(), items, command
+                        ));
+                        MailManage.INSTANCE.sendMailMessage( mailDate.getTitle(),  mailDate.getText(), null, ps.getPlayer());
+                    }
+                    p.addBatch();
+                }
+                p.executeBatch();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

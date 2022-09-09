@@ -2,7 +2,6 @@ package me.geek.mail.modules
 
 import com.google.common.base.Joiner
 import me.geek.mail.GeekMail
-import me.geek.mail.api.utils.ChineseMaterial
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.menu.Menu
@@ -37,6 +36,7 @@ class Mail_Item(
     override var itemStacks: Array<ItemStack>?,
     override val senderTime: String,
     override var getTime: String,
+    override val permission: String = "mail.exp.items",
 
     ) : MailSub() {
 
@@ -156,7 +156,7 @@ class Mail_Item(
                     if (meta.hasDisplayName()) {
                         lore.add(meta.displayName + " §7* §f" + Stack.amount)
                     } else {
-                        val manes = ChineseMaterial.translate(Stack.type)
+                        val manes = GeekMail.Materials.translate(Stack.type)
                         if (manes != "null") {
                             lore.add(manes + " §7* §f" + Stack.amount)
                         } else {
@@ -170,5 +170,8 @@ class Mail_Item(
             lore.add("§7剩余 §6$index §7项未显示...")
         }
         return Joiner.on(", §f").join(lore)
+    }
+    override fun condition(player: Player, appendix: String): Boolean {
+        return true
     }
 }

@@ -5,8 +5,9 @@ import me.geek.mail.GeekMail.instance
 import me.geek.mail.GeekMail.say
 import me.geek.mail.common.template.Sub.Temp
 import me.geek.mail.GeekMail
-import me.geek.mail.api.utils.HexUtils
+import me.geek.mail.utils.HexUtils
 import me.geek.mail.common.template.Sub.TempPack
+import me.geek.mail.utils.colorify
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.inventory.ItemStack
@@ -47,8 +48,8 @@ object Template {
                 condition = var1.getString("Template.Require.condition", "false")!!
                 action = var1.getString("Template.Require.action", "null")!!.replace("&", "§")
                 deny = var1.getString("Template.Require.deny", "null")!!.replace("&", "§")
-                title = HexUtils.colorify(var1.getString("Template.package.title")!!)
-                text = HexUtils.colorify(var1.getString("Template.package.text")!!.replace("\n", ""))
+                title = var1.getString("Template.package.title")!!.colorify()
+                text = var1.getString("Template.package.text")!!.colorify().replace("\n", "")
                 type = var1.getString("Template.package.type")!!.uppercase(Locale.ROOT)
                 additional = var1.getString("Template.package.appendix.additional", "0")!!
                 items = null

@@ -1,4 +1,4 @@
-package me.geek.mail.api.utils
+package me.geek.mail.utils
 
 import me.geek.mail.GeekMail.BukkitVersion
 import net.md_5.bungee.api.ChatColor
@@ -70,7 +70,6 @@ object HexUtils {
      * @param message The message
      * @return A color-replaced message
      */
-    @JvmStatic
     fun colorify(message: String): String {
         var parsed = message
         parsed = parseRainbow(parsed)
@@ -426,3 +425,4 @@ object HexUtils {
 
 fun String.parseRainbow() = HexUtils.parseRainbow(this)
 fun String.parseGradients() = HexUtils.parseGradients(this)
+fun String.colorify() = HexUtils.colorify(this)

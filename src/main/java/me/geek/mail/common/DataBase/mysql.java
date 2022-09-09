@@ -66,7 +66,8 @@ public class mysql extends DataSub{
                         " `commands` longtext NOT NULL, " +
                         " `sendertime` BIGINT(20) NOT NULL, " +
                         " `gettime` BIGINT(20) NOT NULL, " +
-                        " PRIMARY KEY (`id`))ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+                        " PRIMARY KEY (`id`)," +
+                        " INDEX(`target`))ENGINE=InnoDB DEFAULT CHARSET=utf8;");
             }
         } catch (SQLException e) {
             e.printStackTrace();

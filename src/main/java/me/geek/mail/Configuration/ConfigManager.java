@@ -3,6 +3,7 @@ package me.geek.mail.Configuration;
 
 
 import me.geek.mail.GeekMail;
+import me.geek.mail.api.mail.MailManage;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -20,6 +21,7 @@ public final class ConfigManager {
         return yml;
     }
     public static void Load() {
+
         plugin.saveDefaultConfig();
         FileConfiguration config = YamlConfiguration.loadConfiguration(yml);
 

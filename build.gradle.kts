@@ -1,7 +1,7 @@
 
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.6.21"
+    id("org.jetbrains.kotlin.jvm") version "1.7.10"
     id("io.izzel.taboolib") version "1.42"
 }
 
@@ -32,8 +32,9 @@ taboolib {
 
     relocate("me.geek.mail", group.toString())
     relocate("com.zaxxer.hikari", "com.zaxxer.hikari_4_0_3_mail")
+    relocate("javax.mail", "javax.mail_1_5_0_mail")
     classifier = null
-    version = "6.0.9-57"
+    version = "6.0.9-81"
 }
 
 repositories {
@@ -59,6 +60,9 @@ dependencies {
     compileOnly("ink.ptms.core:v11701:11701-minimize:mapped")
     compileOnly("ink.ptms.core:v11701:11701-minimize:universal")
     compileOnly("ink.ptms.core:v11604:11604")
+  //  compileOnly("javax.mail:mail:1.6.2")
+
+    //compileOnly("com.sun.mailjavax.mail:1.6.2")
 
     // Hook Plugins
     compileOnly("me.clip:placeholderapi:2.10.9") { isTransitive = false }

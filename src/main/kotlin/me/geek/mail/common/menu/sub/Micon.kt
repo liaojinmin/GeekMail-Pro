@@ -1,6 +1,6 @@
 package me.geek.mail.common.menu.sub
 
-import me.geek.mail.api.utils.HexUtils
+import me.geek.mail.utils.colorify
 import taboolib.library.configuration.ConfigurationSection
 import java.util.*
 
@@ -22,7 +22,7 @@ class Micon(
         IconType.valueOf(obj.getString("Type", "NORMAL")!!.uppercase(Locale.ROOT)),
         obj.getString("display.mats","PAPER")!!,
         obj.getInt("display.data",0),
-        HexUtils.colorify(obj.getString("display.name", " ")!!),
-        HexUtils.colorify(obj.getStringList("display.lore").joinToString()).split(", "),
+        obj.getString("display.name", " ")!!.colorify(),
+        obj.getStringList("display.lore").joinToString().colorify().split(", "),
     )
 }

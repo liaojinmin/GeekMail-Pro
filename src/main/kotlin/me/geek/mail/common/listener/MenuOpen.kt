@@ -1,7 +1,7 @@
 package me.geek.mail.common.listener
 
-import me.geek.mail.common.menu.MAction
 import me.geek.mail.common.menu.Menu
+import me.geek.mail.common.menu.Menu.openMenu
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
@@ -15,8 +15,7 @@ object MenuOpen {
         if (message.isNotBlank()) {
             Menu.getMenuCommand(message)?.let {
                 e.isCancelled = true
-                val player = e.player
-                MAction(player, Menu.getSession(it), Menu.Build(player, it))
+                e.player.openMenu(it)
             }
         }
     }

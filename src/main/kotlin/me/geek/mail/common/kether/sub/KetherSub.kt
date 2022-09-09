@@ -1,4 +1,4 @@
-package me.geek.mail.common.Kether.sub
+package me.geek.mail.common.kether.sub
 
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player

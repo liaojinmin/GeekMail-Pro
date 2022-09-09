@@ -1,17 +1,16 @@
 package me.geek.mail.api.mail
 
 
-import me.geek.mail.GeekMail.debug
-
 import me.geek.mail.GeekMail.say
+import me.geek.mail.common.serialize.base64.StreamSerializer
+import me.geek.mail.common.webmail.WebManager
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import org.jetbrains.annotations.NotNull
 import taboolib.common.platform.function.adaptPlayer
-import taboolib.common.platform.function.console
 import taboolib.library.reflex.Reflex.Companion.invokeConstructor
 import taboolib.library.xseries.XSound
 import taboolib.module.lang.sendLang
-import taboolib.platform.util.asLangText
 import java.lang.IllegalArgumentException
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -22,20 +21,33 @@ import kotlin.collections.HashMap
  * 时间: 2022/7/29d
  */
 object MailManage {
+
     private val senderCache: MutableMap<UUID, MutableList<MailSub>> = ConcurrentHashMap()
     private val targetCache: MutableMap<UUID, MutableList<MailSub>> = ConcurrentHashMap()
     private val MailData: MutableMap<String, MailSub> = HashMap()
+    val WebMail = WebManager()
 
+    /**
+     * @param mail 要注册的对象
+     */
     @JvmStatic
     fun register(@NotNull mail: MailSub) {
       MailData[mail.name] = mail
     }
+
+
     @JvmStatic
-    fun getMailData(mailType: String) : MailSub? =
-        MailData[mailType]
-    @JvmStatic
-    fun getMailDataMap(): MutableMap<String, MailSub> {
-        return MailData
+    fun buildMail(
+        @NotNull mailType: String, @NotNull title: String, @NotNull text: String,
+        @NotNull senderUuid: UUID, @NotNull targetUuid: UUID, additional: String, cmd: String, item: Array<ItemStack>?): MailSub? {
+         if (MailData.containsKey(mailType)) {
+             val senderTime = System.currentTimeMillis().toString()
+             val getTime = "0"
+             val items = StreamSerializer.serializeItemStacks(item)
+             val args = arrayOf(UUID.randomUUID(), title, text, senderUuid, targetUuid, "未提取", additional, senderTime, getTime, items, cmd)
+             return MailData[mailType]?.javaClass?.invokeConstructor(args)
+         }
+        return null
     }
 
     /**
@@ -58,6 +70,16 @@ object MailManage {
         val args = arrayOf(mailID, title, text, sender, target, state, additional, senderTime, getTime, item, cmd)
         return MailData[mailType]?.javaClass?.invokeConstructor(args)
     }
+
+
+
+    fun getMailData(mailType: String) : MailSub? =
+        MailData[mailType]
+
+    fun getMailDataMap(): MutableMap<String, MailSub> {
+        return MailData
+    }
+
     /**
      * 此方法会先判断缓存中是否存在对应 目标UID 的数据 再进行存入
      *
@@ -88,19 +110,13 @@ object MailManage {
     @JvmStatic
     fun addTargetCache(targetUuid: UUID, mail: MailSub) {
         if (targetCache.containsKey(targetUuid)) {
-            debug("addTargetCache-已存在缓存-UUID: " + targetUuid + " 邮件ID：" + mail.mailID)
             targetCache.forEach { (key: UUID, value: MutableList<MailSub>) ->
-                if (key == targetUuid) {
-                    value.add(mail)
-                    debug("addTargetCache-已存在缓存.新增-UUID: " + targetUuid + " 邮件ID：" + mail.mailID)
-                }
+                if (key == targetUuid) { value.add(mail) }
             }
         } else {
-            debug("addTargetCache-不在缓存-UUID: " + targetUuid + " 邮件ID：" + mail.mailID)
             val mail1: MutableList<MailSub> = ArrayList()
             mail1.add(mail)
             targetCache[targetUuid] = mail1
-            debug("addTargetCache-不在缓存.新增-UUID: " + targetUuid + " 邮件ID：" + mail.mailID)
         }
     }
 
@@ -137,12 +153,11 @@ object MailManage {
         return targetCache.containsKey(uuid)
     }
 
-    @JvmStatic
     fun sendMailMessage(title: String, text: String, vararg player: Player?) {
         // 0 发送者  1 接收者
         try {
-            player[0]?.let{
-                adaptPlayer(it).sendLang("玩家-发送邮件", player[1]!!.name)
+            player[0]?.let{ v1 ->
+                adaptPlayer(v1).sendLang("玩家-发送邮件", player[1]!!.name)
             }
             player[1]?.let { v ->
                 adaptPlayer(v).sendLang("玩家-接收邮件", title)

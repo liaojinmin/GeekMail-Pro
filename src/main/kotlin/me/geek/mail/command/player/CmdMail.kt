@@ -3,13 +3,19 @@ package me.geek.mail.command.player
 
 
 import com.google.common.base.Joiner
+import me.geek.mail.Configuration.ConfigManager
+import me.geek.mail.GeekMail
 import me.geek.mail.command.CmdExp
 import me.geek.mail.api.mail.MailManage
+import me.geek.mail.utils.colorify
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.subCommand
+import taboolib.common.platform.function.console
 import taboolib.library.reflex.Reflex.Companion.invokeConstructor
+import taboolib.library.reflex.Reflex.Companion.invokeMethod
+import taboolib.platform.util.sendLang
 import java.util.*
 
 
@@ -40,26 +46,24 @@ object CmdMail: CmdExp {
                             listOf("[邮件内容]")
                         }
                         execute<Player> { sender, context, _ ->
-                            val value = Joiner.on(",").join(context.args()).replace("&", "§").split(",")
-                            val type = value[1]
-                            val uuid: UUID = sender.uniqueId
-                            val target = Bukkit.getOfflinePlayer(value[2]).uniqueId
-
-                            val all = value[4].split(" ")
-                            val vars = if (all.size >= 2) all[1] else "0"
-                            val title = value[3]
-                            val text = all[0]
-                            MailManage.getMailData(type)?.javaClass?.invokeConstructor(
-                                UUID.randomUUID(),
-                                title,
-                                text,
-                                uuid,
-                                target,
-                                "未提取",
-                                vars,
-                                null
-                            )?.sendMail()
-
+                            val mailType = context.args()[2]
+                            val title = context.args()[3].colorify()
+                            val args = context.args()[4].colorify().split(" ", limit = 2)
+                            val target = Bukkit.getOfflinePlayer(context.args()[1])
+                            val senders = sender.uniqueId
+                            MailManage.getMailData(mailType)?.let {
+                               if (sender.hasPermission(it.permission)) {
+                                   val pack = try {
+                                       arrayOf(UUID.randomUUID().toString(), title, args[0], senders.toString(), target.uniqueId.toString(), "未提取", args[1], System.currentTimeMillis().toString(), "0")
+                                   } catch (e: IndexOutOfBoundsException) {
+                                       arrayOf(UUID.randomUUID().toString(), title, args[0], senders.toString(), target.uniqueId.toString(), "未提取", "0", System.currentTimeMillis().toString(), "0")
+                                   }
+                                   if (it.condition(sender, pack[6])) it.javaClass.invokeConstructor(pack).sendMail()
+                                } else {
+                                   sender.sendLang("玩家-没有权限-发送邮件")
+                                   GeekMail.say("&4玩家 &f${sender.name} &4执行命令缺少权限&f ${it.permission}")
+                               }
+                            }
                         }
                     }
                 }

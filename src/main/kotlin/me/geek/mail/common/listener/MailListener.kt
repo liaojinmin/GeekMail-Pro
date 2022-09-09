@@ -27,11 +27,11 @@ object MailListener {
     fun onJoin(e: PlayerJoinEvent) {
         Bukkit.getScheduler().scheduleAsyncDelayedTask(GeekMail.instance) {
             val player = e.player
-            val m = DataManage.selectTarget(player.uniqueId)
-            if (m != null) {
-                MailManage.upTargetCache(player.uniqueId, m)
+            val list = DataManage.selectTarget(player.uniqueId)
+            if (list != null) {
+                MailManage.upTargetCache(player.uniqueId, list)
                 var amt = 0
-                m.forEach { mail ->
+                list.forEach { mail ->
                     if (mail.state == "未提取") amt++
                 }
                 if (amt != 0) {

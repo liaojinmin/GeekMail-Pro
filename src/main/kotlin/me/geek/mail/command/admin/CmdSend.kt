@@ -3,6 +3,7 @@ package me.geek.mail.command.admin
 import me.geek.mail.command.CmdExp
 import me.geek.mail.Configuration.ConfigManager
 import me.geek.mail.api.mail.MailManage
+import me.geek.mail.utils.colorify
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -37,8 +38,8 @@ object CmdSend: CmdExp {
                         }
                         execute<CommandSender> { sender, context, _ ->
                             val mailType = context.args()[2]
-                            val title = context.args()[3].replace("&", "§")
-                            val args = context.args()[4].replace("&", "§").split(" ", limit = 2)
+                            val title = context.args()[3].colorify()
+                            val args = context.args()[4].colorify().split(" ", limit = 2)
                             val target = Bukkit.getOfflinePlayer(context.args()[1])
                             val senders = if (sender is Player) sender.uniqueId else ConfigManager.Console
                             val pack = try {
