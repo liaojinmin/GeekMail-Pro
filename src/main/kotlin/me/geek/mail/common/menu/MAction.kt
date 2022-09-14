@@ -1,17 +1,16 @@
 package me.geek.mail.common.menu
 
 import com.google.common.base.Joiner
-import me.geek.mail.Configuration.ConfigManager
 import me.geek.mail.GeekMail
+import me.geek.mail.GeekMail.DataManage
 import me.geek.mail.GeekMail.say
-import me.geek.mail.common.DataBase.DataManage
 
 import me.geek.mail.common.menu.sub.IconType.*
 import me.geek.mail.api.mail.MailManage
-import me.geek.mail.utils.HexUtils
 import me.geek.mail.api.mail.MailSub
-import me.geek.mail.utils.Expiry
+import me.geek.mail.common.catcher.Chat
 import me.geek.mail.common.menu.sub.Session
+import me.geek.mail.modules.settings.SetTings
 import me.geek.mail.utils.colorify
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -27,7 +26,6 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.adaptPlayer
-import taboolib.common.platform.function.console
 import taboolib.module.lang.sendLang
 import java.util.*
 
@@ -66,9 +64,7 @@ class MAction(
     private fun action() {
         Menu.isOpen.add(player)
         GeekMail.debug("为玩家: ${player.uniqueId} 打开UI")
-        if (mail.isNotEmpty()) {
-            Build()
-        }
+        Build()
         if (contents.size != 0) {
             inv.contents = contents[0]
         }
@@ -130,8 +126,9 @@ class MAction(
                                         }
                                         return
                                     }
-                                    BACK -> {
-                                     //   say("SEND 点击了发送")
+                                    BIND -> {
+                                        Chat(player).start()
+                                        player.closeInventory()
                                         return
                                     }
                                     TEXT -> {
@@ -166,6 +163,7 @@ class MAction(
 
             @EventHandler
             fun onClose(e: InventoryCloseEvent) {
+                GeekMail.debug("关闭界面")
                 player.updateInventory()
                 if (player === e.player) {
                     HandlerList.unregisterAll(this)
@@ -221,7 +219,8 @@ class MAction(
                         contents[page] = itemStacks
 
                         // 异步更新数据库
-                        Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin) { DataManage.update(mail) }
+                        Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin) {
+                            DataManage.update(mail) }
 
                         poxPlayer.sendLang("玩家-领取附件-成功", mail.appendixInfo)
 
@@ -294,6 +293,23 @@ class MAction(
         val layout = tag.stringLayout
         var index = layout.indexOf("M")
         val end = layout.lastIndexOf("M")
+
+        icon.forEach {
+            if (it.type == BIND) {
+                val info = layout.indexOf(it.icon)
+                item[info].apply {
+                    val meta = itemMeta
+                    if (meta != null) {
+                        meta.lore = listOf(
+                            *Joiner.on(",").join(it.lore).replace("[mail_Info]", DataManage.getMailPlayerData(player.uniqueId)!!.mail).split(",").toTypedArray()
+                        )
+                    }
+                    itemMeta = meta
+                }
+            }
+        }
+        if (mail.isEmpty()) return
+
         if (index != -1 && end != -1) {
             for (mail1 in mail) {
                 if (index <= end) {
@@ -309,8 +325,10 @@ class MAction(
                     }
                 } else {
                     contents.add(item)
-                    index = layout.indexOf("M")
                     item = inv.contents
+                    index = layout.indexOf("M")
+                    item[index] = mailItem(index, mail1)
+                    index++
                 }
             }
             contents.add(item)
@@ -334,13 +352,13 @@ class MAction(
                 val itemMeta = itemStack.itemMeta
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(name.replace("[title]", mail.title).colorify())
-                    lore = if (mail.sender == ConfigManager.Console) {
+                    lore = if (mail.sender == SetTings.Console) {
                         val var100 = "系统"
                         listOf(
                             *Joiner.on(",").join(lore).replace("[type]", mail.mailType)
                                 .replace("[sender]", var100)
-                                .replace("[senderTime]", Expiry.getExpiryFoData(mail.senderTime.toLong()))
-                                .replace("[getTime]", Expiry.getExpiryFoData(mail.getTime.toLong()))
+                                .replace("[senderTime]", GeekMail.expiry.getExpiryFoData(mail.senderTime.toLong()))
+                                .replace("[getTime]", GeekMail.expiry.getExpiryFoData(mail.getTime.toLong()))
                                 .replace("[text]", mail.text.replace(";",","))
                                 .replace("[state]", mail.state)
                                 .replace("[item]", mail.appendixInfo).colorify().split(",").toTypedArray()
@@ -350,8 +368,8 @@ class MAction(
                         listOf(
                             *Joiner.on(",").join(lore).replace("[type]", mail.mailType)
                                 .replace("[sender]", var100!!)
-                                .replace("[senderTime]", Expiry.getExpiryFoData(mail.senderTime.toLong()))
-                                .replace("[getTime]", Expiry.getExpiryFoData(mail.getTime.toLong()))
+                                .replace("[senderTime]", GeekMail.expiry.getExpiryFoData(mail.senderTime.toLong()))
+                                .replace("[getTime]", GeekMail.expiry.getExpiryFoData(mail.getTime.toLong()))
                                 .replace("[text]", mail.text.replace(";",","))
                                 .replace("[state]", mail.state)
                                 .replace("[item]", mail.appendixInfo).colorify().split(",").toTypedArray()

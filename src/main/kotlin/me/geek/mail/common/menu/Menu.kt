@@ -109,7 +109,7 @@ object Menu {
                 cmd = bindings
             }
         }.also {
-            GeekMail.say("§7菜单界面加载完成 §8(耗时$it ms)");
+            GeekMail.say("§7菜单界面加载完成... §8(耗时 $it ms)");
         }
     }
 

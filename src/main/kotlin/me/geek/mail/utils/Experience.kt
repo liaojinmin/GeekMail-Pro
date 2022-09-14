@@ -8,7 +8,7 @@ import kotlin.math.roundToInt
  * 作者: 老廖
  * 时间: 2022/8/21
  */
-object Experience {
+class Experience {
     /**
      * 扣除玩家指定的经验值
      * @param player 目标玩家
@@ -20,6 +20,9 @@ object Experience {
         player.exp = 0.0f
         player.totalExperience = 0
         player.giveExp(exp2 - exp)
+        if (!player.isOnline){
+            player.saveData()
+        }
     }
 
     /**
@@ -33,6 +36,9 @@ object Experience {
         player.exp = 0.0f
         player.totalExperience = 0
         player.giveExp(exp2 + exp)
+        if (!player.isOnline){
+            player.saveData()
+        }
     }
     fun hasTotalExperience(player: Player, exp: Int, take: Boolean = false): Boolean {
         if (getTotalExperience(player) >= exp) {

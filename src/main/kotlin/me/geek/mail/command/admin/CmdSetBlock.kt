@@ -1,10 +1,9 @@
 package me.geek.mail.command.admin
 
 
-import me.geek.mail.Configuration.ConfigManager
 import me.geek.mail.command.CmdExp
 import me.geek.mail.GeekMail
-import me.geek.mail.api.mail.MailManage
+import me.geek.mail.modules.settings.SetTings
 
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
@@ -33,16 +32,17 @@ object CmdSetBlock : CmdExp {
                     if (e.player == sender) {
                         val loc = e.clickedBlock?.location
                         if (loc != null) {
-                            val world = loc.world
-                            val x = loc.blockX
-                            val y = loc.blockY
-                            val z = loc.blockZ
+                            val world = loc.world?.name
+                            val x = loc.x
+                            val y = loc.y
+                            val z = loc.z
                             val location = "$world,$x,$y,$z"
                             try {
-                                val data: FileConfiguration = YamlConfiguration.loadConfiguration(ConfigManager.getYml())
-                                data["Block"] = location
-                                data.save(ConfigManager.getYml())
-                                ConfigManager.location = location
+                                val data: FileConfiguration = YamlConfiguration.loadConfiguration(GeekMail.config.file!!)
+                                data["Block.loc"] = location
+                                data["Block.hd"] = listOf("&f邮件箱","&e右键点击 &7| &eLEFT CLICK")
+                                data.save(GeekMail.config.file!!)
+                                SetTings.location = loc
                             } catch (e: IOException) {
                                 e.printStackTrace()
                             }

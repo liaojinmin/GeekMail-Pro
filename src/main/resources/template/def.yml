@@ -2,7 +2,7 @@ Template:
   # 模板唯一展示ID
   ID: "金币大礼包"
   Require:
-    # 发送该邮件前判断条件 需要扣除玩家 100 点券
+    # 发送该邮件前判断条件 需要扣除玩家 1000 点券
     condition: 'Points hasTake *1000'
     # 条件通过 发送 Kether Tell 消息
     action: |-
@@ -30,8 +30,10 @@ Template:
     appendix:
       additional: 10000 # 附件参数 数字类型 如果不是数字类邮件类型请设置为 0
       items:
-       # - 'MC:PAPER' # 原版物品
+       # - 'material:PAPER,name:&f白纸的名字(可选),lore:&b&l这是一张白纸(可选)' # 原版物品
+
        # - 'IA:custom_items' # ItemsAdder物品
       command:
+
        # - 'say 执行了一个服务器消息' #执行的指令
 

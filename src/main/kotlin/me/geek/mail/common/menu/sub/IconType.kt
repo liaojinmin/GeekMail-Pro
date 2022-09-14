@@ -7,7 +7,7 @@ import java.util.*
  * 时间: 2022/7/23
  */
 enum class IconType {
-    TEXT, DELETE, BACK, LAST_PAGE, NEXT_PAGE, NORMAL;
+    TEXT, DELETE, BIND, LAST_PAGE, NEXT_PAGE, NORMAL;
 
 
     open fun getIconType(type: String?): IconType {
@@ -15,7 +15,7 @@ enum class IconType {
             when (type.uppercase(Locale.ROOT)) {
                 "TEXT" -> return TEXT
                 "DELETE" -> return DELETE
-                "SEND" -> return BACK
+                "BIND" -> return BIND
                 "LAST_PAGE" -> return LAST_PAGE
                 "NEXT_PAGE" -> return NEXT_PAGE
             }

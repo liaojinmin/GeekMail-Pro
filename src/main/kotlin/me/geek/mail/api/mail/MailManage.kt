@@ -1,9 +1,11 @@
 package me.geek.mail.api.mail
 
 
+import me.geek.mail.GeekMail
 import me.geek.mail.GeekMail.say
 import me.geek.mail.common.serialize.base64.StreamSerializer
 import me.geek.mail.common.webmail.WebManager
+import me.geek.mail.modules.settings.SetTings
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.jetbrains.annotations.NotNull
@@ -25,7 +27,17 @@ object MailManage {
     private val senderCache: MutableMap<UUID, MutableList<MailSub>> = ConcurrentHashMap()
     private val targetCache: MutableMap<UUID, MutableList<MailSub>> = ConcurrentHashMap()
     private val MailData: MutableMap<String, MailSub> = HashMap()
-    val WebMail = WebManager()
+
+    private val WebMail = if (SetTings.SMTP_SET) { WebManager() } else null
+
+    /**
+     * 发送web邮件提醒
+     */
+    @JvmStatic
+    fun senderWebMail(title: String, text: String, additional: String, targetUuid: UUID) {
+        GeekMail.debug("&8准备发送Smtp邮件")
+        WebMail?.onSender(title, text, additional, targetUuid)
+    }
 
     /**
      * @param mail 要注册的对象
@@ -34,7 +46,6 @@ object MailManage {
     fun register(@NotNull mail: MailSub) {
       MailData[mail.name] = mail
     }
-
 
     @JvmStatic
     fun buildMail(
@@ -142,7 +153,7 @@ object MailManage {
     }
 
 
-    fun getTargetCache(uuid: UUID): MutableList<MailSub> {
+    fun getTargetCache(@NotNull uuid: UUID): MutableList<MailSub> {
         if (targetCache.containsKey(uuid)) {
             return ArrayList(targetCache[uuid]!!)
         }

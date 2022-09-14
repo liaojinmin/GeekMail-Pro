@@ -2,7 +2,7 @@ Template:
   # 模板唯一展示ID
   ID: "文本预设"
   Require:
-    # 发送该邮件前判断条件 需要扣除玩家 100 点券
+    # 发送该邮件前判断条件 需要扣除玩家 10 金币
     condition: 'Money hasTake *10'
     # 条件通过 发送 Kether Tell 消息
     action: |-

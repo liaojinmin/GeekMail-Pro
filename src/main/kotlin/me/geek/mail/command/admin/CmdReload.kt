@@ -1,9 +1,10 @@
 package me.geek.mail.command.admin
 
 import me.geek.mail.command.CmdExp
-import me.geek.mail.Configuration.ConfigManager
+import me.geek.mail.api.hook.hookPlugin
 import me.geek.mail.common.template.Template
 import me.geek.mail.common.menu.Menu
+import me.geek.mail.modules.settings.SetTings
 import org.bukkit.command.CommandSender
 import taboolib.common.platform.command.subCommand
 
@@ -16,9 +17,10 @@ object CmdReload: CmdExp {
     override val command = subCommand {
         execute<CommandSender> { _, _, _ ->
             Menu.closeGui()
-            ConfigManager.Load()
+            SetTings.onLoad()
             Template.onLoad()
             Menu.onReload()
+            hookPlugin.display()
         }
     }
 }

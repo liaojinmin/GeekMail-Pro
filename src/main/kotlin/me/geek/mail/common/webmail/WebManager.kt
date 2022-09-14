@@ -2,11 +2,14 @@ package me.geek.mail.common.webmail
 
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.event.MailSenderEvent
+import me.geek.mail.api.mail.event.WebMailSenderEvent
+import me.geek.mail.common.data.sub.MailPlayerData
 import me.geek.mail.common.webmail.sub.SubWebMail
 import org.bukkit.Bukkit
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.submitAsync
+import java.util.*
 import javax.mail.*
 import javax.mail.internet.InternetAddress
 
@@ -24,16 +27,12 @@ class WebManager : SubWebMail() {
 						<div style="margin-bottom: 20px;">
 							<img style="margin-top: 20px; width: 250px; height: 60px;" src="https://web-1301331373.cos.ap-guangzhou.myqcloud.com/%E9%82%AE%E4%BB%B6logo.png" height="50" border="0"></a>
 						</div>
-		
 						<div>
 							<div style="font-size: 20px; color: #F0FFFF; margin-top: 32px;">玩家名称：{name} </div>
 						</div>
 					</div>
-
 					<div style="background: #ffffff; padding: 0 15px; padding-bottom: 50px; margin-top: 18px;">
-			
 						<br/>
-						
 						<div>
 							<h3>内容信息:</h3>
 							<table style="width: 100%; border-collapse: collapse; border:none;">
@@ -93,14 +92,33 @@ class WebManager : SubWebMail() {
 			</div>
 		</div>"""
 
-    override fun onSender(title: String, text: String, app: String, name: String) {
+    override fun onSender(title: String, text: String, app: String, targetID: UUID){
         submitAsync {
+            var to = ""
+            var name = ""
+            val data = GeekMail.DataManage.getMailPlayerData(targetID)
+            if (data != null) {
+                to = data.mail
+                name = data.name
+            } else GeekMail.DataManage.selectPlayerBindMail(targetID)?.let {
+                    name = it[0]
+                    to = it[1]
+                }
+            if (to.isEmpty() || name.isEmpty()) {
+                GeekMail.debug("目标玩家: $name 邮箱为空: $to")
+                return@submitAsync
+            }
+
+            val event = WebMailSenderEvent(to, title, text, app, name)
+            event.call()
+            if (event.isCancelled) return@submitAsync
+
             var apps = Regex("""§([0-9]+)§?""").replace(app, "")
             apps = Regex("""§([a-zA-Z]+)§?""").replace(apps, "")
-            val to = "1349517404@qq.com"
             val out = html.replace("{name}", name).replace("{title}", title).replace("{text}", text).replace("{app}", Regex("""&([a-zA-Z]+)&?""").replace(apps, ""))
             htmlMessage.setRecipient(Message.RecipientType.TO, InternetAddress(to))
             htmlMessage.setContent(out, "text/html;charset=gb2312")
+            GeekMail.debug("发送Web邮件提醒,目标玩家: $name")
             Transport.send(htmlMessage)
         }
     }

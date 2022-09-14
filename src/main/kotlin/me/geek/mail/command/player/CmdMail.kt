@@ -2,8 +2,6 @@ package me.geek.mail.command.player
 
 
 
-import com.google.common.base.Joiner
-import me.geek.mail.Configuration.ConfigManager
 import me.geek.mail.GeekMail
 import me.geek.mail.command.CmdExp
 import me.geek.mail.api.mail.MailManage
@@ -12,9 +10,7 @@ import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.subCommand
-import taboolib.common.platform.function.console
 import taboolib.library.reflex.Reflex.Companion.invokeConstructor
-import taboolib.library.reflex.Reflex.Companion.invokeMethod
 import taboolib.platform.util.sendLang
 import java.util.*
 
@@ -29,13 +25,13 @@ import java.util.*
 object CmdMail: CmdExp {
     override val command = subCommand {
 
-        dynamic("邮件种类") {
+        dynamic("目标玩家") {
             suggestion<CommandSender> { _, _ ->
-                MailManage.getMailDataMap().keys.map { it }
+                Bukkit.getOfflinePlayers().map { it.name ?: "null" }
             }
-            dynamic("目标玩家") {
+            dynamic("邮件种类") {
                 suggestion<CommandSender> { _, _ ->
-                    Bukkit.getOnlinePlayers().map { it.name }
+                    MailManage.getMailDataMap().keys.map { it }
                 }
                 dynamic("标题") {
                     suggestion<CommandSender>(uncheck = true) { _, _ ->

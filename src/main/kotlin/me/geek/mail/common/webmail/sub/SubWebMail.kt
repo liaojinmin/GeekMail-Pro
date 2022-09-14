@@ -1,6 +1,8 @@
 package me.geek.mail.common.webmail.sub
 
 
+import me.geek.mail.GeekMail
+import me.geek.mail.modules.settings.SetTings
 import java.util.*
 import javax.mail.Authenticator
 import javax.mail.PasswordAuthentication
@@ -14,28 +16,28 @@ import javax.mail.internet.MimeMessage
  *
  **/
 abstract class SubWebMail {
-    private val account = "hsdserver@163.com"
-    private val password = "JRKHOKSYAPSOUHOS"
-    private val personal = "GeekMail-高级邮件系统"
-    private val subjects = "GeekMail-收件提醒"
+    private val account = GeekMail.config.getString("SmtpSet.account")
+    private val password = GeekMail.config.getString("SmtpSet.password")  // "JRKHOKSYAPSOUHOS"
+    private val personal = GeekMail.config.getString("SmtpSet.personal")
+    private val subjects = GeekMail.config.getString("SmtpSet.subjects")
     private val props = mapOf(
         "mail.smtp.auth" to "true",
-        "mail.smtp.host" to "smtp.163.com",
-        "mail.smtp.port" to "25",
+        "mail.smtp.host" to GeekMail.config.getString("SmtpSet.host"),
+        "mail.smtp.port" to GeekMail.config.getString("SmtpSet.port"),
         "mail.transport.protocol" to "smtp"
     )
     private val properties = Properties().apply { putAll(props) }
-    private var authenticator: Authenticator = object : Authenticator() {
+    private val authenticator: Authenticator = object : Authenticator() {
         override fun getPasswordAuthentication(): PasswordAuthentication {
             return PasswordAuthentication(account, password)
         }
     }
-    private var mailSession: Session = Session.getInstance(properties, authenticator)
+    private val mailSession: Session = Session.getInstance(properties, authenticator)
 
     val htmlMessage = MimeMessage(mailSession).apply {
         setFrom(InternetAddress(account, personal, "UTF-8"))
         subject = subjects
     }
 
-    abstract fun onSender(title: String, text: String, app: String, name: String)
+    abstract fun onSender(title: String, text: String, app: String, targetID: UUID)
 }

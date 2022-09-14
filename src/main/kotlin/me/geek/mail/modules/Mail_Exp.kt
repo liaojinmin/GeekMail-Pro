@@ -1,8 +1,8 @@
 package me.geek.mail.modules
 
-import me.geek.mail.Configuration.ConfigManager
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.kether.sub.KetherAPI
+import me.geek.mail.modules.settings.SetTings
 import java.util.UUID
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -49,8 +49,8 @@ class Mail_Exp(
         sender = UUID.fromString(args[3]),
         target = UUID.fromString(args[4]),
         state = args[5],
-        appendixInfo = "${args[6]}  ${ConfigManager.EXP_MAIL}",
-        additional = args[6],
+        appendixInfo = "${args[6].filter { it.isDigit() }}  ${SetTings.EXP_MAIL}",
+        additional = args[6].filter { it.isDigit() },
         senderTime = args[7],
         getTime = args[8]
     )
@@ -61,7 +61,7 @@ class Mail_Exp(
     }
 
     override fun condition(player: Player, appendix: String): Boolean {
-        val d = KetherAPI.instantKether(player, "Exp hasTake $appendix").any as Boolean
+        val d = KetherAPI.instantKether(player, "Exp hasTake ${appendix.filter { it.isDigit() }}").any as Boolean
         if (!d) player.sendMessage("[!] 你没有足够的经验值")
         return d
     }

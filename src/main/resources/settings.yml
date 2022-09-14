@@ -17,6 +17,15 @@ data_storage:
     maximum_lifetime: 1800000
     keepalive_time: 0
     connection_timeout: 5000
+SmtpSet:
+  start: false
+  account: '****r@163.com' # 发件账号
+  password: '*********' # smtp服务器授权码
+  personal: 'GeekMail-高级邮件系统' # 发件人信息
+  subjects: 'GeekMail-收件提醒' # 邮件标题
+  host: 'smtp.163.com' # smtp服务器
+  port: '25' # 端口
+
 
 # 邮件种类显示名称转换
 MailType:

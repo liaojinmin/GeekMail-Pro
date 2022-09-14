@@ -1,9 +1,9 @@
 package me.geek.mail.command.admin
 
-import me.geek.mail.Configuration.ConfigManager
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.command.CmdExp
 import me.geek.mail.common.template.Template
+import me.geek.mail.modules.settings.SetTings
 import org.bukkit.command.CommandSender
 import taboolib.common.platform.command.subCommand
 import taboolib.library.reflex.Reflex.Companion.invokeConstructor
@@ -23,12 +23,12 @@ object CmdSendGlobal: CmdExp {
                 suggestion<CommandSender> { _, _ ->
                     listOf("全局玩家")
                 }
-                execute<CommandSender> { sender, context, _ ->
+                execute<CommandSender> { _, context, _ ->
                     val pack = Template.getTempPack(context.args()[1])
 
                     MailManage.getMailData(pack.type)?.javaClass?.invokeConstructor(arrayOf(
-                        ConfigManager.Console.toString(), pack.title, pack.text,
-                        ConfigManager.Console.toString(), ConfigManager.Console.toString(), "未提取",
+                        SetTings.Console.toString(), pack.title, pack.text,
+                        SetTings.Console.toString(), SetTings.Console.toString(), "未提取",
                         pack.additional, System.currentTimeMillis().toString(), "0", pack.itemStacks, pack.command))
                         ?.sendGlobalMail()
                 }

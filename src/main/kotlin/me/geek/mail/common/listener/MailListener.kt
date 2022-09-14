@@ -4,18 +4,18 @@ package me.geek.mail.common.listener
 
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailManage
-import me.geek.mail.common.DataBase.DataManage
 import me.geek.mail.common.menu.MAction
 import me.geek.mail.common.menu.Menu
-import org.bukkit.Bukkit
-import org.bukkit.event.block.Action
+import me.geek.mail.modules.settings.SetTings
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.adaptPlayer
+import taboolib.common.platform.function.submitAsync
 import taboolib.module.lang.sendLang
+import taboolib.platform.util.isLeftClickBlock
 
 /**
  * 作者: 老廖
@@ -25,13 +25,14 @@ import taboolib.module.lang.sendLang
 object MailListener {
     @SubscribeEvent(priority = EventPriority.LOW, ignoreCancelled = true )
     fun onJoin(e: PlayerJoinEvent) {
-        Bukkit.getScheduler().scheduleAsyncDelayedTask(GeekMail.instance) {
+        submitAsync {
             val player = e.player
-            val list = DataManage.selectTarget(player.uniqueId)
-            if (list != null) {
-                MailManage.upTargetCache(player.uniqueId, list)
+            GeekMail.DataManage.selectPlayerData(player.uniqueId, player.name)
+            GeekMail.DataManage.selectPlayerMail(player.uniqueId).let {
+                MailManage.upTargetCache(player.uniqueId, it)
+                GeekMail.say(it.size.toString())
                 var amt = 0
-                list.forEach { mail ->
+                it.forEach { mail ->
                     if (mail.state == "未提取") amt++
                 }
                 if (amt != 0) {
@@ -44,25 +45,23 @@ object MailListener {
     @SubscribeEvent(priority = EventPriority.LOW, ignoreCancelled = true )
     fun onQuit(e: PlayerQuitEvent) {
         val player = e.player.uniqueId
-        if (MailManage.hasTargetCache(player)) {
-            MailManage.remTargetCache(player)
-        }
+        MailManage.remTargetCache(player)
+        GeekMail.DataManage.remMailPlayerData(player)
     }
 
 
     @SubscribeEvent(priority = EventPriority.LOW, ignoreCancelled = true )
     fun onInteract(e: PlayerInteractEvent) {
-        if (e.action == Action.RIGHT_CLICK_BLOCK || e.action == Action.LEFT_CLICK_BLOCK) {
-            val loc = e.clickedBlock?.location
-            if (loc != null) {
-                val world = loc.world
-                val x = loc.blockX
-                val y = loc.blockY
-                val z = loc.blockZ
-                if ("$world,$x,$y,$z" == me.geek.mail.Configuration.ConfigManager.location) {
-                    val player = e.player
-                    Menu.getMenuCommand(Menu.cmd!!)?.let {
-                        MAction(player, Menu.getSession(it), Menu.Build(player, it))
+        SetTings.location?.let {
+            if (e.isLeftClickBlock()) {
+                e.clickedBlock?.location?.let { v ->
+                    GeekMail.debug(v.toString())
+                    GeekMail.debug(it.toString())
+                    if (it == v) {
+                        Menu.getMenuCommand(Menu.cmd!!)?.let {
+                            val player = e.player
+                            MAction(player, Menu.getSession(it), Menu.Build(player, it))
+                        }
                     }
                 }
             }

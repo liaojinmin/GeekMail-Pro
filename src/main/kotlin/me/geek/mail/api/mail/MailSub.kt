@@ -1,9 +1,8 @@
 package me.geek.mail.api.mail
 
-import me.geek.mail.Configuration.ConfigManager
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.event.MailSenderEvent
-import me.geek.mail.common.DataBase.DataManage
+import me.geek.mail.modules.settings.SetTings
 import org.bukkit.Bukkit
 import java.util.*
 
@@ -24,7 +23,7 @@ abstract class MailSub : Mail {
         Bukkit.getScheduler().scheduleAsyncDelayedTask(GeekMail.instance) {
             val send = Bukkit.getPlayer(sender)
             val targets = Bukkit.getPlayer(target)
-            if (sender == ConfigManager.Console) {
+            if (sender == SetTings.Console) {
                 if (targets != null) {
                     MailManage.addTargetCache(target, this)
                 }
@@ -36,14 +35,14 @@ abstract class MailSub : Mail {
                     MailManage.addSenderCache(sender, this)
                 }
             }
-            MailManage.WebMail.onSender(title, text, appendixInfo,targets?.name ?: Bukkit.getOfflinePlayer(target).name ?: Bukkit.getOfflinePlayer(target).uniqueId.toString())
             MailManage.sendMailMessage(title, text, send, targets)
-            DataManage.insert(this)
+            GeekMail.DataManage.insertMailData(this)
         }
+        MailManage.senderWebMail(title, text, appendixInfo, target)
     }
 
     fun sendGlobalMail() {
         val player = Bukkit.getOfflinePlayers()
-        DataManage.insert(this, player)
+        GeekMail.DataManage.insert(this, player)
     }
 }

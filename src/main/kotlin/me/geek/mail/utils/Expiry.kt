@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat
  * 时间: 2022/5/21
  *
  **/
-object Expiry {
+class Expiry {
 
     private val format = SimpleDateFormat("yyyy年 MM月 dd日 HH:mm:ss")
     /**

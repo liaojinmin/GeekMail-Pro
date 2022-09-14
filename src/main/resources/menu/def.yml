@@ -7,7 +7,7 @@ Layout:
   - '#MMMMMMM#'
   - '#MMMMMMM#'
   - '#########'
-  - '< D F S > '
+  - '< D P S > '
 
 Bindings:
   Commands: '邮件'
@@ -35,7 +35,20 @@ Icons:
         - '&8[&f✧&8] &8[&B&lShift_点击&8] &7# 预览物品附件'
 
 
-
+  'P':
+    Type: BIND
+    display:
+      mats: SPECTRAL_ARROW
+      name: '&3# &b绑定真实邮箱'
+      lore:
+        - ' &7你的绑定: &f[mail_Info]'
+        - ''
+        - ' &7支持的邮箱:'
+        - ' &fQQ邮箱: &7xxxxx@qq.com'
+        - ' &f网易邮箱: &7xxxxx@163.com'
+        - ' &f谷歌邮箱: &7xxxxx@gmail.com'
+        - ''
+        - '&8[&f✧&8] &8[&B&l左键_点击&8] &7# 开始绑定'
   '<':
     Type: LAST_PAGE
     display:

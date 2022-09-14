@@ -27,6 +27,7 @@ taboolib {
             name("Vault").optional(true)
             name("PlayerPoints").optional(true)
             name("ItemsAdder").optional(true)
+            name("TrHologram").optional(true)
         }
     }
 
@@ -60,9 +61,6 @@ dependencies {
     compileOnly("ink.ptms.core:v11701:11701-minimize:mapped")
     compileOnly("ink.ptms.core:v11701:11701-minimize:universal")
     compileOnly("ink.ptms.core:v11604:11604")
-  //  compileOnly("javax.mail:mail:1.6.2")
-
-    //compileOnly("com.sun.mailjavax.mail:1.6.2")
 
     // Hook Plugins
     compileOnly("me.clip:placeholderapi:2.10.9") { isTransitive = false }

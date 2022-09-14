@@ -1,9 +1,9 @@
 package me.geek.mail.modules
 
-import me.geek.mail.Configuration.ConfigManager
 import me.geek.mail.api.hook.hookPlugin
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.kether.sub.KetherAPI
+import me.geek.mail.modules.settings.SetTings
 import org.bukkit.entity.Player
 import java.util.UUID
 
@@ -49,8 +49,8 @@ class Mail_Points(
         sender = UUID.fromString(args[3]),
         target = UUID.fromString(args[4]),
         state = args[5],
-        appendixInfo = "${args[6]} ${ConfigManager.POINTS_MAIL}",
-        additional = args[6],
+        appendixInfo = "${args[6].filter { it.isDigit() }} ${SetTings.POINTS_MAIL}",
+        additional = args[6].filter { it.isDigit() },
         senderTime = args[7],
         getTime = args[8]
     )
@@ -61,7 +61,7 @@ class Mail_Points(
     }
 
     override fun condition(player: Player, appendix: String): Boolean {
-        val d = KetherAPI.instantKether(player, "Points hasTake $appendix").any as Boolean
+        val d = KetherAPI.instantKether(player, "Points hasTake ${appendix.filter { it.isDigit() }}").any as Boolean
         if (!d) player.sendMessage("[!] 你没有足够的点券")
         return d
     }

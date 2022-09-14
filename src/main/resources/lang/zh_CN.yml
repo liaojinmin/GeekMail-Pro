@@ -53,7 +53,23 @@
       - hover: '§8点击查看'
         command: '/邮件'
 
-
+玩家-输入捕获:
+  - type: title
+    title: '&c&l请输入你的邮箱账号'
+    subtitle: '&7你有 &f20 &7秒的时间'
+    fadein: 20
+    fadeout: 20
+    stay: 40
+  - type: sound
+    sound: 'BLOCK_NOTE_BLOCK_HARP'
+    volume: 1
+    pitch: 1
+  - '&1'
+  - '&7&l  Geek&f&lMail &8>&7>&f>'
+  - '&l'
+  - '§A&l   ♻&7请输入要绑定的邮箱账号并以 &f回车键 &7结束'
+  - '§A&l   ♻&7取消输入 &fCancel &7结束'
+  - '&l'
 
 玩家-发送邮件-阻止: |-
   &l
