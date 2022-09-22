@@ -1,21 +1,18 @@
 ![alt](https://web-1301331373.cos.ap-guangzhou.myqcloud.com/docs/%E9%80%8Flogo.png)
 # 📬GeekMail-Pro  高级邮件系统 ^2.01^
-**地表超强邮件系统**，**多模块**，**高端实用**，**支持邮件模板**，覆盖你能想到的所有邮箱功能 💯
-**公开售价:** **158** 元人民币
-**购买联系:** QQ1349517404 (回应迅速)
-**爱发电购买:** [点击前往](https://afdian.net/item?plan_id=e9f2a7a0172511edabfd52540025c377) 
-**BUG及功能建议:** [点击前往](https://github.com/liaojinmin/GeekMailissue/issues)
+- **地表超强邮件系统**，**多模块**，**高端实用**，**支持邮件模板**，覆盖你能想到的所有邮箱功能 💯
+- **公开售价:** **158** 元人民币
+- **购买联系:** QQ1349517404 (回应迅速)
+- **爱发电购买:** [点击前往](https://afdian.net/item?plan_id=e9f2a7a0172511edabfd52540025c377) 
+- **BUG及功能建议:** [点击前往](https://github.com/liaojinmin/GeekMail-Pro/issues)
 
-🎉楠木星球成员、TrMenu总部星球成员，**免费**
-🎉参与插件测试的用户永久免费获得！！！
-🎉最新版本已适配 1.19.2 服务端
+- 🎉楠木星球成员、TrMenu总部星球成员，**免费**
+- 🎉参与插件测试的用户永久免费获得！！！
+- 🎉最新版本已适配 1.19.2 服务端
 
 <br/>
 
 ---
-
-<br/>
-
 ## 💽兼容性
 
 | 说明 | 作用 |
@@ -27,53 +24,36 @@
 <br/>
 
 ---
-
-<br/>
-
-## 💽付费版与免费版区别
-对于之前购买的用户依旧免费升级，并持续保证付费用户的权益
-<img src="https://web-1301331373.cos.ap-guangzhou.myqcloud.com/docs/%E9%82%AE%E4%BB%B6%E5%8A%9F%E8%83%BD%E5%AF%B9%E6%AF%94%E5%9B%BE%285%29.png" width="100%">
-
-
-
-<br/>
-
----
-
-<br/>
-
 ## 📒插件介绍
-* 📜基于 **Kotlin / Taboolib** 开发高端邮箱插件(史无前例)
-* ♻️邮件模板支持使用 **Kether** 脚本语言
-* 💾多种数据储存模式 **MYSQL / SQLITE**
-* ❇️超高自由度的 **GUI** 配置，你的邮件想怎么显示就怎么显示 (支持IA)
-* ❇️多种邮件类型，可实现礼包形式的系统邮件
-* ❇️可绑定方块定点打开邮件，支持一键发送模板邮件，发件是如此简单
-* ❇️可权限控制每种邮件的发送，玩家之间可互相邮寄物品等等....
-* ❇️支持使用任意消息互动 (全自定义消息种类)
-* ❇️支持使用 SMTP 服务 发送真实邮件通知玩家
-* ❇️支持 ItemsAdder
+- 📜基于 **Kotlin / Taboolib** 开发高端邮箱插件(史无前例)
+- ♻邮件模板支持使用 **Kether** 脚本语言
+- 💾多种数据储存模式 **MYSQL / SQLITE**
+-❇️超高自由度的 **GUI** 配置，你的邮件想怎么显示就怎么显示 (支持IA)
+-❇️多种邮件类型，可实现礼包形式的系统邮件
+-❇️可绑定方块定点打开邮件，支持一键发送模板邮件，发件是如此简单
+-❇️可权限控制每种邮件的发送，玩家之间可互相邮寄物品等等....
+-❇️支持使用任意消息互动 (全自定义消息种类)
+-❇️支持使用 SMTP 服务 发送真实邮件通知玩家
+-❇️支持 ItemsAdder
 <img src="https://web-1301331373.cos.ap-guangzhou.myqcloud.com/docs/%7BRF6T%40AH0Y6J%40JWP6PD%7B9%7D7.png" width="50%">
 
 <br/>
 
 ---
 
-<br/>
-
 ## ❗❗❗指令帮助
 **邮箱打开命令，请自行在菜单配置中设置**
+
 | 玩家命令 | 作用说明 |
 | :---------- | :---------- |
 | /gkm 或 /mail | 主命令 |
 | /gkm mail [邮件种类] [目标] [标题] [内容] [可选参数] | 发送一封指定种类的邮件 |
 | /gkm pack [邮件模板] [目标] | 发送配置模板中的邮件给目标玩家 |
 
-> **/gkm mail** 会检查玩家权限以及相应的发送物品需求！
-> **/gkm pack** 邮件模板则根据模板中的 **Kether** 条件语句运行判断 **(不支持控制台发送)**
-> 除纯 **文本邮件** 以外，其它邮件类型都需要扣除玩家自身的经济或者消耗品。
-> **物品类型** 邮件输入完必要参数后，将打开一个GUI，玩家放入需要发送的物品即可发送
-{.is-info}
+- **/gkm mail** 会检查玩家权限以及相应的发送物品需求！
+- **/gkm pack** 邮件模板则根据模板中的 **Kether** 条件语句运行判断 **(不支持控制台发送)**
+- 除纯 **文本邮件** 以外，其它邮件类型都需要扣除玩家自身的经济或者消耗品。
+- **物品类型** 邮件输入完必要参数后，将打开一个GUI，玩家放入需要发送的物品即可发送
 
 | 管理员命令 | 作用说明 |
 | :---------- | :---------- |
@@ -84,36 +64,35 @@
 | /gkm global [模板ID] [全局模式] | 为在线的所有玩家发送模板邮件 (不会运行**Kether**脚本) |
 
 > 管理员命令发送任何邮件都不会扣除需求，
-{.is-success}
 
 <br/>
-<br/>
+
+---
 
 ## 🎛️权限帮助
+
 | 权限 | 作用 |
 | :---------- | :---------- |
 | mail.command.pack | 发送模板邮件权限 |
 | mail.command.admin | 管理员权限 |
-> **权限问题:** 
+**权限问题:** 
 > 部分权限未列出，使用时，如果没权限后台会提示
-{.is-warning}
 
-> **内置邮件类型:** 
-> MAIL_MONEY = 金币邮件
-> MAIL_POINTS = 点券邮件
-> MIAL_EXP = 经验值邮件
-> MAIL_TEXT = 纯文本邮件
-> MAIL_ITEM = 物品包邮件
-> MAIL_CMD = 指令包邮件
-{.is-info}
+
+**内置邮件类型:** 
+- MAIL_MONEY = 金币邮件
+- MAIL_POINTS = 点券邮件
+- MIAL_EXP = 经验值邮件
+- MAIL_TEXT = 纯文本邮件
+- MAIL_ITEM = 物品包邮件
+- MAIL_CMD = 指令包邮件
 
 <br/>
 
 ---
 
 # 🔊如何设置 SMTP 服务?
-点击链接: https://g.pconline.com.cn/x/892/8926470.html
-随后在配置中设置必要信息
+点击链接: https://g.pconline.com.cn/x/892/8926470.html 随后在配置中设置必要信息
 ``` YML
 SmtpSet:
   start: false
@@ -124,7 +103,6 @@ SmtpSet:
   host: 'smtp.163.com' # smtp服务器
   port: '25' # 端口
 ```
-
 <br/>
 
 ---
@@ -223,14 +201,13 @@ Icons:
       data: 0
       name: '&b&l 挡板'
 ```
-> **图标种类:**
-> TEXT = 邮件展示
-> DELETE = 删除已读
-> LAST_PAGE = 上一页
-> NEXT_PAGE = 下一页
-> BIND = 绑定按钮
-> 其余任意字符代表装属，可以随意布局。
-{.is-success}
+**图标种类:**
+- TEXT = 邮件展示
+- DELETE = 删除已读
+- LAST_PAGE = 上一页
+- NEXT_PAGE = 下一页
+- BIND = 绑定按钮
+- 其余任意字符代表装属，可以随意布局。
 
 <br/>
 
@@ -238,7 +215,6 @@ Icons:
 
 # 🔊如何创建一个邮件模板？
 在 **plugins/GeekMail/template** 文件夹下新建任意名字的 **.yml** 配置
-
 ``` YAML
 Template:
   # 模板唯一展示ID
@@ -283,14 +259,13 @@ Template:
        # - 'say 执行了一个服务器消息' #执行的指令
 ```
 ## 模板物品特征
-> 材质; material
-> 名称: name
-> 描述: lore
-> 数量: amount
-> 损伤值: data
-> 模型数据: ModelData
-> >  material:PAPER,name:&f白纸的名字(可选),lore:&b&l这是一张白纸(可选)
-{.is-info}
+- 材质; material
+- 名称: name
+- 描述: lore
+- 数量: amount
+- 损伤值: data
+- 模型数据: ModelData
+> material:PAPER,name:&f白纸的名字(可选),lore:&b&l这是一张白纸(可选)
 
 | 内置Kether脚本 | 作用 |
 | :---------- | :---------- |
@@ -298,19 +273,15 @@ Template:
 | Points (give,take,has,hasTake) [action] | 关于点券的各种脚本 |
 | Exp (give,take,has,hasTake) [action] | 关于经验的各种脚本 |
 
-> **Money hasTake 100** 判断玩家是否拥有 100 金币，如果有扣除并返回 True
-> **Points hasTake 100** 判断玩家是否拥有 100 点券，如果有扣除并返回 True
-> **Exp hasTake 100** 判断玩家是否拥有 100 经验值，如果有扣除并返回 True
-{.is-success}
-
+- **Money hasTake 100** 判断玩家是否拥有 100 金币，如果有扣除并返回 True
+- **Points hasTake 100** 判断玩家是否拥有 100 点券，如果有扣除并返回 True
+- **Exp hasTake 100** 判断玩家是否拥有 100 经验值，如果有扣除并返回 True
 > 更多 **Kether** 脚本表达式  [点击前往](https://kether.tabooproject.org/list.html)
-{.is-info}
+
 
 <br/>
 
 ---
-
-<br/>
 
 # 🔊开发者API
 **package** me.Geek.GeekMail.api.mail
