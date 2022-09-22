@@ -13,7 +13,7 @@ import java.sql.Connection
  * 作者: 老廖
  * 时间: 2022/7/23
  */
-class sqlite : DataSub() {
+class Sqlite : DataSub() {
 
     private var SQLITE: HikariDataSource = HikariDataSource()
 

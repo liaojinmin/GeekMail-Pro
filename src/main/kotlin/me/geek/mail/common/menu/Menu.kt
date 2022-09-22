@@ -100,6 +100,7 @@ object Menu {
                     .replace(", ", "")
                 size = menu.getStringList("Layout").size * 9
                 bindings = menu.getString("Bindings.Commands")!!
+
                 menu.getMap<String, ConfigurationSection>("Icons").forEach { (name, obj) ->
                     icon.add(Micon(name, obj))
                 }

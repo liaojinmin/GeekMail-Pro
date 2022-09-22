@@ -3,14 +3,17 @@ package me.geek.mail.command
 
 
 import me.geek.mail.GeekMail
-import me.geek.mail.api.mail.MailManage
+
 import me.geek.mail.command.admin.*
 import me.geek.mail.command.player.*
-import me.geek.mail.common.webmail.WebManager
-import org.bukkit.Bukkit
-import org.bukkit.entity.Player
+
+import org.bukkit.command.CommandSender
+
 import taboolib.common.platform.command.*
-import taboolib.expansion.createHelper
+import taboolib.common.platform.function.adaptCommandSender
+
+import taboolib.module.chat.TellrawJson
+import taboolib.module.lang.sendLang
 
 @CommandHeader(name = "GeekMail", aliases = ["gkm"], permissionDefault = PermissionDefault.TRUE )
 object CmdCore {
@@ -38,14 +41,27 @@ object CmdCore {
 
     @CommandBody
     val main = mainCommand {
-        createHelper()
+        execute { sender, _, _ ->
+            createHelp(sender)
+        }
     }
 
-    @CommandBody(permission = "admin")
-    val test = subCommand {
-        dynamic("菜单名称") {
-            execute<Player> { _, _, _ ->
-            }
+    private fun createHelp(sender: CommandSender) {
+        val s = adaptCommandSender(sender)
+        s.sendMessage("")
+        TellrawJson()
+            .append("  ").append("§f§lGeekMail§8-§6Pro")
+            .hoverText("§7现代化高级邮件系统插件 By GeekCraft.ink")
+            .append(" ").append("§f${GeekMail.VERSION} §e付费版")
+            .hoverText("""
+                §7插件版本: §f${GeekMail.VERSION}
+            """.trimIndent()).sendTo(s)
+        s.sendMessage("")
+        s.sendMessage("  §7指令: §f/gkm §8[...]")
+        if (sender.hasPermission("mail.command.admin")) {
+            s.sendLang("CMD-HELP-ADMIN")
         }
+        s.sendLang("CMD-HELP-PLAYER")
+
     }
 }

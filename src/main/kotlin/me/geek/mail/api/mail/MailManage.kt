@@ -6,7 +6,10 @@ import me.geek.mail.GeekMail.say
 import me.geek.mail.common.serialize.base64.StreamSerializer
 import me.geek.mail.common.webmail.WebManager
 import me.geek.mail.modules.settings.SetTings
+import org.bukkit.Bukkit
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
+import org.bukkit.entity.Zombie
 import org.bukkit.inventory.ItemStack
 import org.jetbrains.annotations.NotNull
 import taboolib.common.platform.function.adaptPlayer
@@ -75,7 +78,6 @@ object MailManage {
      * @param item = 物品类型附件
      * @param cmd = 指令类型附件
      */
-    @JvmStatic
     fun buildMailClass(mailID: String, mailType: String, title: String, text: String, sender: String, target: String,
                        state: String , additional: String, senderTime: String, getTime: String, item: String, cmd: String): MailSub? {
         val args = arrayOf(mailID, title, text, sender, target, state, additional, senderTime, getTime, item, cmd)
@@ -118,7 +120,6 @@ object MailManage {
      * @param targetUuid 目标ID
      * @param mail 邮件
      */
-    @JvmStatic
     fun addTargetCache(targetUuid: UUID, mail: MailSub) {
         if (targetCache.containsKey(targetUuid)) {
             targetCache.forEach { (key: UUID, value: MutableList<MailSub>) ->
@@ -165,6 +166,7 @@ object MailManage {
     }
 
     fun sendMailMessage(title: String, text: String, vararg player: Player?) {
+
         // 0 发送者  1 接收者
         try {
             player[0]?.let{ v1 ->

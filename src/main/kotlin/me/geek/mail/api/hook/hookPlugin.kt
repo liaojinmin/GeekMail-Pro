@@ -69,7 +69,7 @@ object hookPlugin {
             if (loc != null) {
                 val list = GeekMail.config.getStringList("Block.hd")
                 id?.destroy()
-                val y = loc.y + 2
+                val y = loc.y + 0.5
                 val x = loc.x - -0.5
                 val z = loc.z - -0.5
                 id = HologramBuilder(

@@ -15,7 +15,7 @@ taboolib {
         "module-chat",
         "module-lang",
         "module-kether",
-        "expansion-command-helper"
+        "module-metrics"
     )
     description {
         contributors {

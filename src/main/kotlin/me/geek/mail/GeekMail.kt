@@ -14,10 +14,12 @@ import me.geek.mail.utils.colorify
 import org.bukkit.Bukkit
 import taboolib.common.env.RuntimeDependencies
 import taboolib.common.env.RuntimeDependency
+import taboolib.common.platform.Platform
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.ConfigFile
+import taboolib.module.metrics.Metrics
 import taboolib.platform.BukkitPlugin
 import kotlin.system.measureTimeMillis
 
@@ -42,7 +44,7 @@ object GeekMail : Plugin() {
       private set
 
     val instance by lazy { BukkitPlugin.getInstance() }
-    private const val VERSION = 2.01
+    const val VERSION = 2.01
     val BukkitVersion = Bukkit.getVersion().substringAfter("MC:").filter { it.isDigit() }.toInt()
     var plugin_status: Boolean = false
 
@@ -52,6 +54,7 @@ object GeekMail : Plugin() {
     val expiry = Expiry()
 
     override fun onLoad() {
+        Metrics(16437, VERSION.toString(), Platform.BUKKIT)
         console().sendMessage("")
         console().sendMessage("正在加载 §3§lGeekMail  §f...  §8" + Bukkit.getVersion())
         console().sendMessage("")

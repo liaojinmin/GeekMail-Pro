@@ -7,6 +7,7 @@ import me.geek.mail.api.mail.MailManage
 import me.geek.mail.common.menu.MAction
 import me.geek.mail.common.menu.Menu
 import me.geek.mail.modules.settings.SetTings
+import org.bukkit.entity.LivingEntity
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
@@ -30,13 +31,12 @@ object MailListener {
             GeekMail.DataManage.selectPlayerData(player.uniqueId, player.name)
             GeekMail.DataManage.selectPlayerMail(player.uniqueId).let {
                 MailManage.upTargetCache(player.uniqueId, it)
-                GeekMail.say(it.size.toString())
                 var amt = 0
                 it.forEach { mail ->
                     if (mail.state == "未提取") amt++
                 }
                 if (amt != 0) {
-                    adaptPlayer(player).sendLang("玩家-加入游戏-提醒", amt,)
+                    adaptPlayer(player).sendLang("玩家-加入游戏-提醒", amt)
                 }
             }
         }

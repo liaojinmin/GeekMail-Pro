@@ -31,7 +31,6 @@ object Template {
     private val TEMP_PACK_MAP: MutableMap<String, Temp> = HashMap()
 
     fun onLoad() {
-        submitAsync {
             val list = mutableListOf<File>()
             measureTimeMillis {
                 TEMP_PACK_MAP.clear()
@@ -66,7 +65,6 @@ object Template {
             }.also {
                 say("§7已加载 &f${list.size} &7个邮件模板... §8(耗时 $it Ms)")
             }
-        }
     }
 
 
@@ -103,10 +101,10 @@ object Template {
 
     private fun buildItemsString(items: List<String>): String {
         if (items.isNotEmpty()) {
-            items.forEach { mats ->
+            items.forEach { m ->
                 val item: MutableList<ItemStack> = ArrayList()
                 mutableListOf<ItemStack>()
-                mats.split(";").forEach {
+                m.split(";").forEach {
                     val args = it.split(",")
                     val i = buildItem(XMaterial.STONE) {
                         args.forEach { it2 ->
@@ -116,6 +114,7 @@ object Template {
                                 it2.contains(Lore) -> lore.addAll(it2.replace(Lore, "").colorify().split("\n"))
                                 it2.contains(data) -> damage = (it2.toIntOrNull() ?: 0)
                                 it2.contains(amt) -> amount = it2.toIntOrNull() ?: 1
+                                it2.contains(mode) -> customModelData = it2.toIntOrNull() ?: 0
                             }
                         }
                     }
@@ -131,4 +130,5 @@ object Template {
     private val Lore = Regex("lore:")
     private val data = Regex("data:")
     private val amt = Regex("(amount|amt)s:")
+    private val mode = Regex("ModelData:")
 }

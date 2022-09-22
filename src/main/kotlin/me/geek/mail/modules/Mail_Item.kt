@@ -122,7 +122,7 @@ class Mail_Item(
                                 i1.add(i2)
                             }
                         }
-                        if (i1.size > 1) {
+                        if (i1.size > 0) {
                             itemStacks = i1.toTypedArray()
                             sender()
                             HandlerList.unregisterAll(this)

@@ -1,7 +1,6 @@
 package me.geek.mail.common.data
 
 import com.google.common.base.Joiner
-import me.geek.mail.GeekMail
 import me.geek.mail.GeekMail.debug
 import me.geek.mail.api.mail.MailManage.addTargetCache
 import me.geek.mail.api.mail.MailManage.buildMailClass
@@ -37,10 +36,9 @@ class Database {
     }
 
     fun start() {
-        GeekMail.say(DATA_TYPE)
         dataSub = if (DATA_TYPE.equals("mysql", ignoreCase = true)){
             Mysql()
-        } else sqlite()
+        } else Sqlite()
         dataSub!!.onLoad()
     }
 
@@ -140,16 +138,7 @@ class Database {
                     if (ps.isOnline) {
                         addTargetCache(
                             ps.uniqueId, buildMailClass(mailID,
-                                mailDate.name,
-                                mailDate.title,
-                                mailDate.text,
-                                sender,
-                                target,
-                                mailDate.state,
-                                mailDate.additional!!,
-                                mailDate.senderTime,
-                                mailDate.getTime,
-                                items!!,
+                                mailDate.name, mailDate.title, mailDate.text, sender, target, mailDate.state, mailDate.additional!!, mailDate.senderTime, mailDate.getTime, items!!,
                                 command!!
                             )!!
                         )
@@ -206,7 +195,6 @@ class Database {
                     val r = s.executeQuery()
                     if (r.isBeforeFirst) {
                         while (r.next()) {
-                            GeekMail.say("有数据")
                             val mailID = r.getString("mail_id")
                             val state = r.getString("state")
                             val type = r.getString("type")
