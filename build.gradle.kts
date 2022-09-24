@@ -37,6 +37,21 @@ taboolib {
     classifier = null
     version = "6.0.9-81"
 }
+
+repositories {
+    mavenCentral()
+    maven("https://repo.tabooproject.org/repository/releases")
+    maven("https://oss.sonatype.org/content/repositories/snapshots")
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+    maven("https://repo.codemc.org/repository/maven-public")
+    maven("https://repo.rosewooddev.io/repository/public/")
+    maven("https://repo.opencollab.dev/maven-snapshots/")
+    maven("https://maven.aliyun.com/repository/central")
+    maven("https://jitpack.io")
+    maven("https://maven.pkg.github.com/LoneDev6/API-ItemsAdder")
+}
+
+
 dependencies {
 
     compileOnly(kotlin("stdlib"))
@@ -52,20 +67,8 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.10.9") { isTransitive = false }
     compileOnly("com.github.MilkBowl:VaultAPI:-SNAPSHOT") { isTransitive = false }
     compileOnly("org.black_ixx:playerpoints:3.1.1") { isTransitive = false }
+    compileOnly("com.github.LoneDev6:api-itemsadder:3.2.3c")
+    compileOnly(fileTree("libs"))
 
 }
-
-repositories {
-    mavenCentral()
-    maven("https://repo.tabooproject.org/repository/releases")
-    maven("https://oss.sonatype.org/content/repositories/snapshots")
-    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
-    maven("https://repo.codemc.org/repository/maven-public")
-    maven("https://repo.rosewooddev.io/repository/public/")
-    maven("https://repo.opencollab.dev/maven-snapshots/")
-    maven("https://maven.aliyun.com/repository/central")
-    maven("https://jitpack.io")
-}
-
-
 
