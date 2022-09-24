@@ -41,7 +41,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: 使用 Gradle 构建
-        run: ./gradlew clean build -s
+        run: ./gradlew clean build
 
       - name: 上传工件
         uses: actions/upload-artifact@v2
