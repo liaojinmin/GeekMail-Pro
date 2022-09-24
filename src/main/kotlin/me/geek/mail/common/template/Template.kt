@@ -3,18 +3,13 @@ package me.geek.mail.common.template
 import com.google.common.base.Joiner
 import me.geek.mail.GeekMail.instance
 import me.geek.mail.GeekMail.say
-import me.geek.mail.common.template.Sub.Temp
-import me.geek.mail.GeekMail
+
 import me.geek.mail.common.serialize.base64.StreamSerializer
-import me.geek.mail.utils.HexUtils
+import me.geek.mail.common.template.Sub.Temp
 import me.geek.mail.common.template.Sub.TempPack
 import me.geek.mail.utils.colorify
-import org.bukkit.configuration.file.FileConfiguration
-import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.inventory.ItemStack
-import org.bukkit.plugin.Plugin
 import taboolib.common.platform.function.releaseResourceFile
-import taboolib.common.platform.function.submitAsync
 import taboolib.library.xseries.XMaterial
 import taboolib.module.configuration.SecuredFile
 import taboolib.platform.util.buildItem

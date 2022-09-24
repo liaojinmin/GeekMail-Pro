@@ -109,12 +109,12 @@ object GeekMail : Plugin() {
 
     private fun register() {
         measureTimeMillis {
-        MailManage.register(Mail_Exp())
-        MailManage.register(Mail_Money())
+            MailManage.register(Mail_Exp())
+            MailManage.register(Mail_Money())
             if (Bukkit.getServer().pluginManager.getPlugin("PlayerPoints") != null) MailManage.register(Mail_Points())
-        MailManage.register(Mail_Text())
-        MailManage.register(Mail_Item())
-        MailManage.register(Mail_Cmd())
+            MailManage.register(Mail_Text())
+            MailManage.register(Mail_Item())
+            MailManage.register(Mail_Cmd())
         }.also {
             say("&7已注册 &f${MailManage.getMailDataMap().size} &7种邮件类型... §8(耗时 $it Ms)")
         }

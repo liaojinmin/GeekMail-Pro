@@ -2,7 +2,6 @@ package me.geek.mail.modules
 
 
 import me.geek.mail.api.mail.MailSub
-import me.geek.mail.common.kether.sub.KetherAPI
 import org.bukkit.entity.Player
 import java.util.UUID
 
