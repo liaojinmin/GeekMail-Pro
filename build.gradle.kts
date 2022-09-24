@@ -64,6 +64,9 @@ dependencies {
     compileOnly("ink.ptms.core:v11604:11604")
 
     // Hook Plugins
+    compileOnly("javax.mail:javax.mail-api:1.6.2") { isTransitive = false }
+    compileOnly("javax.activation:activation:1.1.1") { isTransitive = false }
+
     compileOnly("me.clip:placeholderapi:2.10.9") { isTransitive = false }
     compileOnly("com.github.MilkBowl:VaultAPI:-SNAPSHOT") { isTransitive = false }
     compileOnly("org.black_ixx:playerpoints:3.1.1") { isTransitive = false }
