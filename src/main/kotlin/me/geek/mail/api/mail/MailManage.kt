@@ -3,6 +3,7 @@ package me.geek.mail.api.mail
 
 import me.geek.mail.GeekMail
 import me.geek.mail.GeekMail.say
+import me.geek.mail.api.mail.event.MailReceiveEvent
 import me.geek.mail.common.serialize.base64.StreamSerializer
 import me.geek.mail.common.webmail.WebManager
 import me.geek.mail.modules.settings.SetTings
@@ -174,6 +175,12 @@ object MailManage {
             }
             player[1]?.let { v ->
                 adaptPlayer(v).sendLang("玩家-接收邮件", title)
+
+                // StarrySky start
+                val receiveEvent = MailReceiveEvent(player[1] ?: return, player[0]!!, title) // I don't make sure if "player[0]" is null.
+                receiveEvent.call()
+                // StarrySky end
+
                 /**
                  * if (MinecraftVersion.INSTANCE.getMajorLegacy() >= 11300) {
                  * NMSKt.sendToast(player[1], Material.BOOK,"你有新的邮件待查看！", ToastFrame.TASK, ToastBackground.END);
