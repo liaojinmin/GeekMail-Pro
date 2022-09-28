@@ -286,6 +286,7 @@ Template:
 # 🔊开发者API
 **package** me.Geek.GeekMail.api.mail
 ``` JAVA 
+me.Geek.GeekMail.api.mail.event.MailReceiveEvent  // 邮件接收事件
 me.Geek.GeekMail.api.mail.event.MailSenderEvent  // 邮件发送事件
 me.Geek.GeekMail.api.mail.event.WebMailSenderEvent // 真实邮件发送事件
 me.Geek.GeekMail.api.mail.MailManage  // 邮件管理、注册
