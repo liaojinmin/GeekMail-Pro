@@ -71,7 +71,6 @@ dependencies {
     compileOnly("com.github.MilkBowl:VaultAPI:-SNAPSHOT") { isTransitive = false }
     compileOnly("org.black_ixx:playerpoints:3.1.1") { isTransitive = false }
     compileOnly("com.github.LoneDev6:api-itemsadder:3.2.3c")
-    compileOnly(fileTree("libs"))
 
 }
 

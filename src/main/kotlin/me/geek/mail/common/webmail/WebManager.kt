@@ -1,8 +1,13 @@
 package me.geek.mail.common.webmail
 
 import me.geek.mail.GeekMail
+import me.geek.mail.api.mail.event.MailSenderEvent
 import me.geek.mail.api.mail.event.WebMailSenderEvent
+import me.geek.mail.common.data.sub.MailPlayerData
 import me.geek.mail.common.webmail.sub.SubWebMail
+import org.bukkit.Bukkit
+import taboolib.common.platform.event.SubscribeEvent
+import taboolib.common.platform.function.console
 import taboolib.common.platform.function.submitAsync
 import java.util.*
 import javax.mail.*

@@ -30,6 +30,8 @@ object hookPlugin {
     lateinit var points: PlayerPointsAPI
     var id: Hologram? = null
 
+
+
     @JvmStatic
     fun getItemsAdder(id: String?): ItemStack {
         return CustomStack.getInstance(id)!!.itemStack
