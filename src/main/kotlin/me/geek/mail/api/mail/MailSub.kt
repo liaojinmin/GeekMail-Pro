@@ -1,6 +1,7 @@
 package me.geek.mail.api.mail
 
 import me.geek.mail.GeekMail
+import me.geek.mail.api.mail.event.MailReceiveEvent
 import me.geek.mail.api.mail.event.MailSenderEvent
 import me.geek.mail.modules.settings.SetTings
 import org.bukkit.Bukkit
@@ -39,6 +40,8 @@ abstract class MailSub : Mail {
             GeekMail.DataManage.insertMailData(this)
         }
         MailManage.senderWebMail(title, text, appendixInfo, target)
+
+        MailReceiveEvent(this).call() // StarrySky
     }
 
     fun sendGlobalMail() {

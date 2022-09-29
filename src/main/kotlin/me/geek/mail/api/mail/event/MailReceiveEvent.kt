@@ -1,6 +1,6 @@
 package me.geek.mail.api.mail.event
 
-import org.bukkit.entity.Player
+import me.geek.mail.api.mail.MailSub
 import taboolib.platform.type.BukkitProxyEvent
 
 /**
@@ -10,5 +10,5 @@ import taboolib.platform.type.BukkitProxyEvent
  * @author xiaomu
  * @since 2022/9/28 8:26 AM
  */
-class MailReceiveEvent(val player: Player, val sender: Player, val title: String) : BukkitProxyEvent() {
+class MailReceiveEvent(val mailSub: MailSub) : BukkitProxyEvent() {
 }
