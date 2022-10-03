@@ -10,6 +10,7 @@ import taboolib.common.platform.function.releaseResourceFile
 import taboolib.library.reflex.Reflex.Companion.invokeConstructor
 import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.Configuration.Companion.getObject
+import taboolib.platform.compat.replacePlaceholder
 import java.io.File
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -53,7 +54,7 @@ object Event {
                 "sendTemPlate" -> {
                     val pack = Template.getTempPack(a[1])
                     MailManage.getMailData(pack.type)?.javaClass?.invokeConstructor(
-                        arrayOf(UUID.randomUUID().toString(), pack.title, pack.text,
+                        arrayOf(UUID.randomUUID().toString(), pack.title.replacePlaceholder(player), pack.text.replacePlaceholder(player),
                         SetTings.Console.toString(), player.uniqueId.toString(), "未提取",
                         pack.additional, System.currentTimeMillis().toString(), "0", pack.itemStacks, pack.command)
                     )?.sendMail()

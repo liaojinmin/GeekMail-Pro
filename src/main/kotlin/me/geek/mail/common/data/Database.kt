@@ -1,6 +1,7 @@
 package me.geek.mail.common.data
 
 import com.google.common.base.Joiner
+import me.clip.placeholderapi.PlaceholderAPI
 import me.geek.mail.GeekMail.debug
 import me.geek.mail.api.mail.MailManage.addTargetCache
 import me.geek.mail.api.mail.MailManage.buildMailClass
@@ -12,6 +13,8 @@ import me.geek.mail.common.data.sub.MailPlayerData.Companion.defaut_Data
 import me.geek.mail.common.serialize.base64.StreamSerializer
 import me.geek.mail.modules.settings.SetTings.DATA_TYPE
 import org.bukkit.OfflinePlayer
+import org.bukkit.entity.Player
+import taboolib.platform.compat.replacePlaceholder
 import java.sql.Connection
 import java.util.*
 import kotlin.collections.ArrayList
@@ -51,8 +54,9 @@ class Database {
     }
 
     fun getMailPlayerData(uuid: UUID): MailPlayerData? {
-        return MAIL_PLAYER_DATA.getOrDefault(uuid, null)
+        return MAIL_PLAYER_DATA[uuid]
     }
+
 
     @Synchronized
     fun insertPlayerData(data: MailPlayerData) {
@@ -115,6 +119,8 @@ class Database {
                 var items: String? = "null"
                 var command: String? = ""
                 for (ps in players) {
+                    val title = PlaceholderAPI.setPlaceholders(ps, mailDate.title)
+                    val text = PlaceholderAPI.setPlaceholders(ps, mailDate.text)
                     val mailID = UUID.randomUUID().toString()
                     val target = ps.uniqueId.toString()
                     p.setString(1, mailID)
@@ -122,8 +128,8 @@ class Database {
                     p.setString(3, mailDate.name)
                     p.setString(4, sender)
                     p.setString(5, target)
-                    p.setString(6, mailDate.title)
-                    p.setString(7, mailDate.text)
+                    p.setString(6, title)
+                    p.setString(7, text)
                     p.setString(8, mailDate.additional)
                     if (mailDate.itemStacks != null) {
                         items = StreamSerializer.serializeItemStacks(mailDate.itemStacks)
@@ -138,7 +144,7 @@ class Database {
                     if (ps.isOnline) {
                         addTargetCache(
                             ps.uniqueId, buildMailClass(mailID,
-                                mailDate.name, mailDate.title, mailDate.text, sender, target, mailDate.state, mailDate.additional!!, mailDate.senderTime, mailDate.getTime, items!!,
+                                mailDate.name, title, text, sender, target, mailDate.state, mailDate.additional!!, mailDate.senderTime, mailDate.getTime, items!!,
                                 command!!
                             )!!
                         )

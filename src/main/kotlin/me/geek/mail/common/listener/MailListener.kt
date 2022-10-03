@@ -24,18 +24,21 @@ import taboolib.platform.util.isLeftClickBlock
  *
  **/
 object MailListener {
+    private val database = GeekMail.DataManage
     @SubscribeEvent(priority = EventPriority.LOW, ignoreCancelled = true )
     fun onJoin(e: PlayerJoinEvent) {
         submitAsync {
             val player = e.player
-           GeekMail.DataManage.selectPlayerData(player.uniqueId, player.name)?.let {
+            database.selectPlayerData(player.uniqueId, player.name)?.let { _ ->
                GeekMail.debug("准备唤起事件")
-               if (it.OneJoin) {
-                   it.OneJoin = false
+                val data = database.getMailPlayerData(player.uniqueId)!!
+               if (data.OneJoin) {
+                   data.OneJoin = false
+                   database.update(data)
                    NewPlayerJoinEvent(player).call()
                }
            }
-            GeekMail.DataManage.selectPlayerMail(player.uniqueId).let {
+            database.selectPlayerMail(player.uniqueId).let {
                 MailManage.upTargetCache(player.uniqueId, it)
                 var amt = 0
                 it.forEach { mail ->

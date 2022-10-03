@@ -284,6 +284,7 @@ class MAction(private val player: Player, private val tag: Session, private val 
         contents.clear()
         cache.clear()
         var c = false
+        if (mail.isEmpty()) return
         for (m in mail) {
             if (m.state == "已提取" || m.state == "无") {
                 c = true

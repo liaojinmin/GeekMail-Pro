@@ -1,6 +1,7 @@
 package me.geek.mail.common.template
 
 import com.google.common.base.Joiner
+import me.geek.mail.GeekMail
 import me.geek.mail.GeekMail.instance
 import me.geek.mail.GeekMail.say
 
@@ -97,27 +98,31 @@ object Template {
 
     private fun buildItemsString(items: List<String>): String {
         if (items.isNotEmpty()) {
+            val item: MutableList<ItemStack> = ArrayList()
             items.forEach { m ->
-                val item: MutableList<ItemStack> = ArrayList()
+                GeekMail.debug(m)
                 mutableListOf<ItemStack>()
                 m.split(";").forEach {
                     val args = it.split(",")
                     val i = buildItem(XMaterial.STONE) {
                         args.forEach { it2 ->
+                            GeekMail.debug(it2)
                             when {
                                 it2.contains(mats) -> setMaterial(XMaterial.valueOf(it2.replace(mats, "").uppercase()))
                                 it2.contains(Name) -> name = it2.replace(Name, "").colorify()
                                 it2.contains(Lore) -> lore.addAll(it2.replace(Lore, "").colorify().split("\n"))
-                                it2.contains(data) -> damage = (it2.toIntOrNull() ?: 0)
-                                it2.contains(amt) -> amount = it2.toIntOrNull() ?: 1
-                                it2.contains(mode) -> customModelData = it2.toIntOrNull() ?: 0
+                                it2.contains(data) -> damage = it2.replace(data, "").toIntOrNull() ?: 0
+                                it2.contains(amt) -> amount = it2.replace(amt, "").toIntOrNull() ?: 1
+                                it2.contains(mode) -> customModelData = it2.replace(mode, "").toIntOrNull() ?: 0
                             }
                         }
                     }
+                    GeekMail.debug("物品数量: ${i.amount}")
                     item.add(i)
                 }
-                return StreamSerializer.serializeItemStacks(item.toTypedArray())
+
             }
+            return StreamSerializer.serializeItemStacks(item.toTypedArray())
         }
         return "null"
     }
@@ -125,6 +130,6 @@ object Template {
     private val Name = Regex("name:")
     private val Lore = Regex("lore:")
     private val data = Regex("data:")
-    private val amt = Regex("(amount|amt)s:")
+    private val amt = Regex("(amount|amt):")
     private val mode = Regex("ModelData:")
 }

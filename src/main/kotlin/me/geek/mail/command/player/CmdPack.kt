@@ -1,5 +1,6 @@
 package me.geek.mail.command.player
 
+import me.clip.placeholderapi.PlaceholderAPI
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.command.CmdExp
 
@@ -35,11 +36,13 @@ object CmdPack: CmdExp {
 
                             if (KetherAPI.instantKether(senders, pack.condition).any as Boolean) {
                                 KetherAPI.instantKether(senders, pack.action)
-                                val target = Bukkit.getOfflinePlayer(context.args()[2]).uniqueId
+                                val target = Bukkit.getOfflinePlayer(context.args()[2])
+                                val title = PlaceholderAPI.setPlaceholders(target, pack.title)
+                                val text = PlaceholderAPI.setPlaceholders(target, pack.text)
                                 it.javaClass.invokeConstructor(
                                     arrayOf(
-                                        UUID.randomUUID().toString(), pack.title, pack.text,
-                                        senders.uniqueId.toString(), target.toString(), "未提取",
+                                        UUID.randomUUID().toString(), title, text,
+                                        senders.uniqueId.toString(), target.uniqueId.toString(), "未提取",
                                         pack.additional, System.currentTimeMillis().toString(), "0", pack.itemStacks, pack.command
                                     )
                                 ).sendMail()

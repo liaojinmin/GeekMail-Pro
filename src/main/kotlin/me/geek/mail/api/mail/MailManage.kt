@@ -16,6 +16,7 @@ import taboolib.module.lang.sendLang
 import java.lang.IllegalArgumentException
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 /**
@@ -173,7 +174,7 @@ object MailManage {
 
     fun getTargetCache(@NotNull uuid: UUID): MutableList<MailSub> {
         if (targetCache.containsKey(uuid)) {
-            return targetCache[uuid]!!
+            return ArrayList(targetCache[uuid]!!)
         }
         return mutableListOf()
     }
