@@ -21,7 +21,7 @@ class MailPlayerData(
 
     companion object {
         fun defaut_Data(name: String, uuid: UUID): MailPlayerData {
-            return MailPlayerData(name, uuid, "",false)
+            return MailPlayerData(name, uuid, "",true)
         }
     }
 }

@@ -4,10 +4,10 @@ package me.geek.mail.common.listener
 
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailManage
+import me.geek.mail.api.mail.event.NewPlayerJoinEvent
 import me.geek.mail.common.menu.MAction
 import me.geek.mail.common.menu.Menu
 import me.geek.mail.modules.settings.SetTings
-import org.bukkit.entity.LivingEntity
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
@@ -28,7 +28,13 @@ object MailListener {
     fun onJoin(e: PlayerJoinEvent) {
         submitAsync {
             val player = e.player
-            GeekMail.DataManage.selectPlayerData(player.uniqueId, player.name)
+           GeekMail.DataManage.selectPlayerData(player.uniqueId, player.name)?.let {
+               GeekMail.debug("准备唤起事件")
+               if (it.OneJoin) {
+                   it.OneJoin = false
+                   NewPlayerJoinEvent(player).call()
+               }
+           }
             GeekMail.DataManage.selectPlayerMail(player.uniqueId).let {
                 MailManage.upTargetCache(player.uniqueId, it)
                 var amt = 0

@@ -3,7 +3,9 @@ package me.geek.mail.common.kether
 
 
 import me.geek.mail.common.kether.sub.KetherSub
-import me.geek.mail.utils.Experience
+import taboolib.expansion.geek.giveTotalExperiences
+import taboolib.expansion.geek.hasTotalExperiences
+import taboolib.expansion.geek.takeTotalExperiences
 import taboolib.library.kether.ParsedAction
 import taboolib.library.kether.QuestContext
 import taboolib.module.kether.KetherParser
@@ -26,16 +28,15 @@ class GExp(private val action: String, private val context: ParsedAction<*>): Ke
             var a = false
             val exp = abs(it.toString().toInt())
             when (action) {
-                "give" -> playerUtils.giveTotalExperience(player, exp)
-                "take" -> playerUtils.takeTotalExperience(player, exp)
-                "has" -> a = playerUtils.hasTotalExperience(player, exp)
-                "hasTake" -> a = playerUtils.hasTotalExperience(player, exp, true)
+                "give" -> player.giveTotalExperiences(exp)
+                "take" -> player.takeTotalExperiences(exp)
+                "has" -> a = player.hasTotalExperiences(exp)
+                "hasTake" -> a = player.hasTotalExperiences(exp, true)
             }
             a
         }
     }
     companion object {
-        private val playerUtils = Experience()
         /**
          * Exp 100 take
          */

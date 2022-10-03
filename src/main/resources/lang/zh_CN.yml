@@ -4,8 +4,8 @@
     volume: 1
     pitch: 1
   - type: title
-    title: '&c&l你没有权限使用这个类型'
-    subtitle: '&3&l请联系管理员授权.'
+    title: '&c你没有权限使用这个类型'
+    subtitle: '&3请联系管理员授权.'
 
 玩家-发送邮件:
   - type: sound
@@ -13,7 +13,7 @@
     volume: 1
     pitch: 1
   - '&1'
-  - '&7&l  Geek&f&lMail &8>&7>&f>'
+  - '&7  Geek&fMail &8>&7>&f>'
   - '&l'
   - '&b    你的邮件已发送至 {0}'
   - '&l'
@@ -25,11 +25,11 @@
   - type: JSON
     text:
       - ' '
-      - '&7&l  Geek&f&lMail &8>&7>&f>'
+      - '&7  Geek&fMail &8>&7>&f>'
       - '&l'
       - '&B    你有新邮件待查看!'
       - '&B    {0}'
-      - '&l             §8[§a§l点击查看§8]'
+      - '&l             §8[§a点击查看§8]'
       - ''
     args:
       - hover: '§8点击查看'
@@ -43,11 +43,11 @@
   - type: JSON
     text:
       - ' '
-      - '&7&l  Geek&f&lMail &8>&7>&f>'
+      - '&7  Geek&fMail &8>&7>&f>'
       - '&l'
       - '&B    你有 {0} 封未读邮件！'
       - '&B'
-      - '&l             §8[§a§l点击查看§8]'
+      - '&l             §8[§a点击查看§8]'
       - ''
     args:
       - hover: '§8点击查看'
@@ -55,7 +55,7 @@
 
 玩家-输入捕获:
   - type: title
-    title: '&c&l请输入你的邮箱账号'
+    title: '&c请输入你的邮箱账号'
     subtitle: '&7你有 &f20 &7秒的时间'
     fadein: 20
     fadeout: 20
@@ -65,17 +65,17 @@
     volume: 1
     pitch: 1
   - '&1'
-  - '&7&l  Geek&f&lMail &8>&7>&f>'
+  - '&7  Geek&fMail &8>&7>&f>'
   - '&l'
-  - '§A&l   ♻&7请输入要绑定的邮箱账号并以 &f回车键 &7结束'
-  - '§A&l   ♻&7取消输入 &fCancel &7结束'
+  - '§A   ♻&7请输入要绑定的邮箱账号并以 &f回车键 &7结束'
+  - '§A   ♻&7取消输入 &fCancel &7结束'
   - '&l'
 
 玩家-发送邮件-阻止: |-
   &l
-  &7&l  Geek&f&lMail &8>&7>&f>
+  &7  Geek&fMail &8>&7>&f>
   &l
-  &c&l    你没有足够的 &f{0} &c&l发送这封邮件！
+  &c    你没有足够的 &f{0} &c发送这封邮件！
   &B
 
 
@@ -89,7 +89,7 @@
     volume: 1
     pitch: 1
   - '&1'
-  - '&7&l  Geek&f&lMail &8>&7>&f>'
+  - '&7  Geek&fMail &8>&7>&f>'
   - '&l'
   - '&b    成功领取附件，获得以下物品:'
   - '&f    {0}'
@@ -99,7 +99,7 @@
     volume: 1
     pitch: 1
   - '&1'
-  - '&7&l  Geek&f&lMail &8>&7>&f>'
+  - '&7  Geek&fMail &8>&7>&f>'
   - '&l'
   - '&b    这个附件你已经领取过了！'
   - '&f'
@@ -109,9 +109,9 @@
     volume: 1
     pitch: 2
   - '&1'
-  - '&7&l  Geek&f&lMail &8>&7>&f>'
+  - '&7  Geek&fMail &8>&7>&f>'
   - '&l'
-  - '&a&l    你已成功删除该邮件！'
+  - '&a    你已成功删除该邮件！'
   - '&f'
 玩家-删除邮件-失败:
   - type: sound
@@ -119,9 +119,9 @@
     volume: 1
     pitch: 1
   - '&1'
-  - '&7&l  Geek&f&lMail &8>&7>&f>'
+  - '&7  Geek&fMail &8>&7>&f>'
   - '&l'
-  - '&c&l    你不能删除该邮件，请先领取附件内容！'
+  - '&c    你不能删除该邮件，请先领取附件内容！'
   - '&f'
 
 

@@ -8,6 +8,7 @@ import me.geek.mail.common.menu.Menu
 import me.geek.mail.common.serialize.base64.StreamSerializer
 import java.util.UUID
 import org.bukkit.Bukkit
+import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.HandlerList
@@ -16,6 +17,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.player.PlayerPickupItemEvent
 import org.bukkit.inventory.ItemStack
+import taboolib.module.nms.getI18nName
 import taboolib.platform.util.giveItem
 
 /**
@@ -93,7 +95,7 @@ class Mail_Item(
     }
     private fun action(player: Player) {
         Menu.isOpen.add(player)
-        player.openInventory(Bukkit.createInventory(player, 9, "§0§l放入物品 §7| §0§l关闭菜单 "))
+        player.openInventory(Bukkit.createInventory(player, 27, "§0放入物品 §7| §0关闭菜单 "))
         MailManage.Sound(player, "BLOCK_NOTE_BLOCK_HARP", 1f, 1f)
         GeekMail.debug("开启物品UI")
         Bukkit.getPluginManager().registerEvents(object : Listener {
@@ -156,7 +158,8 @@ class Mail_Item(
                     if (meta.hasDisplayName()) {
                         lore.add(meta.displayName + " §7* §f" + Stack.amount)
                     } else {
-                        val manes = GeekMail.Materials.translate(Stack.type)
+                        val manes = Stack.getI18nName(Bukkit.getPlayer(target))
+
                         if (manes != "null") {
                             lore.add(manes + " §7* §f" + Stack.amount)
                         } else {

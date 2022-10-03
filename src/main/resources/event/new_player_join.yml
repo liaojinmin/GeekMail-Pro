@@ -1,0 +1,7 @@
+# 只是一项测试功能，目前无理想设计，暂只提供一项事件
+event:
+  id: '新玩家礼包'
+  condition: NewPlayerJoinEvent #触发动作条件
+
+  action: #以上事件触发，执行下方动作，支持 Kether
+    - 'sendTemPlate: 物品包' #发送模板包ID为  “物品包”

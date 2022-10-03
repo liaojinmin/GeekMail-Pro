@@ -88,7 +88,8 @@ object Template {
             arrayOf(
                 "template/def.yml",
                 "template/def2.yml",
-                "template/def3.yml"
+                "template/def3.yml",
+                "template/items.yml"
             ).forEach { releaseResourceFile(it, true) }
         }
         dir

@@ -223,14 +223,14 @@ class Database {
      * @return data
      */
     @Synchronized
-    fun selectPlayerData(targetUid: UUID, name: String?): MailPlayerData? {
+    fun selectPlayerData(targetUid: UUID, name: String): MailPlayerData? {
         var data: MailPlayerData? = null
             getConnection().use {
                 this.prepareStatement("SELECT * FROM `mail_player_data` WHERE uuid=?;").run { s ->
                     s.setString(1, targetUid.toString())
                     val r = s.executeQuery()
                     if (!r.isBeforeFirst) {
-                        data = defaut_Data(name!!, targetUid)
+                        data = defaut_Data(name, targetUid)
                         insertPlayerData(data!!)
                         addMailPlayerData(targetUid, data)
                         return@run data
@@ -280,6 +280,20 @@ class Database {
                 s.setString(2, mail.getTime)
                 s.setString(3, mail.mailID.toString())
                 s.executeUpdate()
+            }
+        }
+    }
+    @Synchronized
+    fun update(mail: MutableList<MailSub>) {
+        getConnection().use {
+            this.prepareStatement("UPDATE `maildata` SET `state`=?,`getTime`=? WHERE `mail_id`=?;").run { s ->
+                mail.forEach {
+                    s.setString(1, it.state)
+                    s.setString(2, it.getTime)
+                    s.setString(3, it.mailID.toString())
+                    s.addBatch()
+                }
+                s.executeBatch()
             }
         }
     }

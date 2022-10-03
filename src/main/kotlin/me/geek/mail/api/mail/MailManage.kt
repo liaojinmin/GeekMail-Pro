@@ -28,6 +28,7 @@ object MailManage {
     private val targetCache: MutableMap<UUID, MutableList<MailSub>> = ConcurrentHashMap()
     private val MailData: MutableMap<String, MailSub> = HashMap()
 
+
     private val WebMail = if (SetTings.SMTP_SET) { WebManager() } else null
 
     /**
@@ -83,8 +84,9 @@ object MailManage {
 
 
 
-    fun getMailData(mailType: String) : MailSub? =
-        MailData[mailType]
+    fun getMailData(mailType: String) : MailSub? {
+        return MailData[mailType]
+    }
 
     fun getMailDataMap(): MutableMap<String, MailSub> {
         return MailData
@@ -149,13 +151,31 @@ object MailManage {
             say("缓存 null 异常")
         }
     }
+    /*
+    fun TestIndexTofTarget(targetUuid: UUID, mailID: UUID) {
+        if (targetCache.containsKey(targetUuid)) {
+            targetCache.forEach { (key: UUID, value: MutableList<MailSub>) ->
+                if (key == targetUuid) {
+                    value.forEach {
+                        if (it.mailID == mailID) {
+                            GeekMail.debug("缓存的邮件状态: ${it.state}")
+                        }
+                    }
+                }
+            }
+        } else {
+            say("缓存 null 异常")
+        }
+    }
+
+     */
 
 
     fun getTargetCache(@NotNull uuid: UUID): MutableList<MailSub> {
         if (targetCache.containsKey(uuid)) {
-            return ArrayList(targetCache[uuid]!!)
+            return targetCache[uuid]!!
         }
-        return ArrayList()
+        return mutableListOf()
     }
 
     fun hasTargetCache(uuid: UUID): Boolean {

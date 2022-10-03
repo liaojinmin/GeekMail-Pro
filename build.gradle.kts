@@ -1,7 +1,7 @@
 
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.7.10"
+    id("org.jetbrains.kotlin.jvm") version "1.7.20"
     id("io.izzel.taboolib") version "1.42"
 }
 
@@ -15,7 +15,11 @@ taboolib {
         "module-chat",
         "module-lang",
         "module-kether",
-        "module-metrics"
+        "module-metrics",
+        "module-nms",
+        "module-nms-util",
+        "expansion-geek-tool"
+
     )
     description {
         contributors {
@@ -35,7 +39,7 @@ taboolib {
     relocate("com.zaxxer.hikari", "com.zaxxer.hikari_4_0_3_mail")
     relocate("javax.mail", "javax.mail_1_5_0_mail")
     classifier = null
-    version = "6.0.9-81"
+    version = "6.0.9-108"
 }
 
 repositories {

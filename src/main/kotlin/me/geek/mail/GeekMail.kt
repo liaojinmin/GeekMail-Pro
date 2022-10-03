@@ -4,12 +4,11 @@ package me.geek.mail
 import me.geek.mail.api.hook.hookPlugin
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.common.data.Database
+import me.geek.mail.common.event.Event
 import me.geek.mail.common.menu.Menu
 import me.geek.mail.common.template.Template
 import me.geek.mail.modules.*
 import me.geek.mail.modules.settings.SetTings
-import me.geek.mail.utils.ChineseMaterial
-import me.geek.mail.utils.Expiry
 import me.geek.mail.utils.colorify
 import org.bukkit.Bukkit
 import taboolib.common.env.RuntimeDependencies
@@ -44,14 +43,12 @@ object GeekMail : Plugin() {
       private set
 
     val instance by lazy { BukkitPlugin.getInstance() }
-    const val VERSION = 2.01
+    const val VERSION = 2.03
     val BukkitVersion = Bukkit.getVersion().substringAfter("MC:").filter { it.isDigit() }.toInt()
     var plugin_status: Boolean = false
 
-    val Materials = ChineseMaterial()
-   // val DataManage = DataManager()
     val DataManage = Database()
-    val expiry = Expiry()
+
 
     override fun onLoad() {
         Metrics(16437, VERSION.toString(), Platform.BUKKIT)
@@ -61,16 +58,26 @@ object GeekMail : Plugin() {
     }
 
     override fun onEnable() {
+        runLogo()
         title()
+
         config.onReload { SetTings.onLoad() }
-        SetTings.onLoad()
+
+        Event.onloadEventPack() // 自定义事件加载
+
+        SetTings.onLoad() // 插件配置加载
+
         Template.onLoad() // 邮件模板加载
+
         DataManage.start() // 启动数据库
-        hookPlugin.onHook()
-        register() // 注册邮件类型
         if (Bukkit.getPluginManager().getPlugin("ItemsAdder") == null) {
             Menu.loadMenu()
         }
+
+        hookPlugin.onHook()
+
+        register() // 注册邮件类型
+
         plugin_status = true
     }
 
@@ -118,6 +125,15 @@ object GeekMail : Plugin() {
         }.also {
             say("&7已注册 &f${MailManage.getMailDataMap().size} &7种邮件类型... §8(耗时 $it Ms)")
         }
+    }
+
+    private fun runLogo() {
+        console().sendMessage(" ________               __      _____         .__.__           __________ ")
+        console().sendMessage(" /  _____/  ____   ____ |  | __ /     \\ _____  |__|  |          \\______   \\______")
+        console().sendMessage("/   \\  ____/ __ \\_/ __ \\|  |/ //  \\ /  \\\\__  \\ |  |  |    ______ |     ___/\\_  __ \\/  _ \\")
+        console().sendMessage("\\    \\_\\  \\  ___/\\  ___/|    </    Y    \\/ __ \\|  |  |__ /_____/ |    |     |  | \\(  <_> )")
+        console().sendMessage(" \\______  /\\___  >\\___  >__|_ \\____|__  (____  /__|____/         |____|     |__|   \\____/ ")
+        console().sendMessage("        \\/     \\/     \\/     \\/       \\/     \\/   ")
     }
 
 }

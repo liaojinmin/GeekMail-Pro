@@ -39,6 +39,7 @@ abstract class MailSub : Mail {
             MailManage.sendMailMessage(title, text, send, targets)
             GeekMail.DataManage.insertMailData(this)
         }
+
         MailManage.senderWebMail(title, text, appendixInfo, target)
 
         MailReceiveEvent(this).call() // StarrySky

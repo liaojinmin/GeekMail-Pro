@@ -39,4 +39,5 @@ MailType:
     tag: "&f文本"
   ITEM_MAIL:
     tag: "&6物品"
+    use_bundle: false # 物品邮件，物品预览使用lore展示 (只限 1.17+)
     

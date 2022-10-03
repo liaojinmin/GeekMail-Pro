@@ -1,5 +1,5 @@
 
-TITLE: '&0&l邮件系统'
+TITLE: '&0邮件系统'
 TYPE: main
 Layout:
   - '#########'
@@ -7,7 +7,7 @@ Layout:
   - '#MMMMMMM#'
   - '#MMMMMMM#'
   - '#########'
-  - '< D P S > '
+  - '< D P G > '
 
 Bindings:
   Commands: '邮件'
@@ -16,30 +16,29 @@ Icons:
   M:
     Type: text
     display:
-      mats: BOOK
+      mats: BOOk #BUNDLE
       name: '&7主题: &f[title]'
       lore:
         - ''
         - ' &7发件人: &f[sender]'
         - ' &7发送时间: &f[senderTime]'
         - ' &7领取时间: &f[getTime]'
-        - ' &7邮件种类: &f[type]'
         - ' &7邮件内容:'
-        - '    [text]'
+        - ' [text]'
         - ''
-        - ' &7&l附件: [state]'
+        - ' &7附件: [state]'
         - ' &f[item]'
         - ''
-        - '&8[&f✧&8] &8[&B&l左键_点击&8] &7# 领取附件'
-        - '&8[&f✧&8] &8[&B&l右键_点击&8] &7# 删除邮件'
-        - '&8[&f✧&8] &8[&B&lShift_点击&8] &7# 预览物品附件'
+        - '&8[&B左键_点击&8] &7# 领取附件'
+        - '&8[&B右键_点击&8] &7# 删除邮件'
+        - '&8[&BShift_点击&8] &7# 预览物品附件'
 
 
   'P':
     Type: BIND
     display:
       mats: SPECTRAL_ARROW
-      name: '&3# &b绑定真实邮箱'
+      name: '&3# &b绑定邮箱'
       lore:
         - ' &7你的绑定: &f[mail_Info]'
         - ''
@@ -48,7 +47,7 @@ Icons:
         - ' &f网易邮箱: &7xxxxx@163.com'
         - ' &f谷歌邮箱: &7xxxxx@gmail.com'
         - ''
-        - '&8[&f✧&8] &8[&B&l左键_点击&8] &7# 开始绑定'
+        - '&8[&B&l左键_点击&8] &7# 开始绑定'
   '<':
     Type: LAST_PAGE
     display:
@@ -68,10 +67,12 @@ Icons:
     Type: DELETE
     display:
       mats: BARRIER
-      name: '&3# &C删除已读邮件'
-      lore:
-        - ''
-        - '&8[&f✧&8] &8[&B&l右键点击&8] &7# 删除已读邮件'
+      name: '&3# &C删除所有已读'
+  'G':
+    Type: GET_ALL
+    display:
+      mats: CHEST
+      name: '&3# &a领取所有附件'
   '#':
     Type: null
     display:

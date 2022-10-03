@@ -1,6 +1,5 @@
 package me .geek.mail.modules.settings
 
-import me.geek.mail.GeekMail
 import me.geek.mail.GeekMail.config
 import me.geek.mail.utils.colorify
 import org.bukkit.Bukkit
@@ -53,7 +52,10 @@ object SetTings {
         private set
     lateinit var CMD_MAIL: String
         private set
+
     lateinit var ITEM_MAIL: String
+        private set
+    var USE_BUNDLE: Boolean = false
         private set
 
     //
@@ -90,6 +92,8 @@ object SetTings {
         TEXT_MAIL = config.getString("MailType.TEXT_MAIL.tag")?.colorify() ?: "§f文本"
         CMD_MAIL = config.getString("MailType.CMD_MAIL.tag")?.colorify() ?: "§c系统"
         ITEM_MAIL = config.getString("MailType.ITEM_MAIL.tag")?.colorify() ?: "§6物品"
+        USE_BUNDLE = config.getBoolean("MailType.ITEM_MAIL.use_bundle")
+
 
         location = config.getString("Block.loc")?.split(",")?.let {
             Location(Bukkit.getWorld(it[0]), it[1].toDouble(), it[2].toDouble(), it[3].toDouble())

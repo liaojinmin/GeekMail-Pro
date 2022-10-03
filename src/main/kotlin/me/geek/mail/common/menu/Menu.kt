@@ -136,13 +136,12 @@ object Menu {
     private fun item(iconID: String, miconObj: List<Micon>): ItemStack {
         for (icon in miconObj) {
             if (icon.icon == iconID) {
-
                 if (icon.type == IconType.TEXT) {
                     return AIR
                 }
                 val itemStack = try {
                     if (icon.mats.contains("IA:")) {
-                        val meta = icon.mats.split(":".toRegex()).toTypedArray()
+                        val meta = icon.mats.split(":")
                         getItemsAdder(meta[1])
                     } else {
                         ItemStack(Material.valueOf(icon.mats), 1, icon.data.toShort())

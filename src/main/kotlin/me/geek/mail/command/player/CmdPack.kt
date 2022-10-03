@@ -36,10 +36,14 @@ object CmdPack: CmdExp {
                             if (KetherAPI.instantKether(senders, pack.condition).any as Boolean) {
                                 KetherAPI.instantKether(senders, pack.action)
                                 val target = Bukkit.getOfflinePlayer(context.args()[2]).uniqueId
-                                it.javaClass.invokeConstructor(arrayOf(
-                                    UUID.randomUUID().toString(), pack.title, pack.text,
-                                    senders.uniqueId.toString(), target.toString(), "未提取",
-                                    pack.additional, System.currentTimeMillis().toString(), "0", pack.itemStacks, pack.command)).sendMail()
+                                it.javaClass.invokeConstructor(
+                                    arrayOf(
+                                        UUID.randomUUID().toString(), pack.title, pack.text,
+                                        senders.uniqueId.toString(), target.toString(), "未提取",
+                                        pack.additional, System.currentTimeMillis().toString(), "0", pack.itemStacks, pack.command
+                                    )
+                                ).sendMail()
+
                             } else {
                                 KetherAPI.instantKether(senders, pack.deny)
                             }
