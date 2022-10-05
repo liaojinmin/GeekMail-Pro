@@ -1,6 +1,7 @@
 Template:
   # 模板唯一展示ID
   ID: "物品包"
+  Server: true
   Require:
     # 发送该邮件前判断条件 需要扣除玩家 1000 金币
     condition: 'Money hasTake *1000'

@@ -56,7 +56,7 @@ class Mail_Cmd(
         getTime = args[8]
     ) {
         if (args.size >= 11) {
-            command = args[10].split(",")
+            command = args[10].split(";")
             appendixInfo = appendixInfo.replace("{0}","${command!!.size}")
         } else {
             cmds = args[6]

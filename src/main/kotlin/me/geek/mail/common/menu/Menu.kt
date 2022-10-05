@@ -148,7 +148,7 @@ object Menu {
                     }
                 } catch (ing: IllegalArgumentException) {
                     ItemStack(Material.STONE, 1)
-                }
+                } ?: ItemStack(Material.STONE, 1)
                 val itemMeta = itemStack.itemMeta
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(icon.name.colorify())

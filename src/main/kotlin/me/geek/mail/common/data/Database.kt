@@ -121,6 +121,7 @@ class Database {
                 for (ps in players) {
                     val title = PlaceholderAPI.setPlaceholders(ps, mailDate.title)
                     val text = PlaceholderAPI.setPlaceholders(ps, mailDate.text)
+
                     val mailID = UUID.randomUUID().toString()
                     val target = ps.uniqueId.toString()
                     p.setString(1, mailID)
@@ -136,7 +137,7 @@ class Database {
                     }
                     p.setString(9, items)
                     if (mailDate.command != null) {
-                        command = Joiner.on(",").join(mailDate.command)
+                        command = Joiner.on(",").join(mailDate.command!!)
                     }
                     p.setString(10, command)
                     p.setString(11, mailDate.senderTime)
@@ -148,7 +149,7 @@ class Database {
                                 command!!
                             )!!
                         )
-                        sendMailMessage(mailDate.title, mailDate.text, null, ps.player)
+                        sendMailMessage(title, text, null, ps.player)
                     }
                     senderWebMail(mailDate.title, mailDate.text, mailDate.appendixInfo, ps.uniqueId)
                     p.addBatch()

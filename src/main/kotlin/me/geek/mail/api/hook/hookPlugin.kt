@@ -8,6 +8,8 @@ import dev.lone.itemsadder.api.Events.ItemsAdderFirstLoadEvent
 import me.arasple.mc.trhologram.api.base.ClickHandler
 import me.arasple.mc.trhologram.api.hologram.HologramBuilder
 import me.arasple.mc.trhologram.module.display.Hologram
+import me.arasple.mc.trhologram.module.display.texture.Texture
+import me.arasple.mc.trhologram.module.display.texture.TextureType
 import me.geek.mail.GeekMail
 import me.geek.mail.GeekMail.say
 import me.geek.mail.common.menu.Menu
@@ -33,8 +35,8 @@ object hookPlugin {
 
 
     @JvmStatic
-    fun getItemsAdder(id: String?): ItemStack {
-        return CustomStack.getInstance(id)!!.itemStack
+    fun getItemsAdder(id: String): ItemStack? {
+        return CustomStack.getInstance(id)?.itemStack
     }
 
     fun onHook() {
@@ -76,7 +78,8 @@ object hookPlugin {
                 val z = loc.z - -0.5
                 id = HologramBuilder(
                     UUID.randomUUID().toString(),
-                    Location(loc.world, x, y, z), 0.25, 32.0, null, -1, ClickHandler { _, _ -> }).apply {
+                    Location(loc.world, x, y, z), 0.25, 32.0, null, -1, ClickHandler { _, _ -> }
+                ).apply {
                     for (out in list) {
                         this.append(out)
                     }

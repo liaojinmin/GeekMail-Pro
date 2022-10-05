@@ -232,6 +232,7 @@ class MAction(private val player: Player, private val tag: Session, private val 
                         Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin) {
                             DataManage.update(mail)
                         }
+                     //   poxPlayer.sendMessage(poxPlayer.locale)
                         poxPlayer.sendLang("玩家-领取附件-成功", mail.appendixInfo)
                     } else {
                         if (mail.state != "无") {
@@ -386,10 +387,11 @@ class MAction(private val player: Player, private val tag: Session, private val 
                     } else {
                         ItemStack(Material.valueOf(micon.mats), 1, micon.data.toShort())
                     }
-
                 } catch (ing: IllegalArgumentException) {
                     ItemStack(Material.BOOK, 1)
-                }
+                } ?: ItemStack(Material.BOOK, 1)
+
+
 
                 val itemMeta = if (SetTings.USE_BUNDLE && itemStack.type == Material.BUNDLE) {
                     itemStack.itemMeta as BundleMeta
@@ -405,14 +407,14 @@ class MAction(private val player: Player, private val tag: Session, private val 
                         .replace("[getTime]", if (time < 1000) "未领取" else format.format(time))
                         .replace("[text]", mail.text.replace(";", ","))
                         .replace("[state]", mail.state)
-                        .replace("[item]", if (itemMeta is BundleMeta) "" else mail.appendixInfo)
+                        .replace("[item]", mail.appendixInfo)
                         .colorify().split(",")
 
                     if (mail.state == "未提取") {
                         itemMeta.addEnchant(Enchantment.DAMAGE_ALL, 1, true)
                         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
                     }
-                    if (itemMeta is BundleMeta && mail is Mail_Item) {
+                    if (itemMeta is BundleMeta) {
                         itemMeta.setItems(mail.itemStacks?.asList())
                         itemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS)
                     }

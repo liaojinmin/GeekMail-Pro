@@ -39,11 +39,12 @@ taboolib {
     relocate("com.zaxxer.hikari", "com.zaxxer.hikari_4_0_3_mail")
     relocate("javax.mail", "javax.mail_1_5_0_mail")
     classifier = null
-    version = "6.0.9-108"
+    version = "6.0.9-local"
 }
 
 repositories {
     mavenCentral()
+    mavenLocal()
     maven("https://repo.tabooproject.org/repository/releases")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")

@@ -24,7 +24,9 @@ import kotlin.system.measureTimeMillis
  * 时间: 2022/8/7
  */
 object Template {
+
     private val TEMP_PACK_MAP: MutableMap<String, Temp> = HashMap()
+    private val SERVER_PACK_MAP: MutableMap<String, Temp> = HashMap()
 
     fun onLoad() {
             val list = mutableListOf<File>()
@@ -45,6 +47,7 @@ object Template {
                 var command: String?
                 list.forEach { file ->
                     val var1 = SecuredFile.loadConfiguration(file)
+
                     packID = var1.getString("Template.ID")!!
                     condition = var1.getString("Template.Require.condition", "false")!!
                     action = var1.getString("Template.Require.action", "null")!!.replace("&", "§")
@@ -55,8 +58,9 @@ object Template {
                     additional = var1.getString("Template.package.appendix.additional", "0")!!
                     items = buildItemsString(var1.getStringList("Template.package.appendix.items"))
                     command = Joiner.on(";").join(var1.getStringList("Template.package.appendix.command"))
-                    TEMP_PACK_MAP[packID] =
-                        TempPack(packID, condition, action, deny, title, text, type, additional, items, command)
+                    if (var1.getBoolean("Template.Server")) {
+                        SERVER_PACK_MAP[packID] = TempPack(packID, condition, action, deny, title, text, type, additional, items, command)
+                    } else TEMP_PACK_MAP[packID] = TempPack(packID, condition, action, deny, title, text, type, additional, items, command)
                 }
             }.also {
                 say("§7已加载 &f${list.size} &7个邮件模板... §8(耗时 $it Ms)")
@@ -69,6 +73,9 @@ object Template {
 
     fun getTempPack(key: String): Temp {
         return TEMP_PACK_MAP[key]!!
+    }
+    fun getServerTempPack(key: String): Temp? {
+        return SERVER_PACK_MAP[key]
     }
 
     private fun forFile(file: File): List<File> {

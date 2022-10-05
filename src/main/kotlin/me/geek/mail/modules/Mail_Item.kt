@@ -17,6 +17,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.player.PlayerPickupItemEvent
 import org.bukkit.inventory.ItemStack
+import taboolib.common.platform.function.adaptPlayer
 import taboolib.module.nms.getI18nName
 import taboolib.platform.util.giveItem
 
@@ -160,7 +161,15 @@ class Mail_Item(
                     } else {
                         val manes = Stack.getI18nName(Bukkit.getPlayer(target))
 
-                        if (manes != "null") {
+                        /*
+                        Bukkit.getPlayer(target)?.let { it1 ->
+                            it1.sendMessage("runAppendixInfo： ${it1.locale}")
+                        }
+
+                         */
+
+
+                        if (manes != "[ERROR LOCALE]") {
                             lore.add(manes + " §7* §f" + Stack.amount)
                         } else {
                             index++

@@ -27,37 +27,38 @@ object Event {
     fun onloadEventPack() {
         val list = mutableListOf<File>()
         measureTimeMillis {
-            list.also {
-                it.addAll(forFile(saveDefaultEvent))
-            }
+            list.addAll(forFile(saveDefaultEvent))
             list.forEach { file ->
                 val event = Configuration.loadFromFile(file).getObject<EventPack>("event", false)
                 event.save()
             }
+
         }.also {
             GeekMail.say("§7已加载 &f${list.size} &7个自定义事件... §8(耗时 $it ms)")
         }
     }
 
-    fun EventPack.save() {
+
+    private fun EventPack.save() {
         EventPackCache[id] = this
     }
+
     fun get(): ConcurrentHashMap<String, EventPack> {
      return EventPackCache
     }
-    fun runAction(player: Player, list: MutableList<String>) {
-        list.forEach {
-            GeekMail.debug(it)
+
+    fun runAction(player: Player, action: MutableList<String>) {
+        action.forEach {
             val a = it.split(": ")
-            GeekMail.debug(a[0])
             when (a[0]) {
                 "sendTemPlate" -> {
-                    val pack = Template.getTempPack(a[1])
-                    MailManage.getMailData(pack.type)?.javaClass?.invokeConstructor(
-                        arrayOf(UUID.randomUUID().toString(), pack.title.replacePlaceholder(player), pack.text.replacePlaceholder(player),
-                        SetTings.Console.toString(), player.uniqueId.toString(), "未提取",
-                        pack.additional, System.currentTimeMillis().toString(), "0", pack.itemStacks, pack.command)
-                    )?.sendMail()
+                    Template.getServerTempPack(a[1])?.let { pack ->
+                        MailManage.getMailData(pack.type)?.javaClass?.invokeConstructor(
+                            arrayOf(UUID.randomUUID().toString(), pack.title.replacePlaceholder(player), pack.text.replacePlaceholder(player),
+                                SetTings.Console.toString(), player.uniqueId.toString(), "未提取",
+                                pack.additional, System.currentTimeMillis().toString(), "0", pack.itemStacks, pack.command)
+                        )?.sendMail()
+                    }
                 }
             }
         }
