@@ -39,7 +39,7 @@ taboolib {
     relocate("com.zaxxer.hikari", "com.zaxxer.hikari_4_0_3_mail")
     relocate("javax.mail", "javax.mail_1_5_0_mail")
     classifier = null
-    version = "6.0.9-local"
+    version = "6.0.9-111"
 }
 
 repositories {
