@@ -29,7 +29,6 @@ Template:
       &B
     type: MAIL_CMD
     appendix:
-      additional: 100
       command:
         - 'money give %player_name% 100'
         - 'say 尊敬的 %player_name% 现在是北京时间 %server_time_hh_mm_ss%'
