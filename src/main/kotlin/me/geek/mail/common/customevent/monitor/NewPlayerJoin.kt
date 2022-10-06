@@ -1,10 +1,9 @@
-package me.geek.mail.common.event.monitor
+package me.geek.mail.common.customevent.monitor
 
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.event.NewPlayerJoinEvent
-import me.geek.mail.common.event.Event
-import me.geek.mail.common.event.sub.EventPack
-import me.geek.mail.common.event.sub.EventType
+import me.geek.mail.common.customevent.Event
+import me.geek.mail.common.customevent.sub.EventType
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 

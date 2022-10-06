@@ -4,7 +4,7 @@ package me.geek.mail
 import me.geek.mail.api.hook.hookPlugin
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.common.data.Database
-import me.geek.mail.common.event.Event
+import me.geek.mail.common.customevent.Event
 import me.geek.mail.common.menu.Menu
 import me.geek.mail.common.template.Template
 import me.geek.mail.modules.*
@@ -43,11 +43,14 @@ object GeekMail : Plugin() {
       private set
 
     val instance by lazy { BukkitPlugin.getInstance() }
-    const val VERSION = 2.03
-    val BukkitVersion = Bukkit.getVersion().substringAfter("MC:").filter { it.isDigit() }.toInt()
-    var plugin_status: Boolean = false
 
-    val DataManage = Database()
+    const val VERSION = 2.04
+
+    val BukkitVersion = Bukkit.getVersion().substringAfter("MC:").filter { it.isDigit() }.toInt()
+
+    var plugin_status: Boolean = false // 插件状态
+
+    val DataManage = Database() // 数据库管理器
 
 
     override fun onLoad() {
@@ -59,13 +62,12 @@ object GeekMail : Plugin() {
 
     override fun onEnable() {
         runLogo()
-        title()
 
         config.onReload { SetTings.onLoad() }
+        SetTings.onLoad() // 插件配置加载
 
         Event.onloadEventPack() // 自定义事件加载
 
-        SetTings.onLoad() // 插件配置加载
 
         Template.onLoad() // 邮件模板加载
 
@@ -76,15 +78,17 @@ object GeekMail : Plugin() {
 
         hookPlugin.onHook()
 
-        register() // 注册邮件类型
 
+        register() // 注册邮件类型
         plugin_status = true
     }
 
 
     override fun onDisable() {
         plugin_status = false
+
         Menu.closeGui()
+
         DataManage.closeData()
     }
 
@@ -107,12 +111,7 @@ object GeekMail : Plugin() {
                 console().sendMessage("§8[§6GeekMail§8] ${msg.replace("&", "§")}")
         }
     }
-    private fun title() {
-        console().sendMessage("")
-        console().sendMessage("       §aGeekMail  §bv$VERSION §7by §awww.geekcraft.ink")
-        console().sendMessage("       §8适用于Bukkit: §71.12.2-1.18.2 §8当前: §7")
-        console().sendMessage("")
-    }
+
 
     private fun register() {
         measureTimeMillis {
@@ -134,6 +133,9 @@ object GeekMail : Plugin() {
         console().sendMessage("\\    \\_\\  \\  ___/\\  ___/|    </    Y    \\/ __ \\|  |  |__ /_____/ |    |     |  | \\(  <_> )")
         console().sendMessage(" \\______  /\\___  >\\___  >__|_ \\____|__  (____  /__|____/         |____|     |__|   \\____/ ")
         console().sendMessage("        \\/     \\/     \\/     \\/       \\/     \\/   ")
+        console().sendMessage("")
+        console().sendMessage("       §aGeekMail§8-§6Pro  §bv$VERSION §7by §awww.geekcraft.ink")
+        console().sendMessage("       §8适用于Bukkit: §71.12.2-1.19.2 §8当前: §7 ${Bukkit.getServer().version}")
+        console().sendMessage("")
     }
-
 }

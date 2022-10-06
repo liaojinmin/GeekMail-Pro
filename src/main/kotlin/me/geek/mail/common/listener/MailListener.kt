@@ -7,7 +7,9 @@ import me.geek.mail.api.mail.MailManage
 import me.geek.mail.api.mail.event.NewPlayerJoinEvent
 import me.geek.mail.common.menu.MAction
 import me.geek.mail.common.menu.Menu
+import me.geek.mail.common.menu.Menu.openMenu
 import me.geek.mail.modules.settings.SetTings
+import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
@@ -73,6 +75,16 @@ object MailListener {
                         }
                     }
                 }
+            }
+        }
+    }
+    @SubscribeEvent(priority = EventPriority.HIGH, ignoreCancelled = true)
+    fun onCommand(e: PlayerCommandPreprocessEvent) {
+        val message = e.message.removePrefix("/")
+        if (message.isNotBlank()) {
+            Menu.getMenuCommand(message)?.let {
+                e.isCancelled = true
+                e.player.openMenu(it)
             }
         }
     }

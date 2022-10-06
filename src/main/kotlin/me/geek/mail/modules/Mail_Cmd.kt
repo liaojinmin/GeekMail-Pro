@@ -65,10 +65,6 @@ class Mail_Cmd(
         appendixInfo = appendixInfo.replace("{0}","${command?.size}")
     }
 
-    override fun sendMail() {
-        appendixInfo = appendixInfo.replace("{0}","${command?.size}")
-        super.sendMail()
-    }
 
     override fun giveAppendix() {
         Bukkit.getPlayer(target)?.let {

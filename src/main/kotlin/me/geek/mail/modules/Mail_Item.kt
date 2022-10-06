@@ -3,12 +3,12 @@ package me.geek.mail.modules
 import com.google.common.base.Joiner
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailManage
+import me.geek.mail.api.mail.MailManage.sound
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.menu.Menu
 import me.geek.mail.common.serialize.base64.StreamSerializer
 import java.util.UUID
 import org.bukkit.Bukkit
-import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.HandlerList
@@ -17,7 +17,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.player.PlayerPickupItemEvent
 import org.bukkit.inventory.ItemStack
-import taboolib.common.platform.function.adaptPlayer
 import taboolib.module.nms.getI18nName
 import taboolib.platform.util.giveItem
 
@@ -79,9 +78,7 @@ class Mail_Item(
 
     override fun sendMail() {
         if (itemStacks == null) {
-            Bukkit.getPlayer(this.sender)?.let {
-                action(it)
-            }
+            Bukkit.getPlayer(this.sender)?.action()
         } else {
             super.sendMail()
         }
@@ -94,10 +91,12 @@ class Mail_Item(
             }
         }
     }
-    private fun action(player: Player) {
-        Menu.isOpen.add(player)
-        player.openInventory(Bukkit.createInventory(player, 27, "§0放入物品 §7| §0关闭菜单 "))
-        MailManage.Sound(player, "BLOCK_NOTE_BLOCK_HARP", 1f, 1f)
+    private fun Player.action() {
+        Menu.isOpen.add(this)
+        this.openInventory(Bukkit.createInventory(player, 27, "§0放入物品 §7| §0关闭菜单 "))
+
+        this.sound("BLOCK_NOTE_BLOCK_HARP", 1f, 1f)
+
         GeekMail.debug("开启物品UI")
         Bukkit.getPluginManager().registerEvents(object : Listener {
             @EventHandler
@@ -134,7 +133,7 @@ class Mail_Item(
 
                     } else {
                         for (item in e.inventory) {
-                            player.inventory.addItem(item)
+                            this@action.inventory.addItem(item)
                         }
                     }
                     // 无论任何注销所以已注册监听器

@@ -8,6 +8,7 @@ import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.subCommand
+import taboolib.common.util.asList
 import taboolib.library.reflex.Reflex.Companion.invokeConstructor
 import java.util.UUID
 
@@ -26,7 +27,7 @@ object CmdSend: CmdExp {
             }
             dynamic("邮件种类") {
                 suggestion<CommandSender> { _, _ ->
-                    MailManage.getMailDataMap().keys.map { it }
+                    MailManage.getMailDataMap().map { it }
                 }
                 dynamic("标题") {
                     suggestion<CommandSender>(uncheck = true) { _, _ ->

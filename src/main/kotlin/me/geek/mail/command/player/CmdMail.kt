@@ -31,7 +31,7 @@ object CmdMail: CmdExp {
             }
             dynamic("邮件种类") {
                 suggestion<CommandSender> { _, _ ->
-                    MailManage.getMailDataMap().keys.map { it }
+                    MailManage.getMailDataMap().map { it }
                 }
                 dynamic("标题") {
                     suggestion<CommandSender>(uncheck = true) { _, _ ->

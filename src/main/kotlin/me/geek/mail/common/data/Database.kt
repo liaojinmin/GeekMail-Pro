@@ -3,9 +3,8 @@ package me.geek.mail.common.data
 import com.google.common.base.Joiner
 import me.clip.placeholderapi.PlaceholderAPI
 import me.geek.mail.GeekMail.debug
-import me.geek.mail.api.mail.MailManage.addTargetCache
 import me.geek.mail.api.mail.MailManage.buildMailClass
-import me.geek.mail.api.mail.MailManage.sendMailMessage
+
 import me.geek.mail.api.mail.MailManage.senderWebMail
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.data.sub.*
@@ -13,8 +12,6 @@ import me.geek.mail.common.data.sub.MailPlayerData.Companion.defaut_Data
 import me.geek.mail.common.serialize.base64.StreamSerializer
 import me.geek.mail.modules.settings.SetTings.DATA_TYPE
 import org.bukkit.OfflinePlayer
-import org.bukkit.entity.Player
-import taboolib.platform.compat.replacePlaceholder
 import java.sql.Connection
 import java.util.*
 import kotlin.collections.ArrayList
@@ -116,8 +113,8 @@ class Database {
                 "INSERT INTO maildata(`mail_id`,`state`,`type`,`sender`,`target`,`title`,`text`,`additional`,`item`,`commands`,`sendertime`,`gettime`) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)"
             ).run { p ->
                 val sender = mailDate.sender.toString()
-                var items: String? = "null"
-                var command: String? = ""
+                var items = "null"
+                var command = ""
                 for (ps in players) {
                     val title = PlaceholderAPI.setPlaceholders(ps, mailDate.title)
                     val text = PlaceholderAPI.setPlaceholders(ps, mailDate.text)
@@ -143,13 +140,16 @@ class Database {
                     p.setString(11, mailDate.senderTime)
                     p.setString(12, mailDate.getTime)
                     if (ps.isOnline) {
-                        addTargetCache(
-                            ps.uniqueId, buildMailClass(mailID,
-                                mailDate.name, title, text, sender, target, mailDate.state, mailDate.additional!!, mailDate.senderTime, mailDate.getTime, items!!,
-                                command!!
-                            )!!
-                        )
-                        sendMailMessage(title, text, null, ps.player)
+                        buildMailClass(
+                            mailID,
+                            mailDate.name,
+                            title, text,
+                            sender, target,
+                            mailDate.state,
+                            mailDate.additional!!, mailDate.senderTime, mailDate.getTime, items, command
+                            )?.sendMail()
+
+                       // sendMailMessage(title, text, null, ps.player)
                     }
                     senderWebMail(mailDate.title, mailDate.text, mailDate.appendixInfo, ps.uniqueId)
                     p.addBatch()

@@ -5,6 +5,8 @@ import me.geek.mail.api.mail.event.MailReceiveEvent
 import me.geek.mail.api.mail.event.MailSenderEvent
 import me.geek.mail.modules.settings.SetTings
 import org.bukkit.Bukkit
+import taboolib.common.platform.function.adaptPlayer
+import taboolib.module.lang.sendLang
 import java.util.*
 
 /**
@@ -24,19 +26,24 @@ abstract class MailSub : Mail {
         Bukkit.getScheduler().scheduleAsyncDelayedTask(GeekMail.instance) {
             val send = Bukkit.getPlayer(sender)
             val targets = Bukkit.getPlayer(target)
+
             if (sender == SetTings.Console) {
                 if (targets != null) {
                     MailManage.addTargetCache(target, this)
                 }
             } else {
+                var targetName = "目标"
                 if (targets != null) {
+                    targetName = targets.name
                     MailManage.addTargetCache(target, this)
+                    adaptPlayer(targets).sendLang("玩家-接收邮件", title)
                 }
                 if (send != null) {
                     MailManage.addSenderCache(sender, this)
+                    adaptPlayer(send).sendLang("玩家-发送邮件", targetName)
                 }
             }
-            MailManage.sendMailMessage(title, text, send, targets)
+
             GeekMail.DataManage.insertMailData(this)
         }
 

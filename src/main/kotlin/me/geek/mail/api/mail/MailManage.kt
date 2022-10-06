@@ -28,9 +28,7 @@ object MailManage {
     private val senderCache: MutableMap<UUID, MutableList<MailSub>> = ConcurrentHashMap()
     private val targetCache: MutableMap<UUID, MutableList<MailSub>> = ConcurrentHashMap()
     private val MailData: MutableMap<String, MailSub> = HashMap()
-
-
-    private val WebMail = if (SetTings.SMTP_SET) { WebManager() } else null
+    private val WebMail by lazy { if (SetTings.SMTP_SET) { WebManager() } else null }
 
     /**
      * 发送web邮件提醒
@@ -50,17 +48,16 @@ object MailManage {
     }
 
     @JvmStatic
-    fun buildMail(
+    fun senderMail(
         @NotNull mailType: String, @NotNull title: String, @NotNull text: String,
-        @NotNull senderUuid: UUID, @NotNull targetUuid: UUID, additional: String, cmd: String, item: Array<ItemStack>?): MailSub? {
+        @NotNull senderUuid: UUID, @NotNull targetUuid: UUID, additional: String, cmd: String, item: Array<ItemStack>?) {
          if (MailData.containsKey(mailType)) {
              val senderTime = System.currentTimeMillis().toString()
              val getTime = "0"
              val items = StreamSerializer.serializeItemStacks(item)
              val args = arrayOf(UUID.randomUUID(), title, text, senderUuid, targetUuid, "未提取", additional, senderTime, getTime, items, cmd)
-             return MailData[mailType]?.javaClass?.invokeConstructor(args)
+             MailData[mailType]?.javaClass?.invokeConstructor(args)?.sendMail()
          }
-        return null
     }
 
     /**
@@ -84,13 +81,21 @@ object MailManage {
     }
 
 
-
+    /**
+     * @param mailType 邮件种类名称
+     * @return 种类对象 如果不存在则 null
+     * 使用: getMailData("MAIL_ITEM")
+     */
     fun getMailData(mailType: String) : MailSub? {
         return MailData[mailType]
     }
 
-    fun getMailDataMap(): MutableMap<String, MailSub> {
-        return MailData
+    /**
+     * 获取邮件类型 缓存键
+     * @return 所有已注册 邮件类型 Key
+     */
+    fun getMailDataMap(): MutableSet<String> {
+        return MailData.keys
     }
 
     /**
@@ -152,25 +157,6 @@ object MailManage {
             say("缓存 null 异常")
         }
     }
-    /*
-    fun TestIndexTofTarget(targetUuid: UUID, mailID: UUID) {
-        if (targetCache.containsKey(targetUuid)) {
-            targetCache.forEach { (key: UUID, value: MutableList<MailSub>) ->
-                if (key == targetUuid) {
-                    value.forEach {
-                        if (it.mailID == mailID) {
-                            GeekMail.debug("缓存的邮件状态: ${it.state}")
-                        }
-                    }
-                }
-            }
-        } else {
-            say("缓存 null 异常")
-        }
-    }
-
-     */
-
 
     fun getTargetCache(@NotNull uuid: UUID): MutableList<MailSub> {
         if (targetCache.containsKey(uuid)) {
@@ -183,6 +169,7 @@ object MailManage {
         return targetCache.containsKey(uuid)
     }
 
+    /*
     fun sendMailMessage(title: String, text: String, vararg player: Player?) {
 
         // 0 发送者  1 接收者
@@ -192,7 +179,6 @@ object MailManage {
             }
             player[1]?.let { v ->
                 adaptPlayer(v).sendLang("玩家-接收邮件", title)
-
                 /**
                  * if (MinecraftVersion.INSTANCE.getMajorLegacy() >= 11300) {
                  * NMSKt.sendToast(player[1], Material.BOOK,"你有新的邮件待查看！", ToastFrame.TASK, ToastBackground.END);
@@ -201,14 +187,16 @@ object MailManage {
         } catch (ignored: IllegalArgumentException) { }
     }
 
+     */
 
-    fun Sound(player: Player, name: String, volume: Float, potch: Float) {
+
+    fun Player.sound(name: String, volume: Float, potch: Float) {
         val sound: XSound = try {
             XSound.valueOf(name)
         } catch (e: Throwable) {
             say("未知音效: $name")
             return
         }
-        sound.play(player, volume, potch)
+        sound.play(this, volume, potch)
     }
 }

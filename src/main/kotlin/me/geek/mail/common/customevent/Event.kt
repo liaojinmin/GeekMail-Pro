@@ -1,8 +1,8 @@
-package me.geek.mail.common.event
+package me.geek.mail.common.customevent
 
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailManage
-import me.geek.mail.common.event.sub.EventPack
+import me.geek.mail.common.customevent.sub.EventPack
 import me.geek.mail.modules.settings.SetTings
 import me.geek.mail.common.template.Template
 import org.bukkit.entity.Player

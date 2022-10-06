@@ -7,6 +7,7 @@ import me.geek.mail.GeekMail.DataManage
 import me.geek.mail.GeekMail.say
 import me.geek.mail.api.hook.hookPlugin
 import me.geek.mail.api.mail.MailManage
+import me.geek.mail.api.mail.MailManage.sound
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.catcher.Chat
 import me.geek.mail.common.menu.sub.IconType.*
@@ -71,7 +72,7 @@ class MAction(private val player: Player, private val tag: Session, private val 
             inv.contents = contents[0]
         }
 
-        MailManage.Sound(player, "BLOCK_NOTE_BLOCK_HARP",1f, 1f)
+        player.sound("BLOCK_NOTE_BLOCK_HARP",1f, 1f)
         player.openInventory(inv)
         Bukkit.getPluginManager().registerEvents(object : Listener {
             var cd: Long = 0
@@ -95,9 +96,9 @@ class MAction(private val player: Player, private val tag: Session, private val 
                                         if (contents.size > page + 1) {
                                             page += 1
                                             inv.contents = contents[page]
-                                            MailManage.Sound(player, "BLOCK_SCAFFOLDING_BREAK",1f, 1f)
+                                            player.sound("BLOCK_SCAFFOLDING_BREAK",1f, 1f)
                                         } else {
-                                            MailManage.Sound(player, "BLOCK_NOTE_BLOCK_DIDGERIDOO",1f, 1f)
+                                            player.sound("BLOCK_NOTE_BLOCK_DIDGERIDOO",1f, 1f)
                                         }
                                         return
                                     }
@@ -105,9 +106,9 @@ class MAction(private val player: Player, private val tag: Session, private val 
                                         if (page != 0) {
                                             page -= 1
                                             inv.contents = contents[page]
-                                            MailManage.Sound(player, "BLOCK_SCAFFOLDING_BREAK",1f, 1f)
+                                            player.sound("BLOCK_SCAFFOLDING_BREAK",1f, 1f)
                                         } else {
-                                            MailManage.Sound(player, "BLOCK_NOTE_BLOCK_DIDGERIDOO",1f, 1f)
+                                            player.sound("BLOCK_NOTE_BLOCK_DIDGERIDOO",1f, 1f)
                                         }
                                         return
                                     }
@@ -119,9 +120,9 @@ class MAction(private val player: Player, private val tag: Session, private val 
                                         if (mail.size >= 1) {
                                             onDeleteAll()
                                             player.closeInventory()
-                                            MailManage.Sound(player, "BLOCK_SOUL_SAND_STEP",0.7f, 1f)
+                                            player.sound("BLOCK_SOUL_SAND_STEP",0.7f, 1f)
                                         } else {
-                                            MailManage.Sound(player, "BLOCK_NOTE_BLOCK_DIDGERIDOO",0.7f, 1f)
+                                            player.sound("BLOCK_NOTE_BLOCK_DIDGERIDOO",0.7f, 1f)
                                         }
                                         return
                                     }
@@ -151,9 +152,9 @@ class MAction(private val player: Player, private val tag: Session, private val 
                                         if (mail.size >= 1) {
                                             onGetRewardAll()
                                             player.closeInventory()
-                                            MailManage.Sound(player, "BLOCK_SOUL_SAND_STEP",0.7f, 1f)
+                                            player.sound("BLOCK_SOUL_SAND_STEP",0.7f, 1f)
                                         } else {
-                                            MailManage.Sound(player, "BLOCK_NOTE_BLOCK_DIDGERIDOO",0.7f, 1f)
+                                            player.sound("BLOCK_NOTE_BLOCK_DIDGERIDOO",0.7f, 1f)
                                         }
                                         return
                                     }
@@ -267,12 +268,12 @@ class MAction(private val player: Player, private val tag: Session, private val 
                     // 发送邮件删除消息
                     poxPlayer.sendLang("玩家-删除邮件-成功")
 
-                    MailManage.Sound(player, "BLOCK_NOTE_BLOCK_DIDGERIDOO",1f, 2f)
+                    player.sound("BLOCK_NOTE_BLOCK_DIDGERIDOO",1f, 2f)
                 } else {
                     // 发送邮件不可删除消息
 
                     poxPlayer.sendLang("玩家-删除邮件-失败")
-                    MailManage.Sound(player, "BLOCK_NOTE_BLOCK_DIDGERIDOO",1f, 1f)
+                    player.sound("BLOCK_NOTE_BLOCK_DIDGERIDOO",1f, 1f)
                 }
             }
         }

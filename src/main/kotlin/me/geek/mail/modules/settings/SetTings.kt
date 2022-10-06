@@ -1,4 +1,4 @@
-package me .geek.mail.modules.settings
+package me.geek.mail.modules.settings
 
 import me.geek.mail.GeekMail.config
 import me.geek.mail.utils.colorify

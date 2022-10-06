@@ -1,4 +1,4 @@
-package me.geek.mail.common.event.sub
+package me.geek.mail.common.customevent.sub
 
 /**
  * 作者: 老廖
