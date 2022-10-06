@@ -16,7 +16,7 @@ Icons:
   M:
     Type: text
     display:
-      mats: BOOk #BUNDLE
+      mats: BOOK #BUNDLE
       name: '&7主题: &f[title]'
       lore:
         - ''
@@ -51,7 +51,7 @@ Icons:
   '<':
     Type: LAST_PAGE
     display:
-      mats: 'IA:LAST_PAGE' # 使用 ItemsAdder 格式
+      mats: 'IRON_DOOR' # 使用 ItemsAdder 格式
       #mats: IRON_DOOR
       name: '&3# &b跳转至'
       lore:

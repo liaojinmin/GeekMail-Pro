@@ -11,8 +11,8 @@ import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.catcher.Chat
 import me.geek.mail.common.menu.sub.IconType.*
 import me.geek.mail.common.menu.sub.Session
-import me.geek.mail.modules.Mail_Item
 import me.geek.mail.modules.settings.SetTings
+import me.geek.mail.modules.settings.isBundleMeta
 import me.geek.mail.utils.colorify
 
 import org.bukkit.Bukkit
@@ -380,22 +380,18 @@ class MAction(private val player: Player, private val tag: Session, private val 
                 val name = micon.name
 
                 val itemStack = try {
-
-                    if (micon.mats.contains("IA:")) {
-                        val meta = micon.mats.split(":")
-                        hookPlugin.getItemsAdder(meta[1])
+                    if (micon.mats.contains("IA:", ignoreCase = true)) {
+                        hookPlugin.getItemsAdder(micon.mats.substring(3)) ?: ItemStack(Material.BOOK, 1)
                     } else {
                         ItemStack(Material.valueOf(micon.mats), 1, micon.data.toShort())
                     }
                 } catch (ing: IllegalArgumentException) {
                     ItemStack(Material.BOOK, 1)
-                } ?: ItemStack(Material.BOOK, 1)
+                }
 
 
 
-                val itemMeta = if (SetTings.USE_BUNDLE && itemStack.type == Material.BUNDLE) {
-                    itemStack.itemMeta as BundleMeta
-                } else itemStack.itemMeta
+                val itemMeta = if (SetTings.USE_BUNDLE && mail.name == "MAIL_ITEM") itemStack.itemMeta as BundleMeta else itemStack.itemMeta
 
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(name.replace("[title]", mail.title).colorify())
@@ -414,7 +410,7 @@ class MAction(private val player: Player, private val tag: Session, private val 
                         itemMeta.addEnchant(Enchantment.DAMAGE_ALL, 1, true)
                         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
                     }
-                    if (itemMeta is BundleMeta) {
+                    if (isBundleMeta && itemMeta is BundleMeta) {
                         itemMeta.setItems(mail.itemStacks?.asList())
                         itemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS)
                     }

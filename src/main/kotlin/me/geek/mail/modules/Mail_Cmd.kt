@@ -55,16 +55,13 @@ class Mail_Cmd(
         senderTime = args[7],
         getTime = args[8]
     ) {
-        if (args.size >= 11) {
-            command = args[10].split(";")
-            appendixInfo = appendixInfo.replace("{0}","${command!!.size}")
-        } else {
-            cmds = args[6]
-        }
+        if (args.size >= 11) command = args[10].split(";") else cmds = args[6]
+        appendixInfo = appendixInfo.replace("{0}","${command?.size}")
     }
 
     override fun sendMail() {
         command = cmds.split(";")
+        appendixInfo = appendixInfo.replace("{0}","${command?.size}")
         super.sendMail()
     }
 
