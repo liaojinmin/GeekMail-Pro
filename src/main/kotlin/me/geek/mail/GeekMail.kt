@@ -1,7 +1,7 @@
 package me.geek.mail
 
 
-import me.geek.mail.api.hook.hookPlugin
+import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.common.data.Database
 import me.geek.mail.common.customevent.Event
@@ -68,15 +68,12 @@ object GeekMail : Plugin() {
 
         Event.onloadEventPack() // 自定义事件加载
 
-
         Template.onLoad() // 邮件模板加载
 
         DataManage.start() // 启动数据库
-        if (Bukkit.getPluginManager().getPlugin("ItemsAdder") == null) {
-            Menu.loadMenu()
-        }
 
-        hookPlugin.onHook()
+        HookPlugin.onHook() // 挂钩软依赖
+
 
 
         register() // 注册邮件类型
@@ -98,7 +95,7 @@ object GeekMail : Plugin() {
     @JvmStatic
     fun say(msg: String) {
         if (BukkitVersion >= 1160)
-            console().sendMessage("&8[<g#2:#FF00FF:#FFFAFA>GeekMail&8] &7$msg".colorify())
+            console().sendMessage("&8[<g#2:#FFB5C5:#EE0000>GeekMail&8] &7$msg".colorify())
         else
             console().sendMessage("§8[§6GeekMail§8] ${msg.replace("&", "§")}")
     }
@@ -106,7 +103,7 @@ object GeekMail : Plugin() {
     fun debug(msg: String) {
         if(SetTings.DeBug) {
             if (BukkitVersion >= 1160)
-                console().sendMessage("&8[<g#2:#FF00FF:#FFFAFA>GeekMail&8] &cDeBug &8| &7$msg".colorify())
+                console().sendMessage("&8[<g#2:#FFB5C5:#EE0000>GeekMail&8] &cDeBug &8| &7$msg".colorify())
             else
                 console().sendMessage("§8[§6GeekMail§8] ${msg.replace("&", "§")}")
         }
@@ -117,10 +114,11 @@ object GeekMail : Plugin() {
         measureTimeMillis {
             MailManage.register(Mail_Exp())
             MailManage.register(Mail_Money())
-            if (Bukkit.getServer().pluginManager.getPlugin("PlayerPoints") != null) MailManage.register(Mail_Points())
+            MailManage.register(Mail_Points())
             MailManage.register(Mail_Text())
             MailManage.register(Mail_Item())
             MailManage.register(Mail_Cmd())
+            MailManage.register(Mail_Normal())
         }.also {
             say("&7已注册 &f${MailManage.getMailDataMap().size} &7种邮件类型... §8(耗时 $it Ms)")
         }

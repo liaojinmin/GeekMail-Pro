@@ -5,7 +5,7 @@ import com.google.common.base.Joiner
 import me.geek.mail.GeekMail
 import me.geek.mail.GeekMail.DataManage
 import me.geek.mail.GeekMail.say
-import me.geek.mail.api.hook.hookPlugin
+import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.api.mail.MailManage.sound
 import me.geek.mail.api.mail.MailSub
@@ -13,7 +13,7 @@ import me.geek.mail.common.catcher.Chat
 import me.geek.mail.common.menu.sub.IconType.*
 import me.geek.mail.common.menu.sub.Session
 import me.geek.mail.modules.settings.SetTings
-import me.geek.mail.modules.settings.isBundleMeta
+import me.geek.mail.modules.settings.SetTings.isBundleMeta
 import me.geek.mail.utils.colorify
 
 import org.bukkit.Bukkit
@@ -381,8 +381,8 @@ class MAction(private val player: Player, private val tag: Session, private val 
                 val name = micon.name
 
                 val itemStack = try {
-                    if (micon.mats.contains("IA:", ignoreCase = true)) {
-                        hookPlugin.getItemsAdder(micon.mats.substring(3)) ?: ItemStack(Material.BOOK, 1)
+                    if (micon.mats.contains("IA:", ignoreCase = true) && HookPlugin.itemsAdder.isHook) {
+                        HookPlugin.itemsAdder.getItem(micon.mats.substring(3))
                     } else {
                         ItemStack(Material.valueOf(micon.mats), 1, micon.data.toShort())
                     }
@@ -390,22 +390,12 @@ class MAction(private val player: Player, private val tag: Session, private val 
                     ItemStack(Material.BOOK, 1)
                 }
 
-
-
-                val itemMeta = if (SetTings.USE_BUNDLE && mail.name == "MAIL_ITEM") itemStack.itemMeta as BundleMeta else itemStack.itemMeta
+                val itemMeta = if (SetTings.USE_BUNDLE) itemStack.itemMeta as BundleMeta else itemStack.itemMeta
 
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(name.replace("[title]", mail.title).colorify())
-                    val time = mail.getTime.toLong()
-                    itemMeta.lore = Joiner.on(",").join(micon.lore)
-                        .replace("[type]", mail.mailType)
-                        .replace("[sender]", if (mail.sender == SetTings.Console) "系统" else Bukkit.getOfflinePlayer(mail.sender).name!!)
-                        .replace("[senderTime]", format.format(mail.senderTime.toLong()))
-                        .replace("[getTime]", if (time < 1000) "未领取" else format.format(time))
-                        .replace("[text]", mail.text.replace(";", ","))
-                        .replace("[state]", mail.state)
-                        .replace("[item]", mail.appendixInfo)
-                        .colorify().split(",")
+
+                    itemMeta.lore = mail.parseMailInfo(micon.lore)
 
                     if (mail.state == "未提取") {
                         itemMeta.addEnchant(Enchantment.DAMAGE_ALL, 1, true)

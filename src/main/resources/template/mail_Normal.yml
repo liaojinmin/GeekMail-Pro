@@ -1,0 +1,33 @@
+Template:
+  # 模板唯一展示ID
+  ID: "混合邮件预设"
+  Server: true #服务器内部模板，设置为 true 则不可使用指令发送
+  Require:
+    condition: ''
+    action: ''
+    deny: ''
+
+  package:
+    title: "&e混合邮件类型"
+    text: |-
+      &l
+      &B 多种附件类型的骚气邮件;
+      &B 赶紧来一发？;
+      &B
+    type: MAIL_NORMAL
+    appendix:
+      additional: MONEY:99999@POINTS:88888@EXP:7777777
+      command:
+        - 'money give %player_name% 100'
+        - 'say 尊敬的 %player_name% 现在是北京时间 %server_time_hh_mm_ss%'
+      items:
+        - 'material:ENCHANTED_GOLDEN_APPLE,amount:3'
+        - 'material:BREAD,amount:4'
+        - 'material:BREAD,amount:4'
+        - 'material:BREAD,amount:4'
+        - 'material:BREAD,amount:4'
+        - 'material:BREAD,amount:4'
+        - 'material:BREAD,amount:4'
+        - 'material:BREAD,amount:4'
+        - 'material:BREAD,amount:4'
+        - 'material:ENCHANTED_GOLDEN_APPLE,amount:3'

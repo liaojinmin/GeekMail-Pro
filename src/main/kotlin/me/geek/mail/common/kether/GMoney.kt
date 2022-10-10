@@ -3,7 +3,7 @@ package me.geek.mail.common.kether
 
 
 import me.geek.mail.common.kether.sub.KetherSub
-import me.geek.mail.api.hook.hookPlugin
+import me.geek.mail.api.hook.HookPlugin
 import taboolib.library.kether.ParsedAction
 import taboolib.library.kether.QuestContext
 import taboolib.module.kether.KetherParser
@@ -25,17 +25,11 @@ class GMoney(private val action: String, private val context: ParsedAction<*>): 
             var a = false
             val money = it.toString().toDouble()
             when (action) {
-                "give" -> hookPlugin.money.depositPlayer(player, money)
-                "take" -> hookPlugin.money.withdrawPlayer(player, money)
-                "has" -> a = hookPlugin.money.has(player, money)
-                "hasTake" -> {
-                    if (hookPlugin.money.has(player, money)) {
-                        a = true
-                        hookPlugin.money.withdrawPlayer(player, money)
-                    }
-                }
+                "give" -> HookPlugin.money.giveMoney(player, money)
+                "take" -> HookPlugin.money.takeMoney(player, money)
+                "has" -> a = HookPlugin.money.hasMoney(player, money)
+                "hasTake" -> a = HookPlugin.money.hasTakeMoney(player, money)
             }
-           // val a = false
             a
         }
     }

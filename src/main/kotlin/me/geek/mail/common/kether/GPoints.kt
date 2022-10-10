@@ -2,7 +2,7 @@ package me.geek.mail.common.kether
 
 
 import me.geek.mail.common.kether.sub.KetherSub
-import me.geek.mail.api.hook.hookPlugin
+import me.geek.mail.api.hook.HookPlugin
 import taboolib.library.kether.ParsedAction
 import taboolib.library.kether.QuestContext
 import taboolib.module.kether.KetherParser
@@ -22,15 +22,10 @@ class GPoints(private val  action: String, private val context: ParsedAction<*>)
             var a = false
             val points = it.toString().toInt()
             when (action) {
-                "give" -> hookPlugin.points.give(player, points)
-                "take" -> hookPlugin.points.take(player, points)
-                "has" -> a = hookPlugin.points.look(player) >= points
-                "hasTake" -> {
-                    if (hookPlugin.points.look(player) >= points) {
-                        a = true
-                        hookPlugin.points.take(player, points)
-                    }
-                }
+                "give" -> HookPlugin.points.givePoints(player, points)
+                "take" -> HookPlugin.points.takePoints(player, points)
+                "has" -> a = HookPlugin.points.hasPoints(player, points)
+                "hasTake" -> a= HookPlugin.points.hasTakePoints(player, points)
             }
             a
         }

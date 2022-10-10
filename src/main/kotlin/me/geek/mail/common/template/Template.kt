@@ -5,10 +5,11 @@ import me.geek.mail.GeekMail
 import me.geek.mail.GeekMail.instance
 import me.geek.mail.GeekMail.say
 
-import me.geek.mail.common.serialize.base64.StreamSerializer
+
 import me.geek.mail.common.template.Sub.Temp
 import me.geek.mail.common.template.Sub.TempPack
 import me.geek.mail.utils.colorify
+import taboolib.expansion.geek.serialize.serializeItemStacks
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.releaseResourceFile
 import taboolib.library.xseries.XMaterial
@@ -35,29 +36,20 @@ object Template {
                 list.also {
                     it.addAll(forFile(saveDefaultMenu))
                 }
-                var packID: String
-                var condition: String
-                var action: String
-                var deny: String
-                var title: String
-                var text: String
-                var type: String
-                var additional: String
-                var items: String?
-                var command: String?
+
                 list.forEach { file ->
                     val var1 = SecuredFile.loadConfiguration(file)
-
-                    packID = var1.getString("Template.ID")!!
-                    condition = var1.getString("Template.Require.condition", "false")!!
-                    action = var1.getString("Template.Require.action", "null")!!.replace("&", "§")
-                    deny = var1.getString("Template.Require.deny", "null")!!.replace("&", "§")
-                    title = var1.getString("Template.package.title")!!.colorify()
-                    text = var1.getString("Template.package.text")!!.colorify().replace("\n", "")
-                    type = var1.getString("Template.package.type")!!.uppercase(Locale.ROOT)
-                    additional = var1.getString("Template.package.appendix.additional", "0")!!
-                    items = buildItemsString(var1.getStringList("Template.package.appendix.items"))
-                    command = Joiner.on(";").join(var1.getStringList("Template.package.appendix.command"))
+                    val packID: String = var1.getString("Template.ID")!!
+                    val condition: String = var1.getString("Template.Require.condition", "false")!!
+                    val action: String = var1.getString("Template.Require.action", "null")!!.replace("&", "§")
+                    val deny: String = var1.getString("Template.Require.deny", "null")!!.replace("&", "§")
+                    val title: String = var1.getString("Template.package.title")!!.colorify()
+                    val text: String = var1.getString("Template.package.text")!!.colorify().replace("\n", "")
+                    val type: String = var1.getString("Template.package.type")!!.uppercase(Locale.ROOT)
+                    val additional: String = var1.getString("Template.package.appendix.additional", "0")!!
+                    val items: String = buildItemsString(var1.getStringList("Template.package.appendix.items"))
+                    val command: String = Joiner.on(";").join(var1.getStringList("Template.package.appendix.command"))
+                    GeekMail.debug("$packID-command: $command")
                     if (var1.getBoolean("Template.Server")) {
                         SERVER_PACK_MAP[packID] = TempPack(packID, condition, action, deny, title, text, type, additional, items, command)
                     } else TEMP_PACK_MAP[packID] = TempPack(packID, condition, action, deny, title, text, type, additional, items, command)
@@ -129,7 +121,7 @@ object Template {
                 }
 
             }
-            return StreamSerializer.serializeItemStacks(item.toTypedArray())
+            return item.toTypedArray().serializeItemStacks()
         }
         return "null"
     }

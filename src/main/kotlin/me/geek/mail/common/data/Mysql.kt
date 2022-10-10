@@ -2,7 +2,7 @@ package me.geek.mail.common.data
 
 import com.zaxxer.hikari.HikariDataSource
 import me.geek.mail.common.data.sub.DataSub
-import me.geek.mail.common.data.sub.runs
+import me.geek.mail.common.data.sub.action
 import me.geek.mail.common.data.sub.use
 import me.geek.mail.modules.settings.SetTings
 import java.lang.RuntimeException
@@ -50,7 +50,7 @@ class Mysql : DataSub() {
     private fun createMysqlTables() {
         try {
             connection.use {
-                this.createStatement().runs { statement ->
+                this.createStatement().action { statement ->
                     statement.addBatch(
                         "CREATE TABLE IF NOT EXISTS `mail_player_data` (" +
                                 " `uuid` CHAR(36) NOT NULL UNIQUE," +

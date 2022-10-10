@@ -1,5 +1,6 @@
 package me.geek.mail.modules.settings
 
+import me.geek.mail.GeekMail
 import me.geek.mail.GeekMail.config
 import me.geek.mail.utils.colorify
 import org.bukkit.Bukkit
@@ -12,6 +13,19 @@ import java.util.*
  *
  **/
 object SetTings {
+    val isBundleMeta by lazy {
+        try {
+            GeekMail.debug("Loader "+Class.forName("org.bukkit.inventory.meta.BundleMeta").name)
+            true
+        } catch (a: NoClassDefFoundError) {
+            GeekMail.debug("NoClassDefFoundError: org.bukkit.inventory.meta.BundleMeta")
+            false
+        }
+        catch (b: ClassNotFoundException) {
+            GeekMail.debug("ClassNotFoundException: org.bukkit.inventory.meta.BundleMeta")
+            false
+        }
+    }
     var DeBug = false
         private set
     lateinit var DATA_TYPE: String

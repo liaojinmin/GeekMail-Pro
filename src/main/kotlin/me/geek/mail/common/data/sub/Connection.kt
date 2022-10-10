@@ -31,7 +31,7 @@ fun <T> Connection.use(func: Connection.() -> T): T {
     }
 }
 
-fun <T: Statement, R> T.runs(func: Statement.(T) -> R) {
+fun <T: Statement, R> T.action(func: Statement.(T) -> R) {
     try {
         func(this)
     } catch (ex: Exception) {
@@ -41,7 +41,7 @@ fun <T: Statement, R> T.runs(func: Statement.(T) -> R) {
     }
 }
 
-fun <T: PreparedStatement, R> T.run(func: PreparedStatement.(T) -> R) {
+fun <T: PreparedStatement, R> T.actions(func: PreparedStatement.(T) -> R) {
     try {
         func(this)
     } catch (ex: Exception) {

@@ -1,9 +1,9 @@
 package me.geek.mail.common.menu
 
-import me.geek.mail.api.hook.hookPlugin.getItemsAdder
 import me.geek.mail.common.menu.sub.Session
 import me.geek.mail.common.menu.sub.Micon
 import me.geek.mail.GeekMail
+import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.common.menu.sub.IconType
 import me.geek.mail.utils.colorify
 import org.bukkit.Bukkit
@@ -140,15 +140,15 @@ object Menu {
                     return AIR
                 }
                 val itemStack = try {
-                    if (icon.mats.contains("IA:")) {
+                    if (icon.mats.contains("IA:" , ignoreCase = true) && HookPlugin.itemsAdder.isHook) {
                         val meta = icon.mats.split(":")
-                        getItemsAdder(meta[1])
+                        HookPlugin.itemsAdder.getItem(meta[1])
                     } else {
                         ItemStack(Material.valueOf(icon.mats), 1, icon.data.toShort())
                     }
                 } catch (ing: IllegalArgumentException) {
                     ItemStack(Material.STONE, 1)
-                } ?: ItemStack(Material.STONE, 1)
+                }
                 val itemMeta = itemStack.itemMeta
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(icon.name.colorify())

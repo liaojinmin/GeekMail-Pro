@@ -1,12 +1,12 @@
 package me.geek.mail.modules
 
-import com.google.common.base.Joiner
 import me.geek.mail.GeekMail
-import me.geek.mail.api.mail.MailManage
+
 import me.geek.mail.api.mail.MailManage.sound
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.menu.Menu
-import me.geek.mail.common.serialize.base64.StreamSerializer
+
+import taboolib.expansion.geek.serialize.deserializeItemStacks
 import java.util.UUID
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -17,7 +17,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.player.PlayerPickupItemEvent
 import org.bukkit.inventory.ItemStack
-import taboolib.module.nms.getI18nName
 import taboolib.platform.util.giveItem
 
 /**
@@ -70,8 +69,8 @@ class Mail_Item(
         getTime = args[8]
     ) {
         if (args.size >= 10) {
-            itemStacks = StreamSerializer.deserializeItemStacks(args[9])
-            appendixInfo = runAppendixInfo()
+            itemStacks = args[9].deserializeItemStacks()
+            appendixInfo = getItemInfo(StringBuilder(""))
         }
     }
 
@@ -142,46 +141,12 @@ class Mail_Item(
             }
         }, GeekMail.instance)
     }
+
     private fun sender() {
-        appendixInfo = runAppendixInfo()
+        appendixInfo = getItemInfo(StringBuilder(""))
         super.sendMail()
     }
 
-    private fun runAppendixInfo(): String {
-        val lore: MutableList<String> = ArrayList()
-        lore.clear()
-        var index = 0
-        itemStacks?.let {
-            for (Stack in it) {
-                val meta = Stack.itemMeta
-                if (meta != null) {
-                    if (meta.hasDisplayName()) {
-                        lore.add(meta.displayName + " §7* §f" + Stack.amount)
-                    } else {
-                        val manes = Stack.getI18nName(Bukkit.getPlayer(target))
-
-                        /*
-                        Bukkit.getPlayer(target)?.let { it1 ->
-                            it1.sendMessage("runAppendixInfo： ${it1.locale}")
-                        }
-
-                         */
-
-
-                        if (manes != "[ERROR LOCALE]") {
-                            lore.add(manes + " §7* §f" + Stack.amount)
-                        } else {
-                            index++
-                        }
-                    }
-                }
-            }
-        }
-        if (index > 0) {
-            lore.add("§7剩余 §6$index §7项未显示...")
-        }
-        return Joiner.on(", §f").join(lore)
-    }
     override fun condition(player: Player, appendix: String): Boolean {
         return true
     }

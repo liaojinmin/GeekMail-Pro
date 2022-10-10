@@ -23,6 +23,9 @@ object CmdCore {
     val send = CmdSend.command
 
     @CommandBody(permission = "mail.command.admin")
+    val sendpack = CmdSendPack.command
+
+    @CommandBody(permission = "mail.command.admin")
     val reload = CmdReload.command
 
     @CommandBody(permission = "mail.command.admin")

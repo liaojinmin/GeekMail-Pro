@@ -2,10 +2,8 @@ package me.geek.mail.modules
 
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailSub
-import me.geek.mail.common.kether.sub.KetherAPI
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import taboolib.common.platform.function.console
 import taboolib.platform.compat.replacePlaceholder
 import java.util.*
 
@@ -72,7 +70,7 @@ class Mail_Cmd(
                 cmd.replacePlaceholder(it).forEach { out ->
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), out)
                 }
-            } ?: GeekMail.say("指令异常&c null")
+            } ?: GeekMail.say("giveAppendix 异常&c null")
         }
     }
     override fun condition(player: Player, appendix: String): Boolean {

@@ -9,9 +9,9 @@ import me.geek.mail.api.mail.MailManage.senderWebMail
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.data.sub.*
 import me.geek.mail.common.data.sub.MailPlayerData.Companion.defaut_Data
-import me.geek.mail.common.serialize.base64.StreamSerializer
 import me.geek.mail.modules.settings.SetTings.DATA_TYPE
 import org.bukkit.OfflinePlayer
+import taboolib.expansion.geek.serialize.serializeItemStacks
 import java.sql.Connection
 import java.util.*
 import kotlin.collections.ArrayList
@@ -58,7 +58,7 @@ class Database {
     @Synchronized
     fun insertPlayerData(data: MailPlayerData) {
         getConnection().use {
-            this.prepareStatement("INSERT INTO mail_player_data(`uuid`,`name`,`mail`,`one_join`) VALUES(?,?,?,?)").run { p ->
+            this.prepareStatement("INSERT INTO mail_player_data(`uuid`,`name`,`mail`,`one_join`) VALUES(?,?,?,?)").actions { p ->
                 p.setString(1, data.uuid.toString())
                 p.setString(2, data.name)
                 p.setString(3, data.mail)
@@ -73,7 +73,7 @@ class Database {
         getConnection().use {
             this.prepareStatement(
                 "INSERT INTO maildata(`mail_id`,`state`,`type`,`sender`,`target`,`title`,`text`,`additional`,`item`,`commands`,`sendertime`,`gettime`) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)"
-            ).run { p ->
+            ).actions { p ->
                 p.setString(1, mailDate.mailID.toString())
                 p.setString(2, mailDate.state)
                 p.setString(3, mailDate.name)
@@ -84,8 +84,7 @@ class Database {
                 p.setString(8, mailDate.additional)
                 if (mailDate.itemStacks != null) {
                     p.setString(
-                        9, StreamSerializer.serializeItemStacks(mailDate.itemStacks)
-                    )
+                        9, mailDate.itemStacks.serializeItemStacks())
                 } else {
                     p.setString(9, "null")
                 }
@@ -111,7 +110,7 @@ class Database {
         getConnection().use {
             this.prepareStatement(
                 "INSERT INTO maildata(`mail_id`,`state`,`type`,`sender`,`target`,`title`,`text`,`additional`,`item`,`commands`,`sendertime`,`gettime`) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)"
-            ).run { p ->
+            ).actions { p ->
                 val sender = mailDate.sender.toString()
                 var items = "null"
                 var command = ""
@@ -130,7 +129,7 @@ class Database {
                     p.setString(7, text)
                     p.setString(8, mailDate.additional)
                     if (mailDate.itemStacks != null) {
-                        items = StreamSerializer.serializeItemStacks(mailDate.itemStacks)
+                        items = mailDate.itemStacks.serializeItemStacks()
                     }
                     p.setString(9, items)
                     if (mailDate.command != null) {
@@ -165,7 +164,7 @@ class Database {
      */
     fun delete(mail_id: UUID) {
         getConnection().use {
-            this.prepareStatement("DELETE FROM `maildata` WHERE `mail_id`=?;").run { s ->
+            this.prepareStatement("DELETE FROM `maildata` WHERE `mail_id`=?;").actions { s ->
                 s.setString(1, mail_id.toString())
                 s.execute()
             }
@@ -180,7 +179,7 @@ class Database {
      */
     fun delete(targetID: UUID, state: String?) {
         getConnection().use {
-            this.prepareStatement("DELETE FROM `maildata` WHERE `target`=? AND `state`=?;").run { s ->
+            this.prepareStatement("DELETE FROM `maildata` WHERE `target`=? AND `state`=?;").actions { s ->
                 s.setString(1, targetID.toString())
                 s.setString(2, state)
                 s.execute()
@@ -197,7 +196,7 @@ class Database {
     fun selectPlayerMail(targetUid: UUID): MutableList<MailSub> {
         val mail: MutableList<MailSub> = ArrayList()
             getConnection().use {
-                this.prepareStatement("SELECT * FROM `maildata` WHERE target=?;").run { s ->
+                this.prepareStatement("SELECT * FROM `maildata` WHERE target=?;").actions { s ->
                     s.setString(1, targetUid.toString())
                     val r = s.executeQuery()
                     if (r.isBeforeFirst) {
@@ -233,14 +232,14 @@ class Database {
     fun selectPlayerData(targetUid: UUID, name: String): MailPlayerData? {
         var data: MailPlayerData? = null
             getConnection().use {
-                this.prepareStatement("SELECT * FROM `mail_player_data` WHERE uuid=?;").run { s ->
+                this.prepareStatement("SELECT * FROM `mail_player_data` WHERE uuid=?;").actions { s ->
                     s.setString(1, targetUid.toString())
                     val r = s.executeQuery()
                     if (!r.isBeforeFirst) {
                         data = defaut_Data(name, targetUid)
                         insertPlayerData(data!!)
                         addMailPlayerData(targetUid, data)
-                        return@run data
+                        return@actions data
                     }
                     while (r.next()) {
                         val Uuid = UUID.fromString(r.getString("uuid"))
@@ -251,7 +250,7 @@ class Database {
                         data = MailPlayerData(Name, Uuid, mails, join)
                     }
                     addMailPlayerData(targetUid, data)
-                    return@run data
+                    return@actions data
                 }
             }
         return data
@@ -260,11 +259,11 @@ class Database {
     @Synchronized
     fun selectPlayerBindMail(targetUid: UUID): Array<String>? {
         getConnection().use {
-            this.prepareStatement("SELECT mail,name FROM `mail_player_data` WHERE uuid=?;").run { s ->
+            this.prepareStatement("SELECT mail,name FROM `mail_player_data` WHERE uuid=?;").actions { s ->
                 s.setString(1, targetUid.toString())
                 val r = s.executeQuery()
                 if (!r.isBeforeFirst) {
-                    return@run null
+                    return@actions null
                 }
                 var mails = ""
                 var name = ""
@@ -272,7 +271,7 @@ class Database {
                     mails = r.getString("mail")
                     name = r.getString("name")
                 }
-                return@run arrayOf(name, mails)
+                return@actions arrayOf(name, mails)
             }
         }
         return null
@@ -282,7 +281,7 @@ class Database {
     @Synchronized
     fun update(mail: MailSub) {
         getConnection().use {
-            this.prepareStatement("UPDATE `maildata` SET `state`=?,`getTime`=? WHERE `mail_id`=?;").run { s ->
+            this.prepareStatement("UPDATE `maildata` SET `state`=?,`getTime`=? WHERE `mail_id`=?;").actions { s ->
                 s.setString(1, mail.state)
                 s.setString(2, mail.getTime)
                 s.setString(3, mail.mailID.toString())
@@ -293,7 +292,7 @@ class Database {
     @Synchronized
     fun update(mail: MutableList<MailSub>) {
         getConnection().use {
-            this.prepareStatement("UPDATE `maildata` SET `state`=?,`getTime`=? WHERE `mail_id`=?;").run { s ->
+            this.prepareStatement("UPDATE `maildata` SET `state`=?,`getTime`=? WHERE `mail_id`=?;").actions { s ->
                 mail.forEach {
                     s.setString(1, it.state)
                     s.setString(2, it.getTime)
@@ -313,7 +312,7 @@ class Database {
     fun update(data: MailPlayerData) {
         getConnection().use {
             this.prepareStatement("UPDATE `mail_player_data` SET `mail`=?,`one_join`=?,`name`=? WHERE `uuid`=?;")
-                .run { s ->
+                .actions { s ->
                     s.setString(1, data.mail)
                     s.setBoolean(2, data.OneJoin)
                     s.setString(3, data.name)

@@ -1,13 +1,12 @@
 package me.geek.mail.modules
 
-import me.geek.mail.api.hook.hookPlugin
+import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.kether.sub.KetherAPI
 import me.geek.mail.modules.settings.SetTings
 import java.util.UUID
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import java.util.regex.Pattern
 
 /**
  * 作者: 老廖
@@ -54,28 +53,20 @@ class Mail_Money(
         senderTime = args[7],
         getTime = args[8]
     ) {
-        appendixInfo = "${add(args[6])} ${SetTings.MONEY_MAIL}"
-        additional = add(args[6])
+        appendixInfo = "${formatDouble(args[6])} ${SetTings.MONEY_MAIL}"
+        additional = formatDouble(args[6])
     }
 
 
 
     override fun giveAppendix() {
-        hookPlugin.money.depositPlayer(Bukkit.getOfflinePlayer(target), this.additional.toDouble());
+        HookPlugin.money.giveMoney(Bukkit.getOfflinePlayer(target), this.additional.toDouble());
     }
 
     override fun condition(player: Player, appendix: String): Boolean {
-        val d = KetherAPI.instantKether(player, "Money hasTake ${add(appendix)}").any as Boolean
+        val d = KetherAPI.instantKether(player, "Money hasTake ${formatDouble(appendix)}").any as Boolean
         if (!d) player.sendMessage("[!] 你没有足够的金币")
         return d
     }
 
-    private fun add(num1: Any): String {
-        val matcher = Pattern.compile("\\d+\\.?\\d?\\d").matcher(num1.toString())
-        var var1 = "0.0"
-        if (matcher.find()) {
-            var1 = matcher.group()
-        }
-        return var1
-    }
 }

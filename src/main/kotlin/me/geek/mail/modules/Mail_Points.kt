@@ -1,6 +1,6 @@
 package me.geek.mail.modules
 
-import me.geek.mail.api.hook.hookPlugin
+import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.kether.sub.KetherAPI
 import me.geek.mail.modules.settings.SetTings
@@ -57,7 +57,7 @@ class Mail_Points(
 
 
     override fun giveAppendix() {
-        hookPlugin.points.give(target, additional.toInt())
+        HookPlugin.points.givePoints(target, additional.toInt())
     }
 
     override fun condition(player: Player, appendix: String): Boolean {

@@ -3,17 +3,15 @@ package me.geek.mail.api.mail
 
 import me.geek.mail.GeekMail
 import me.geek.mail.GeekMail.say
-import me.geek.mail.common.serialize.base64.StreamSerializer
+
 import me.geek.mail.common.webmail.WebManager
 import me.geek.mail.modules.settings.SetTings
+import taboolib.expansion.geek.serialize.serializeItemStacks
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.jetbrains.annotations.NotNull
-import taboolib.common.platform.function.adaptPlayer
 import taboolib.library.reflex.Reflex.Companion.invokeConstructor
 import taboolib.library.xseries.XSound
-import taboolib.module.lang.sendLang
-import java.lang.IllegalArgumentException
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.ArrayList
@@ -54,7 +52,8 @@ object MailManage {
          if (MailData.containsKey(mailType)) {
              val senderTime = System.currentTimeMillis().toString()
              val getTime = "0"
-             val items = StreamSerializer.serializeItemStacks(item)
+             val items = item.serializeItemStacks()
+
              val args = arrayOf(UUID.randomUUID(), title, text, senderUuid, targetUuid, "未提取", additional, senderTime, getTime, items, cmd)
              MailData[mailType]?.javaClass?.invokeConstructor(args)?.sendMail()
          }
@@ -94,8 +93,8 @@ object MailManage {
      * 获取邮件类型 缓存键
      * @return 所有已注册 邮件类型 Key
      */
-    fun getMailDataMap(): MutableSet<String> {
-        return MailData.keys
+    fun getMailDataMap(): kotlin.collections.List<String> {
+        return MailData.keys.filter { it != "MAIL_NORMAL" }
     }
 
     /**
