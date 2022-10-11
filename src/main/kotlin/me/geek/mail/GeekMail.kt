@@ -5,6 +5,7 @@ import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.common.data.Database
 import me.geek.mail.common.customevent.Event
+import me.geek.mail.common.data.Task
 import me.geek.mail.common.menu.Menu
 import me.geek.mail.common.template.Template
 import me.geek.mail.modules.*
@@ -63,8 +64,9 @@ object GeekMail : Plugin() {
     override fun onEnable() {
         runLogo()
 
-        config.onReload { SetTings.onLoad() }
-        SetTings.onLoad() // 插件配置加载
+        config.onReload { SetTings.onLoadSetTings() }
+        SetTings.onLoadSetTings() // 插件配置加载
+
 
         Event.onloadEventPack() // 自定义事件加载
 
@@ -78,6 +80,7 @@ object GeekMail : Plugin() {
 
         register() // 注册邮件类型
         plugin_status = true
+        Task()
     }
 
 

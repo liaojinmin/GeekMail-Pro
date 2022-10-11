@@ -3,6 +3,7 @@ package me.geek.mail.common.customevent
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.common.customevent.sub.EventPack
+import me.geek.mail.common.customevent.sub.EventType
 import me.geek.mail.modules.settings.SetTings
 import me.geek.mail.common.template.Template
 import org.bukkit.entity.Player
@@ -30,7 +31,7 @@ object Event {
             list.addAll(forFile(saveDefaultEvent))
             list.forEach { file ->
                 val event = Configuration.loadFromFile(file).getObject<EventPack>("event", false)
-                event.save()
+                EventPackCache[event.id] = event
             }
 
         }.also {
@@ -39,8 +40,14 @@ object Event {
     }
 
 
-    private fun EventPack.save() {
-        EventPackCache[id] = this
+
+    fun checkEventType(eve: String): Boolean {
+        EventType.values().forEach {
+            if (it.name == eve) {
+                return true
+            }
+        }
+        return false
     }
 
     fun get(): ConcurrentHashMap<String, EventPack> {

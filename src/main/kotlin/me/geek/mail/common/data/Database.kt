@@ -8,8 +8,8 @@ import me.geek.mail.api.mail.MailManage.buildMailClass
 import me.geek.mail.api.mail.MailManage.senderWebMail
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.data.sub.*
-import me.geek.mail.common.data.sub.MailPlayerData.Companion.defaut_Data
-import me.geek.mail.modules.settings.SetTings.DATA_TYPE
+import me.geek.mail.common.data.sub.MailPlayerData.Companion.defaultsData
+import me.geek.mail.modules.settings.SetTings
 import org.bukkit.OfflinePlayer
 import taboolib.expansion.geek.serialize.serializeItemStacks
 import java.sql.Connection
@@ -27,7 +27,7 @@ class Database {
 
 
 
-    private fun getConnection(): Connection {
+    fun getConnection(): Connection {
         return dataSub!!.connection
     }
 
@@ -36,7 +36,7 @@ class Database {
     }
 
     fun start() {
-        dataSub = if (DATA_TYPE.equals("mysql", ignoreCase = true)){
+        dataSub = if (SetTings.StorageDate.use_type.equals("mysql", ignoreCase = true)){
             Mysql()
         } else Sqlite()
         dataSub!!.onLoad()
@@ -236,7 +236,7 @@ class Database {
                     s.setString(1, targetUid.toString())
                     val r = s.executeQuery()
                     if (!r.isBeforeFirst) {
-                        data = defaut_Data(name, targetUid)
+                        data = defaultsData(name, targetUid)
                         insertPlayerData(data!!)
                         addMailPlayerData(targetUid, data)
                         return@actions data

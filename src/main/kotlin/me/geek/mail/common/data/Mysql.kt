@@ -15,17 +15,17 @@ import java.sql.SQLException
  */
 class Mysql : DataSub() {
     private var MYSQL: HikariDataSource = HikariDataSource()
-    private val set = SetTings
+    private val set = SetTings.StorageDate
 
     override val connection: Connection
         get() = MYSQL.connection
 
     override fun onLoad() {
         val MysqlUrl =
-            "jdbc:mysql://" + set.MYSQL_HOST + ":" + set.MYSQL_PORT + "/" + set.MYSQL_DATABASE + set.MYSQL_PARAMS
+            "jdbc:mysql://" + set.mysql.host + ":" + set.mysql.port + "/" + set.mysql.database + set.mysql.params
         MYSQL.jdbcUrl = MysqlUrl
-        MYSQL.username = set.MYSQL_USERNAME
-        MYSQL.password = set.MYSQL_PASSWORD
+        MYSQL.username = set.mysql.username
+        MYSQL.password = set.mysql.password
         // 设置驱动
         try {
             MYSQL.driverClassName = "com.mysql.cj.jdbc.Driver"
@@ -34,11 +34,11 @@ class Mysql : DataSub() {
         } catch (e: NoClassDefFoundError) {
             MYSQL.driverClassName = "com.mysql.jdbc.Driver"
         }
-        MYSQL.maximumPoolSize = set.MAXIMUM_POOL_SIZE
-        MYSQL.minimumIdle = set.MINIMUM_IDLE
-        MYSQL.maxLifetime = set.MAXIMUM_LIFETIME.toLong()
-        MYSQL.keepaliveTime = set.KEEPALIVE_TIME.toLong()
-        MYSQL.connectionTimeout = set.CONNECTION_TIMEOUT.toLong()
+        MYSQL.maximumPoolSize = set.hikari_settings.maximum_pool_size
+        MYSQL.minimumIdle = set.hikari_settings.minimum_idle
+        MYSQL.maxLifetime = set.hikari_settings.maximum_lifetime.toLong()
+        MYSQL.keepaliveTime = set.hikari_settings.keepalive_time.toLong()
+        MYSQL.connectionTimeout = set.hikari_settings.connection_timeout.toLong()
         MYSQL.poolName = "GeekMail-MYSQL"
         createMysqlTables()
     }

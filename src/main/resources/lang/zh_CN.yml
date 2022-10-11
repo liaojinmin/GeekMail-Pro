@@ -123,7 +123,16 @@
   - '&l'
   - '&c    你不能删除该邮件，请先领取附件内容！'
   - '&f'
-
+玩家-邮件到期-删除:
+  - type: sound
+    sound: 'BLOCK_NOTE_BLOCK_DIDGERIDOO'
+    volume: 1
+    pitch: 2
+  - '&1'
+  - '&7  Geek&fMail &8>&7>&f>'
+  - '&l'
+  - '&e    你有 {0} 封邮件已到期删除...'
+  - '&f'
 
 
 

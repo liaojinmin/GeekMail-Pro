@@ -26,6 +26,15 @@ SmtpSet:
   host: 'smtp.163.com' # smtp服务器
   port: '25' # 端口
 
+config:
+  # 期限设置，如果使用，邮件到期将自动删除
+  use_bundle: false # 物品邮件，物品预览使用lore展示 (只限 1.17+)
+  Expiry:
+    use: true
+    # 邮件默认到期时间
+    time: 2d
+    # 数据维护任务时间 单位 秒
+    auto: 600
 
 # 邮件种类显示名称转换
 MailType:
@@ -37,7 +46,9 @@ MailType:
     tag: "&a经验"
   TEXT_MAIL:
     tag: "&f文本"
+  CMD_MAIL:
+    tag: "&6指令包"
   ITEM_MAIL:
     tag: "&6物品"
-    use_bundle: false # 物品邮件，物品预览使用lore展示 (只限 1.17+)
+
     

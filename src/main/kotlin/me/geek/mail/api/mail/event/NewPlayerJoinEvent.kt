@@ -1,5 +1,6 @@
 package me.geek.mail.api.mail.event
 
+import me.geek.mail.common.data.sub.MailPlayerData
 import org.bukkit.entity.Player
 import taboolib.platform.type.BukkitProxyEvent
 
@@ -8,4 +9,4 @@ import taboolib.platform.type.BukkitProxyEvent
  * 时间: 2022/10/3
  *
  **/
-class NewPlayerJoinEvent(val player: Player) : BukkitProxyEvent()
+class NewPlayerJoinEvent(val player: Player, val data: MailPlayerData) : BukkitProxyEvent()

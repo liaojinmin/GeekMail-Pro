@@ -33,16 +33,18 @@ object Template {
             val list = mutableListOf<File>()
             measureTimeMillis {
                 TEMP_PACK_MAP.clear()
+                SERVER_PACK_MAP.clear()
                 list.also {
-                    it.addAll(forFile(saveDefaultMenu))
+                    it.addAll(forFile(saveDefaultTemp))
                 }
-
                 list.forEach { file ->
                     val var1 = SecuredFile.loadConfiguration(file)
                     val packID: String = var1.getString("Template.ID")!!
-                    val condition: String = var1.getString("Template.Require.condition", "false")!!
-                    val action: String = var1.getString("Template.Require.action", "null")!!.replace("&", "§")
-                    val deny: String = var1.getString("Template.Require.deny", "null")!!.replace("&", "§")
+
+                    val condition: String = var1.getString("Template.Require.condition", "false") ?: ""
+                    val action: String = var1.getString("Template.Require.action", "null")?.replace("&", "§") ?: ""
+                    val deny: String = var1.getString("Template.Require.deny", "null")?.replace("&", "§") ?: ""
+
                     val title: String = var1.getString("Template.package.title")!!.colorify()
                     val text: String = var1.getString("Template.package.text")!!.colorify().replace("\n", "")
                     val type: String = var1.getString("Template.package.type")!!.uppercase(Locale.ROOT)
@@ -82,14 +84,16 @@ object Template {
             this
         }
     }
-    private val saveDefaultMenu by lazy {
+    private val saveDefaultTemp by lazy {
         val dir = File(instance.dataFolder, "template")
         if (!dir.exists()) {
             arrayOf(
                 "template/def.yml",
                 "template/def2.yml",
                 "template/def3.yml",
-                "template/items.yml"
+                "template/items.yml",
+                "template/mail_cmd.yml",
+                "template/mail_Normal.yml"
             ).forEach { releaseResourceFile(it, true) }
         }
         dir

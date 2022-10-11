@@ -13,7 +13,6 @@ import me.geek.mail.common.catcher.Chat
 import me.geek.mail.common.menu.sub.IconType.*
 import me.geek.mail.common.menu.sub.Session
 import me.geek.mail.modules.settings.SetTings
-import me.geek.mail.modules.settings.SetTings.isBundleMeta
 import me.geek.mail.utils.colorify
 
 import org.bukkit.Bukkit
@@ -233,7 +232,6 @@ class MAction(private val player: Player, private val tag: Session, private val 
                         Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin) {
                             DataManage.update(mail)
                         }
-                     //   poxPlayer.sendMessage(poxPlayer.locale)
                         poxPlayer.sendLang("玩家-领取附件-成功", mail.appendixInfo)
                     } else {
                         if (mail.state != "无") {
@@ -341,19 +339,15 @@ class MAction(private val player: Player, private val tag: Session, private val 
         }
         if (mail.isEmpty()) return
 
+        // 开始构建邮件展示
         if (index != -1 && end != -1) {
             for (mail1 in mail) {
                 if (index <= end) {
-                    try {
-                        if (item[index] != null) {
-                            index = layout.indexOf("M", index)
-                        }
-                        item[index] = mailItem(index, mail1)
-                        index++
-                    } catch (ignored: NullPointerException) {
-                        say("空指针")
-                        ignored.printStackTrace()
+                    if (item[index] != null) {
+                        index = layout.indexOf("M", index)
                     }
+                    item[index] = mailItem(index, mail1)
+                    index++
                 } else {
                     contents.add(item)
                     item = inv.contents
@@ -390,19 +384,17 @@ class MAction(private val player: Player, private val tag: Session, private val 
                     ItemStack(Material.BOOK, 1)
                 }
 
-                val itemMeta = if (SetTings.USE_BUNDLE) itemStack.itemMeta as BundleMeta else itemStack.itemMeta
+                val itemMeta = if (SetTings.USE_BUNDLE) (itemStack.itemMeta as BundleMeta).also {
+                    it.setItems(mail.itemStacks?.asList())
+                } else itemStack.itemMeta
 
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(name.replace("[title]", mail.title).colorify())
-
                     itemMeta.lore = mail.parseMailInfo(micon.lore)
 
                     if (mail.state == "未提取") {
                         itemMeta.addEnchant(Enchantment.DAMAGE_ALL, 1, true)
                         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
-                    }
-                    if (isBundleMeta && itemMeta is BundleMeta) {
-                        itemMeta.setItems(mail.itemStacks?.asList())
                         itemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS)
                     }
                     itemStack.itemMeta = itemMeta
@@ -421,7 +413,7 @@ class MAction(private val player: Player, private val tag: Session, private val 
      * @return 返回拼接字符串
      */
     private fun key(index: Int, Page: Int): String {
-        return index.toString() + Page
+        return "$index$Page"
     }
 
     /**
@@ -431,6 +423,6 @@ class MAction(private val player: Player, private val tag: Session, private val 
      * @return 返回拼接字符串
      */
     private fun value(index: Int, mail_id: UUID): String {
-        return index.toString() + mail_id.toString()
+        return "$index$mail_id"
     }
 }

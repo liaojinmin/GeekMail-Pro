@@ -10,8 +10,11 @@ import taboolib.expansion.geek.serialize.serializeItemStacks
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.jetbrains.annotations.NotNull
+import taboolib.common.platform.function.adaptPlayer
+import taboolib.common.platform.function.getProxyPlayer
 import taboolib.library.reflex.Reflex.Companion.invokeConstructor
 import taboolib.library.xseries.XSound
+import taboolib.module.lang.sendLang
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.ArrayList
@@ -93,7 +96,7 @@ object MailManage {
      * 获取邮件类型 缓存键
      * @return 所有已注册 邮件类型 Key
      */
-    fun getMailDataMap(): kotlin.collections.List<String> {
+    fun getMailDataMap(): List<String> {
         return MailData.keys.filter { it != "MAIL_NORMAL" }
     }
 
@@ -158,35 +161,19 @@ object MailManage {
     }
 
     fun getTargetCache(@NotNull uuid: UUID): MutableList<MailSub> {
-        if (targetCache.containsKey(uuid)) {
-            return ArrayList(targetCache[uuid]!!)
-        }
-        return mutableListOf()
-    }
-
-    fun hasTargetCache(uuid: UUID): Boolean {
-        return targetCache.containsKey(uuid)
-    }
-
-    /*
-    fun sendMailMessage(title: String, text: String, vararg player: Player?) {
-
-        // 0 发送者  1 接收者
-        try {
-            player[0]?.let{ v1 ->
-                adaptPlayer(v1).sendLang("玩家-发送邮件", player[1]!!.name)
+        return ArrayList(targetCache[uuid]?.let {
+            it.also { value ->
+                val s = value.size
+                value.removeIf { mail ->
+                   mail.sender == SetTings.Console && mail.senderTime.toLong() <= (System.currentTimeMillis() - SetTings.ExpiryTime)
+                }
+                val b = s - value.size
+                if (b != 0) {
+                    getProxyPlayer(uuid)?.sendLang("玩家-邮件到期-删除", b)
+                }
             }
-            player[1]?.let { v ->
-                adaptPlayer(v).sendLang("玩家-接收邮件", title)
-                /**
-                 * if (MinecraftVersion.INSTANCE.getMajorLegacy() >= 11300) {
-                 * NMSKt.sendToast(player[1], Material.BOOK,"你有新的邮件待查看！", ToastFrame.TASK, ToastBackground.END);
-                 * } */
-            }
-        } catch (ignored: IllegalArgumentException) { }
+        } ?: mutableListOf())
     }
-
-     */
 
 
     fun Player.sound(name: String, volume: Float, potch: Float) {

@@ -7,6 +7,7 @@ package me.geek.mail.common.customevent.sub
  **/
 class EventPack(
     val id: String = "",
+    val event: String = "",
     val condition: String = "",
     val action: MutableList<String> = mutableListOf()
 )

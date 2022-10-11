@@ -5,6 +5,9 @@ package me.geek.mail.common.listener
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.api.mail.event.NewPlayerJoinEvent
+import me.geek.mail.common.customevent.Event
+import me.geek.mail.common.data.sub.MailPlayerData.Companion.update
+import me.geek.mail.common.kether.sub.KetherAPI
 import me.geek.mail.common.menu.MAction
 import me.geek.mail.common.menu.Menu
 import me.geek.mail.common.menu.Menu.openMenu
@@ -31,15 +34,7 @@ object MailListener {
     fun onJoin(e: PlayerJoinEvent) {
         submitAsync {
             val player = e.player
-            database.selectPlayerData(player.uniqueId, player.name)?.let { _ ->
-               GeekMail.debug("准备唤起事件")
-                val data = database.getMailPlayerData(player.uniqueId)!!
-               if (data.OneJoin) {
-                   data.OneJoin = false
-                   database.update(data)
-                   NewPlayerJoinEvent(player).call()
-               }
-           }
+
             database.selectPlayerMail(player.uniqueId).let {
                 MailManage.upTargetCache(player.uniqueId, it)
                 var amt = 0
@@ -50,7 +45,22 @@ object MailListener {
                     adaptPlayer(player).sendLang("玩家-加入游戏-提醒", amt)
                 }
             }
+            database.selectPlayerData(player.uniqueId, player.name)?.let { data ->
+                if (data.OneJoin) {
+                    NewPlayerJoinEvent(player, data).call()
+                }
+           }
+
+            // 处理自定义事件动作
+            Event.get().forEach { (_, pack) ->
+                if (pack.event == e.eventName) {
+                    if (KetherAPI.instantKether(e.player, pack.condition).any as Boolean) {
+                        Event.runAction(e.player, pack.action)
+                    }
+                }
+            }
         }
+
     }
 
     @SubscribeEvent(priority = EventPriority.LOW, ignoreCancelled = true )

@@ -17,17 +17,17 @@ class Sqlite : DataSub() {
 
     private var SQLITE: HikariDataSource = HikariDataSource()
 
-    private val set = SetTings
+    private val set = SetTings.StorageDate
     override fun onLoad() {
         val url = "jdbc:sqlite:" + instance.dataFolder + File.separator + "GeekData.db"
         SQLITE.dataSourceClassName = "org.sqlite.SQLiteDataSource"
         SQLITE.addDataSourceProperty("url", url)
         //附件参数
-        SQLITE.maximumPoolSize = set.MAXIMUM_POOL_SIZE
-        SQLITE.minimumIdle = set.MINIMUM_IDLE
-        SQLITE.maxLifetime = set.MAXIMUM_LIFETIME.toLong()
-        SQLITE.keepaliveTime = set.KEEPALIVE_TIME.toLong()
-        SQLITE.connectionTimeout = set.CONNECTION_TIMEOUT.toLong()
+        SQLITE.maximumPoolSize = set.hikari_settings.maximum_pool_size
+        SQLITE.minimumIdle = set.hikari_settings.minimum_idle
+        SQLITE.maxLifetime = set.hikari_settings.maximum_lifetime.toLong()
+        SQLITE.keepaliveTime = set.hikari_settings.keepalive_time.toLong()
+        SQLITE.connectionTimeout = set.hikari_settings.connection_timeout.toLong()
         SQLITE.poolName = "GeekMail-SQLITE"
         createSqliteTables()
     }

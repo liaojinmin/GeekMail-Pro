@@ -16,7 +16,7 @@ import java.util.concurrent.TimeoutException
  * 复用 Arasple 代码
  **/
 object KetherAPI {
-    // CompletableFuture 可能返回任何值，所以需要  EvalResult value 来做解析
+
     @JvmStatic
     fun eval(player: Player, script: String): CompletableFuture<Any?> {
         return mirrorNow("GeekMail:Script") {
@@ -25,7 +25,7 @@ object KetherAPI {
                     sender = adaptPlayer(player)
                 }
             } catch (e: LocalizedException) {
-                GeekMail.say("§8解析 kether 出错")
+                GeekMail.say("§8解析 kether 出错 LocalizedException")
                 CompletableFuture.completedFuture(false)
             }
         }
@@ -44,7 +44,8 @@ object KetherAPI {
         return try {
             EvalResult(eval(player, script).get(timeout, TimeUnit.MILLISECONDS))
         } catch (e: TimeoutException) {
-            GeekMail.say("§8解析 kether Timeout")
+            GeekMail.say("§8Timeout while parsing kether shell:")
+            e.localizedMessage?.split("\n")?.forEach { GeekMail.say("         §8$it") }
             EvalResult.FALSE
         }
     }

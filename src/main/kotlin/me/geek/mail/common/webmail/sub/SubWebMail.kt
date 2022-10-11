@@ -1,7 +1,6 @@
 package me.geek.mail.common.webmail.sub
 
 
-import me.geek.mail.GeekMail
 import me.geek.mail.modules.settings.SetTings
 import java.util.*
 import javax.mail.Authenticator
@@ -16,14 +15,14 @@ import javax.mail.internet.MimeMessage
  *
  **/
 abstract class SubWebMail {
-    private val account = GeekMail.config.getString("SmtpSet.account")
-    private val password = GeekMail.config.getString("SmtpSet.password")  // "JRKHOKSYAPSOUHOS"
-    private val personal = GeekMail.config.getString("SmtpSet.personal")
-    private val subjects = GeekMail.config.getString("SmtpSet.subjects")
+    private val account = SetTings.SmtpData.account
+    private val password = SetTings.SmtpData.password // "JRKHOKSYAPSOUHOS"
+    private val personal = SetTings.SmtpData.personal
+    private val subjects = SetTings.SmtpData.subjects
     private val props = mapOf(
         "mail.smtp.auth" to "true",
-        "mail.smtp.host" to GeekMail.config.getString("SmtpSet.host"),
-        "mail.smtp.port" to GeekMail.config.getString("SmtpSet.port"),
+        "mail.smtp.host" to SetTings.SmtpData.host,
+        "mail.smtp.port" to SetTings.SmtpData.port,
         "mail.transport.protocol" to "smtp"
     )
     private val properties = Properties().apply { putAll(props) }

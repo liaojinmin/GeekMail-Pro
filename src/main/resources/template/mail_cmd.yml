@@ -1,18 +1,13 @@
 Template:
-
   ID: "测试指令包"
-  Server: false
   Require:
-  
     condition: 'Money hasTake *1900'
-
     action: |-
       tell "&a"
       tell "&7&l  Geek&f&lMail &8>&7>&f>"
       tell "&a"
       tell "&B    发送成功 扣除 1900 金币！"
       tell "&a"
-
     deny: |-
       tell "&a"
       tell "&7&l  Geek&f&lMail &8>&7>&f>"

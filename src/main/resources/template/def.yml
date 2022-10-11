@@ -28,9 +28,5 @@ Template:
       &B
     type: MAIL_MONEY
     appendix:
-      additional: 10000 # 附件参数 数字类型 如果不是数字类邮件类型请设置为 0
-      items:
-       # - 'material:PAPER,name:&f白纸的名字(可选),lore:&b&l这是一张白纸(可选)' # 原版物品
-      command:
-       # - 'say 执行了一个服务器消息' #执行的指令
+      additional: 10000
 

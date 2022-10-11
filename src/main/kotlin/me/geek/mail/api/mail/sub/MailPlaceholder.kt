@@ -27,4 +27,5 @@ abstract class MailPlaceholder : Mail {
 
     val EXPIRE = Regex("(\\{|\\[)(expire|到期时间)(}|])")
 
+
 }

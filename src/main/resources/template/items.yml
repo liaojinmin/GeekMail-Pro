@@ -1,7 +1,6 @@
 Template:
   # 模板唯一展示ID
   ID: "物品包"
-  Server: true
   Require:
     # 发送该邮件前判断条件 需要扣除玩家 1000 金币
     condition: 'Money hasTake *1000'
@@ -24,8 +23,8 @@ Template:
     title: "&e这是一个自定义物品类型模板"
     text: |-
       &l
-      &B&l 打开看看吧！;
-      &B&l 很多好物品？;
+      &B 打开看看吧！;
+      &B 很多好物品？;
       &B
     type: MAIL_ITEM
     appendix:

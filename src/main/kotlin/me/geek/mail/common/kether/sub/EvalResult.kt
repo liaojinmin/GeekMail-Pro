@@ -6,6 +6,7 @@ package me.geek.mail.common.kether.sub
  * 时间: 2022/8/8
  *
  **/
+
 @JvmInline
 value class EvalResult(val any: Any? = null) {
 

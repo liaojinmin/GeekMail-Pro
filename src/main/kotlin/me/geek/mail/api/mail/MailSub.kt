@@ -8,6 +8,7 @@ import me.geek.mail.modules.settings.SetTings
 import org.bukkit.Bukkit
 import org.jetbrains.annotations.NotNull
 import taboolib.common.platform.function.adaptPlayer
+import taboolib.expansion.geek.Expiry
 import taboolib.module.lang.sendLang
 import taboolib.module.nms.getI18nName
 import java.util.*
@@ -29,21 +30,21 @@ abstract class MailSub : MailPlaceholder() {
         if (event.isCancelled) return
 
         Bukkit.getScheduler().scheduleAsyncDelayedTask(GeekMail.instance) {
-            val send = Bukkit.getPlayer(sender)
-            val targets = Bukkit.getPlayer(target)
+
+            val send = Bukkit.getPlayer(this.sender)
+            val targets = Bukkit.getPlayer(this.target)
 
             var targetName = "目标"
 
             if (targets != null) {
-                MailManage.addTargetCache(target, this)
                 targetName = targets.name
-                MailManage.addTargetCache(target, this)
+                MailManage.addTargetCache(this.target, this)
                 adaptPlayer(targets).sendLang("玩家-接收邮件", title)
             }
 
-            if (sender != SetTings.Console) {
+            if (this.sender != SetTings.Console) {
                 if (send != null) {
-                    MailManage.addSenderCache(sender, this)
+                    MailManage.addSenderCache(this.sender, this)
                     adaptPlayer(send).sendLang("玩家-发送邮件", targetName)
                 }
             }
@@ -51,7 +52,7 @@ abstract class MailSub : MailPlaceholder() {
             GeekMail.DataManage.insertMailData(this)
         }
 
-        MailManage.senderWebMail(title, text, appendixInfo, target)
+        MailManage.senderWebMail(this.title, this.text, this.appendixInfo, this.target)
 
         MailReceiveEvent(this).call() // StarrySky
     }
@@ -65,13 +66,18 @@ abstract class MailSub : MailPlaceholder() {
         val list = mutableListOf<String>()
         lore.forEach {
             when {
-                it.contains(TYPE) -> list.add(it.replace(TYPE, mailType))
-                it.contains(SENDER) -> list.add(it.replace(SENDER, if (sender == SetTings.Console) "系统" else Bukkit.getOfflinePlayer(sender).name!!))
-                it.contains(SERDER_TIME) -> list.add(it.replace(SERDER_TIME, format.format(senderTime.toLong())))
-                it.contains(GET_TIME) -> list.add(it.replace(GET_TIME, if (getTime.toLong() < 1000) "未领取" else format.format(getTime.toLong())))
-                it.contains(TEXT) -> list.add(it.replace(TEXT, text.replace(";",",")))
-                it.contains(STATE) -> list.add(it.replace(STATE, state))
-                it.contains(ITEM) -> list.addAll(it.replace(ITEM, appendixInfo).split(","))
+                it.contains(TYPE) -> list.add(it.replace(TYPE, this.mailType))
+                it.contains(SENDER) -> list.add(it.replace(SENDER, if (this.sender == SetTings.Console) "系统" else Bukkit.getOfflinePlayer(this.sender).name!!))
+                it.contains(SERDER_TIME) -> list.add(it.replace(SERDER_TIME, format.format(this.senderTime.toLong())))
+                it.contains(GET_TIME) -> list.add(it.replace(GET_TIME, if (getTime.toLong() < 1000) "未领取" else format.format(this.getTime.toLong())))
+                it.contains(TEXT) -> list.add(it.replace(TEXT, this.text.replace(";",",")))
+                it.contains(STATE) -> list.add(it.replace(STATE, this.state))
+                it.contains(ITEM) -> list.addAll(it.replace(ITEM, this.appendixInfo).split(","))
+                it.contains(EXPIRE) -> {
+                    if (SetTings.UseExpiry) {
+                    list.add(it.replace(EXPIRE, Expiry.getExpiryDate(this.senderTime.toLong() + SetTings.ExpiryTime, false)))
+                    } else list.add(it.replace(EXPIRE, ""))
+                }
                 else -> list.add(it)
             }
         }
@@ -87,14 +93,15 @@ abstract class MailSub : MailPlaceholder() {
     }
     fun getItemInfo(@NotNull Str: StringBuilder): String {
         var index = 0
-        itemStacks?.let {
+        this.itemStacks?.let {
+            val player = Bukkit.getPlayer(this.target)
             for (Stack in it) {
                 val meta = Stack.itemMeta
                 if (meta != null) {
                     if (meta.hasDisplayName()) {
                         Str.append(meta.displayName + " §7* §f" + Stack.amount + ", §f")
                     } else {
-                        val manes = Stack.getI18nName(Bukkit.getPlayer(target))
+                        val manes = Stack.getI18nName(player)
                         if (manes != "[ERROR LOCALE]") {
                             Str.append(manes + " §7* §f" + Stack.amount + ", §f")
                         } else {

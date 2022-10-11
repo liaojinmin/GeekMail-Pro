@@ -1,5 +1,6 @@
 package me.geek.mail.common.data.sub
 
+import me.geek.mail.GeekMail
 import java.util.UUID
 
 /**
@@ -10,17 +11,22 @@ class MailPlayerData(
     val name: String,
     val uuid: UUID,
     var mail: String,
-    var OneJoin: Boolean = false,
+    var OneJoin: Boolean = true,
 ) {
     fun reset() {
         this.mail = ""
-        this.OneJoin = false
+        this.OneJoin = true
     }
 
 
 
     companion object {
-        fun defaut_Data(name: String, uuid: UUID): MailPlayerData {
+
+        fun MailPlayerData.update() {
+            GeekMail.DataManage.update(this)
+        }
+
+        fun defaultsData(name: String, uuid: UUID): MailPlayerData {
             return MailPlayerData(name, uuid, "",true)
         }
     }

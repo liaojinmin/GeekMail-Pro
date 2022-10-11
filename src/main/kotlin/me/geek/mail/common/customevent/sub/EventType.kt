@@ -6,5 +6,9 @@ package me.geek.mail.common.customevent.sub
  *
  **/
 enum class EventType {
-    NewPlayerJoinEvent
+    NewPlayerJoinEvent, // 新玩家加入游戏
+    PlayerJoinEvent, // 玩家加入游戏
+    AsyncPlayerChatEvent // 玩家异步聊天
+
+
 }
