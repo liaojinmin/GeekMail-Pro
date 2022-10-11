@@ -48,7 +48,7 @@ object SetTings {
      */
     val DeBug by lazy { config.getBoolean("debug", false) }
 
-    val SMTP_SET by lazy { SetTingsCache["config"]?.SmtpData?.start ?: false }
+    val SMTP_SET = SmtpData.start
 
     val USE_BUNDLE by lazy { if (GeekMail.BukkitVersion >= 1170) config.getBoolean("config.use_bundle") else false }
 

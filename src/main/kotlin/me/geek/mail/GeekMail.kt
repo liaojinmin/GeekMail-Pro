@@ -45,13 +45,13 @@ object GeekMail : Plugin() {
 
     val instance by lazy { BukkitPlugin.getInstance() }
 
-    const val VERSION = 2.04
+    const val VERSION = 2.05
 
-    val BukkitVersion = Bukkit.getVersion().substringAfter("MC:").filter { it.isDigit() }.toInt()
+    val BukkitVersion by lazy { Bukkit.getVersion().substringAfter("MC:").filter { it.isDigit() }.toInt() }
 
     var plugin_status: Boolean = false // 插件状态
 
-    val DataManage = Database() // 数据库管理器
+    val DataManage by lazy { Database() } // 数据库管理器
 
 
     override fun onLoad() {
@@ -80,7 +80,7 @@ object GeekMail : Plugin() {
 
         register() // 注册邮件类型
         plugin_status = true
-        Task()
+        if (SetTings.UseExpiry) Task()
     }
 
 
