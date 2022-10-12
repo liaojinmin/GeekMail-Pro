@@ -38,10 +38,10 @@ object CmdSetBlock : CmdExp {
                             val z = loc.z
                             val location = "$world,$x,$y,$z"
                             try {
-                                val data: FileConfiguration = YamlConfiguration.loadConfiguration(GeekMail.config.file!!)
+                                val data: FileConfiguration = YamlConfiguration.loadConfiguration(SetTings.config.file!!)
                                 data["Block.loc"] = location
                                 data["Block.hd"] = listOf("&f邮件箱","&e右键点击 &7| &eLEFT CLICK")
-                                data.save(GeekMail.config.file!!)
+                                data.save(SetTings.config.file!!)
                                 SetTings.location = loc
                             } catch (e: IOException) {
                                 e.printStackTrace()

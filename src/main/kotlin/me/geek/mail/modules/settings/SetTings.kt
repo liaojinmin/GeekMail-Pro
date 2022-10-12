@@ -1,14 +1,17 @@
 package me.geek.mail.modules.settings
 
 import me.geek.mail.GeekMail
-import me.geek.mail.GeekMail.config
 import me.geek.mail.modules.settings.sub.SetManager
 import me.geek.mail.modules.settings.sub.smtp.SmtpData
 import me.geek.mail.modules.settings.sub.storage.StorageDate
 import me.geek.mail.utils.colorify
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import taboolib.common.LifeCycle
+import taboolib.common.platform.Awake
 import taboolib.expansion.geek.Expiry
+import taboolib.module.configuration.Config
+import taboolib.module.configuration.ConfigFile
 import taboolib.module.configuration.Configuration.Companion.getObject
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -22,16 +25,26 @@ import kotlin.system.measureTimeMillis
 object SetTings {
     private val SetTingsCache = ConcurrentHashMap<String, SetManager>()
 
+    @Config(value = "settings.yml", autoReload = true)
+    lateinit var config: ConfigFile
+        private set
+
+    @Awake(LifeCycle.ACTIVE)
+    fun init() {
+        config.onReload { onLoadSetTings() }
+    }
+
     @Synchronized
     fun onLoadSetTings() {
         measureTimeMillis {
             val data = config.getObject<StorageDate>("data_storage", false)
             val smtp = config.getObject<SmtpData>("SmtpSet", false)
             SetTingsCache["config"] = SetManager(data, smtp)
+            onLoadConf()
             onLoadType()
         }
     }
-    fun getConfig(): SetManager {
+    private fun getConfig(): SetManager {
         return SetTingsCache["config"]!!
     }
 
@@ -46,22 +59,28 @@ object SetTings {
     /**
      * config
      */
-    val DeBug by lazy { config.getBoolean("debug", false) }
+    var DeBug: Boolean = false
 
-    val SMTP_SET = SmtpData.start
+    var SMTP_SET: Boolean = false
 
-    val USE_BUNDLE by lazy { if (GeekMail.BukkitVersion >= 1170) config.getBoolean("config.use_bundle") else false }
+    var USE_BUNDLE: Boolean = false
 
-    val UseExpiry by lazy { config.getBoolean("config.Expiry.use") }
+    var UseExpiry: Boolean = false
+
+    var ExpiryAuto: Int = 0
+
 
     val ExpiryTime by lazy { Expiry.getExpiryMillis(config.getString("config.Expiry.time") ?: "2d", false) * 1000 }
 
-    val ExpiryAuto by lazy { config.getInt("config.Expiry.auto", 600) }
-
     val Console: UUID = UUID.fromString("00000000-0000-0000-0000-000000000001")
 
-    var location: Location? = null
-
+    private fun onLoadConf() {
+        DeBug = config.getBoolean("debug", false)
+        SMTP_SET = SmtpData.start
+        USE_BUNDLE = if (GeekMail.BukkitVersion >= 1170) config.getBoolean("config.use_bundle") else false
+        UseExpiry = config.getBoolean("config.Expiry.use")
+        ExpiryAuto = config.getInt("config.Expiry.auto", 600)
+    }
 
 
     lateinit var MONEY_MAIL: String
@@ -76,6 +95,8 @@ object SetTings {
         private set
     lateinit var ITEM_MAIL: String
         private set
+
+    var location: Location? = null
 
     private fun onLoadType() {
         // 邮件种类转换语言

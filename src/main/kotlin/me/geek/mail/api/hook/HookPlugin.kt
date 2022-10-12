@@ -44,7 +44,7 @@ object HookPlugin {
             say("&7软依赖 &fTrHologram &7已兼容.")
             val loc = SetTings.location
             if (loc != null) {
-                val list = GeekMail.config.getStringList("Block.hd")
+                val list = SetTings.config.getStringList("Block.hd")
                 id?.destroy()
                 val y = loc.y + 0.5
                 val x = loc.x - -0.5

@@ -39,9 +39,6 @@ import kotlin.system.measureTimeMillis
 )
 object GeekMail : Plugin() {
 
-    @Config(value = "settings.yml", autoReload = true)
-    lateinit var config: ConfigFile
-      private set
 
     val instance by lazy { BukkitPlugin.getInstance() }
 
@@ -64,7 +61,6 @@ object GeekMail : Plugin() {
     override fun onEnable() {
         runLogo()
 
-        config.onReload { SetTings.onLoadSetTings() }
         SetTings.onLoadSetTings() // 插件配置加载
 
 

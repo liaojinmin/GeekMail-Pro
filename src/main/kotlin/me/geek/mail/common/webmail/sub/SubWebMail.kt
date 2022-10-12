@@ -2,6 +2,7 @@ package me.geek.mail.common.webmail.sub
 
 
 import me.geek.mail.modules.settings.SetTings
+import java.io.*
 import java.util.*
 import javax.mail.Authenticator
 import javax.mail.PasswordAuthentication
@@ -23,14 +24,19 @@ abstract class SubWebMail {
         "mail.smtp.auth" to "true",
         "mail.smtp.host" to SetTings.SmtpData.host,
         "mail.smtp.port" to SetTings.SmtpData.port,
-        "mail.transport.protocol" to "smtp"
+        "mail.transport.protocol" to "smtp",
+        "mail.smtp.timeout" to "25000",
+        "mail.smtp.starttls.enable" to "true"
     )
+
     private val properties = Properties().apply { putAll(props) }
+
     private val authenticator: Authenticator = object : Authenticator() {
         override fun getPasswordAuthentication(): PasswordAuthentication {
             return PasswordAuthentication(account, password)
         }
     }
+
     private val mailSession: Session = Session.getInstance(properties, authenticator)
 
     val htmlMessage = MimeMessage(mailSession).apply {
@@ -39,4 +45,29 @@ abstract class SubWebMail {
     }
 
     abstract fun onSender(title: String, text: String, app: String, targetID: UUID)
+
+
+    fun File.toHtmlString(): String {
+        // 获取HTML文件流
+        val htmlSb = StringBuffer()
+        var br: BufferedReader? = null
+        try {
+            br = BufferedReader(
+                InputStreamReader(
+                    FileInputStream(this), "UTF-8"
+                )
+            )
+            while (br.ready()) {
+                htmlSb.append(br.readLine())
+            }
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        finally {
+            br?.close()
+        }
+        return htmlSb.toString()
+    }
 }

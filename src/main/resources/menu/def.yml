@@ -23,6 +23,7 @@ Icons:
         - ' &7发件人: &f[sender]'
         - ' &7发送时间: &f[senderTime]'
         - ' &7领取时间: &f[getTime]'
+        - ' &7到期时间: &f[expire]'
         - ' &7邮件内容:'
         - ' [text]'
         - ''
