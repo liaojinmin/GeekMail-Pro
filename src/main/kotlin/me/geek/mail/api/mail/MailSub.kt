@@ -70,7 +70,7 @@ abstract class MailSub : MailPlaceholder() {
                 it.contains(SENDER) -> list.add(it.replace(SENDER, if (this.sender == SetTings.Console) "系统" else Bukkit.getOfflinePlayer(this.sender).name!!))
                 it.contains(SERDER_TIME) -> list.add(it.replace(SERDER_TIME, format.format(this.senderTime.toLong())))
                 it.contains(GET_TIME) -> list.add(it.replace(GET_TIME, if (getTime.toLong() < 1000) "未领取" else format.format(this.getTime.toLong())))
-                it.contains(TEXT) -> list.add(it.replace(TEXT, this.text.replace(";",",")))
+                it.contains(TEXT) -> list.addAll(it.replace(TEXT, this.text.replace(";",",")).split(","))
                 it.contains(STATE) -> list.add(it.replace(STATE, this.state))
                 it.contains(ITEM) -> list.addAll(it.replace(ITEM, this.appendixInfo).split(","))
                 it.contains(EXPIRE) -> {
@@ -93,11 +93,12 @@ abstract class MailSub : MailPlaceholder() {
     }
     fun getItemInfo(@NotNull Str: StringBuilder): String {
         var index = 0
+        var bs = 0
         this.itemStacks?.let {
             val player = Bukkit.getPlayer(this.target)
             for (Stack in it) {
                 val meta = Stack.itemMeta
-                if (meta != null) {
+                if (meta != null && bs < 6) {
                     if (meta.hasDisplayName()) {
                         Str.append(meta.displayName + " §7* §f" + Stack.amount + ", §f")
                     } else {
@@ -108,11 +109,15 @@ abstract class MailSub : MailPlaceholder() {
                             index++
                         }
                     }
-                }
+                    bs++
+                } else bs++
             }
         }
-        if (index > 0) {
-            Str.append("§7剩余 §6$index §7项未显示...")
+        if (index > 0 || bs >= 6) {
+            val vv = bs - 6
+            if (vv > 0) {
+                Str.append("§7剩余 §6${index + (bs - 6)} §7项未显示...")
+            }
         }
         return Str.toString()
     }

@@ -25,27 +25,26 @@ object CmdSendPack: CmdExp {
     override val command = subCommand {
         dynamic("模板ID") {
             suggestion<CommandSender> { _, _ ->
-                Template.tempPackMap.map { it.key }
+                Template.adminPack
             }
             dynamic("目标玩家") {
                 suggestion<CommandSender>(uncheck = true) {_, _ ->
                     Bukkit.getOnlinePlayers().map { it.name }
                 }
                 execute<CommandSender> { senders, context, _ ->
-                    val pack = Template.getTempPack(context.args()[1])
+                    val pack = Template.getAdminPack(context.args()[1])!!
                     GeekMail.debug("command: ${pack.command}")
-                    val mail: Array<String?>?
                     val target = Bukkit.getOfflinePlayer(context.args()[2])
                     val title = PlaceholderAPI.setPlaceholders(target, pack.title)
                     val text = PlaceholderAPI.setPlaceholders(target, pack.text)
-                    if (senders is Player) {
-                        mail = arrayOf(
+                    val mail = if (senders is Player) {
+                        arrayOf(
                             UUID.randomUUID().toString(), title, text,
                             senders.uniqueId.toString(), target.uniqueId.toString(), "未提取",
                             pack.additional, System.currentTimeMillis().toString(), "0", pack.itemStacks, pack.command
                         )
                     } else {
-                        mail = arrayOf(
+                        arrayOf(
                             UUID.randomUUID().toString(), title, text,
                             SetTings.Console.toString(), target.uniqueId.toString(), "未提取",
                             pack.additional, System.currentTimeMillis().toString(), "0", pack.itemStacks, pack.command

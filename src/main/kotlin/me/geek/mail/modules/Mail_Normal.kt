@@ -73,21 +73,21 @@ class Mail_Normal(
                 when (valueOf(data[0])) {
                     MONEY -> {
                         money = formatDouble(data[1]).toDouble()
-                        texts.append("${SetTings.MONEY_MAIL} §7* §f$money, §f")
+                        texts.append("§f$money ${SetTings.MONEY_MAIL}§7, §f")
                     }
                     POINTS -> {
                         points = data[1].filter { v -> v.isDigit() }.toInt()
-                        texts.append("${SetTings.POINTS_MAIL} §7* §f$points, §f")
+                        texts.append("§f$points ${SetTings.POINTS_MAIL}§7, §f")
                     }
                     EXP -> {
                         exp = data[1].filter { v -> v.isDigit() }.toInt()
-                        texts.append("${SetTings.EXP_MAIL} §7* §f$exp, §f")
+                        texts.append("§f$exp ${SetTings.EXP_MAIL}§7, §f")
                     }
                 }
             }
-            if (itemStacks != null) getItemInfo(texts)
-            if (command != null)  texts.append("§6${command?.size} §7个指令包")
+            if (command != null)  texts.append("${SetTings.CMD_MAIL} §7* §f${command?.size}§7, §f")
 
+            if (itemStacks != null) getItemInfo(texts)
             appendixInfo = texts.toString()
         }
     }

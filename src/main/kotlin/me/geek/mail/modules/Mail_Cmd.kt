@@ -2,6 +2,7 @@ package me.geek.mail.modules
 
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailSub
+import me.geek.mail.modules.settings.SetTings
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import taboolib.platform.compat.replacePlaceholder
@@ -50,7 +51,7 @@ class Mail_Cmd(
         sender = UUID.fromString(args[3]),
         target = UUID.fromString(args[4]),
         state = args[5],
-        appendixInfo = "§6{0} §7个指令包",
+        appendixInfo = "§6{0} §7${SetTings.CMD_MAIL}",
         command = null,
         senderTime = args[7],
         getTime = args[8]

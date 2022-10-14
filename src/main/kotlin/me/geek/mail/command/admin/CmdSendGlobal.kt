@@ -17,14 +17,14 @@ object CmdSendGlobal: CmdExp {
     override val command = subCommand {
         dynamic("模板ID") {
             suggestion<CommandSender>(uncheck = true) { _, _ ->
-                Template.tempPackMap.map { it.key }
+                Template.adminPack
             }
             dynamic("全局模式") {
                 suggestion<CommandSender> { _, _ ->
                     listOf("全局玩家")
                 }
                 execute<CommandSender> { _, context, _ ->
-                    val pack = Template.getTempPack(context.args()[1])
+                    val pack = Template.getAdminPack(context.args()[1])!!
                     MailManage.getMailData(pack.type)?.javaClass?.invokeConstructor(arrayOf(
                        "", pack.title, pack.text,
                         SetTings.Console.toString(), "", "未提取",

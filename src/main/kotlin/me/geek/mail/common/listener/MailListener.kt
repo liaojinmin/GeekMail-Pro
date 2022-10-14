@@ -76,9 +76,8 @@ object MailListener {
         SetTings.location?.let {
             if (e.isLeftClickBlock()) {
                 e.clickedBlock?.location?.let { v ->
-                    GeekMail.debug(v.toString())
-                    GeekMail.debug(it.toString())
                     if (it == v) {
+                        e.isCancelled = true
                         Menu.getMenuCommand(Menu.cmd!!)?.let {
                             val player = e.player
                             MAction(player, Menu.getSession(it), Menu.Build(player, it))

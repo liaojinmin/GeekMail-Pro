@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryCloseEvent
-import org.bukkit.event.inventory.InventoryDragEvent
-import org.bukkit.event.player.PlayerPickupItemEvent
 import org.bukkit.inventory.ItemStack
 import taboolib.platform.util.giveItem
 
@@ -92,25 +90,15 @@ class Mail_Item(
     }
     private fun Player.action() {
         Menu.isOpen.add(this)
+
         this.openInventory(Bukkit.createInventory(player, 27, "§0放入物品 §7| §0关闭菜单 "))
 
         this.sound("BLOCK_NOTE_BLOCK_HARP", 1f, 1f)
 
         GeekMail.debug("开启物品UI")
         Bukkit.getPluginManager().registerEvents(object : Listener {
-            @EventHandler
-            fun onDrag(e: InventoryDragEvent) {
-                if (player === e.whoClicked) {
-                    e.isCancelled = true
-                }
-            }
 
-            @EventHandler
-            fun onPickup(e: PlayerPickupItemEvent) {
-                if (player === e.player) {
-                    e.isCancelled = true
-                }
-            }
+
             @EventHandler
             fun onClose(e: InventoryCloseEvent) {
                 if (player == e.player) {
@@ -135,7 +123,7 @@ class Mail_Item(
                             this@action.inventory.addItem(item)
                         }
                     }
-                    // 无论任何注销所以已注册监听器
+                    // 无论任何注销监听器
                     HandlerList.unregisterAll(this)
                 }
             }

@@ -4,6 +4,7 @@ import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.common.customevent.sub.EventPack
 import me.geek.mail.common.customevent.sub.EventType
+import me.geek.mail.common.kether.sub.KetherAPI
 import me.geek.mail.modules.settings.SetTings
 import me.geek.mail.common.template.Template
 import org.bukkit.entity.Player
@@ -59,7 +60,7 @@ object Event {
             val a = it.split(": ")
             when (a[0]) {
                 "sendTemPlate" -> {
-                    Template.getServerTempPack(a[1])?.let { pack ->
+                    Template.getAdminPack(a[1])?.let { pack ->
                         MailManage.getMailData(pack.type)?.javaClass?.invokeConstructor(
                             arrayOf(UUID.randomUUID().toString(), pack.title.replacePlaceholder(player), pack.text.replacePlaceholder(player),
                                 SetTings.Console.toString(), player.uniqueId.toString(), "未提取",
@@ -67,6 +68,7 @@ object Event {
                         )?.sendMail()
                     }
                 }
+                else -> KetherAPI.instantKether(player, it)
             }
         }
     }

@@ -62,14 +62,25 @@ object Template {
     }
 
 
+    // 玩家指令展示模板
     val tempPackMap: Map<String, Temp>
         get() = TEMP_PACK_MAP
+
+    // 管理员指令展示模板
+    val adminPack by lazy {
+        mutableListOf<String>().also { list ->
+            list.addAll(SERVER_PACK_MAP.map { it.key })
+            list.addAll(TEMP_PACK_MAP.map { it.key })
+        }
+    }
+
 
     fun getTempPack(key: String): Temp {
         return TEMP_PACK_MAP[key]!!
     }
-    fun getServerTempPack(key: String): Temp? {
-        return SERVER_PACK_MAP[key]
+
+    fun getAdminPack(key: String): Temp? {
+        return SERVER_PACK_MAP[key] ?: TEMP_PACK_MAP[key]
     }
 
     private fun forFile(file: File): List<File> {

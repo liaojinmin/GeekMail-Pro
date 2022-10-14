@@ -4,7 +4,6 @@ package me.geek.mail.common.menu
 import com.google.common.base.Joiner
 import me.geek.mail.GeekMail
 import me.geek.mail.GeekMail.DataManage
-import me.geek.mail.GeekMail.say
 import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.api.mail.MailManage.sound
@@ -343,9 +342,11 @@ class MAction(private val player: Player, private val tag: Session, private val 
         if (index != -1 && end != -1) {
             for (mail1 in mail) {
                 if (index <= end) {
+
                     if (item[index] != null) {
                         index = layout.indexOf("M", index)
                     }
+
                     item[index] = mailItem(index, mail1)
                     index++
                 } else {
@@ -373,7 +374,6 @@ class MAction(private val player: Player, private val tag: Session, private val 
                 cache[key(index, contents.size)] = value(index, mail.mailID)
 
                 val name = micon.name
-
                 val itemStack = try {
                     if (micon.mats.contains("IA:", ignoreCase = true) && HookPlugin.itemsAdder.isHook) {
                         HookPlugin.itemsAdder.getItem(micon.mats.substring(3))
@@ -384,14 +384,15 @@ class MAction(private val player: Player, private val tag: Session, private val 
                     ItemStack(Material.BOOK, 1)
                 }
 
-                val itemMeta = if (SetTings.USE_BUNDLE) (itemStack.itemMeta as BundleMeta).also {
-                    it.setItems(mail.itemStacks?.asList())
+                val itemMeta = if (SetTings.USE_BUNDLE) {
+                    (itemStack.itemMeta as BundleMeta).also {
+                        it.setItems(mail.itemStacks?.asList())
+                    }
                 } else itemStack.itemMeta
 
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(name.replace("[title]", mail.title).colorify())
                     itemMeta.lore = mail.parseMailInfo(micon.lore)
-
                     if (mail.state == "未提取") {
                         itemMeta.addEnchant(Enchantment.DAMAGE_ALL, 1, true)
                         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS)

@@ -26,7 +26,7 @@ abstract class SubWebMail {
         "mail.smtp.port" to SetTings.SmtpData.port,
         "mail.transport.protocol" to "smtp",
         "mail.smtp.timeout" to "25000",
-        "mail.smtp.starttls.enable" to "true"
+     //   "mail.smtp.starttls.enable" to "true"
     )
 
     private val properties = Properties().apply { putAll(props) }

@@ -49,12 +49,13 @@ object CmdMail: CmdExp {
                             val senders = sender.uniqueId
                             MailManage.getMailData(mailType)?.let {
                                if (sender.hasPermission(it.permission)) {
-                                   val pack = try {
-                                       arrayOf(UUID.randomUUID().toString(), title, args[0], senders.toString(), target.uniqueId.toString(), "未提取", args[1], System.currentTimeMillis().toString(), "0")
-                                   } catch (e: IndexOutOfBoundsException) {
-                                       arrayOf(UUID.randomUUID().toString(), title, args[0], senders.toString(), target.uniqueId.toString(), "未提取", "0", System.currentTimeMillis().toString(), "0")
+                                   try {
+                                       if (it.condition(sender, args[1])) it.javaClass.invokeConstructor(
+                                           arrayOf(UUID.randomUUID().toString(), title, args[0], senders.toString(), target.uniqueId.toString(), "未提取", args[1], System.currentTimeMillis().toString(), "0")
+                                       ).sendMail()
+                                   } catch (_: IndexOutOfBoundsException) {
+                                       return@execute
                                    }
-                                   if (it.condition(sender, pack[6])) it.javaClass.invokeConstructor(pack).sendMail()
                                 } else {
                                    sender.sendLang("玩家-没有权限-发送邮件")
                                    GeekMail.say("&4玩家 &f${sender.name} &4执行命令缺少权限&f ${it.permission}")

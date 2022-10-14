@@ -19,7 +19,7 @@ import taboolib.platform.util.sendLang
 class Chat(
     private val player: Player
 ) {
-    val reg = """[a-zA-Z0-9]+([-_.][A-Za-zd]+)*@([a-zA-Z0-9]+[-.])+[A-Za-zd]{2,5}"""
+    val reg = Regex("""[a-zA-Z0-9]+([-_.][A-Za-zd]+)*@([a-zA-Z0-9]+[-.])+[A-Za-zd]{2,5}""")
     fun start() {
         submitAsync {
             val eve = object : Listener {
@@ -28,7 +28,7 @@ class Chat(
                     if (e.player == player) {
                         e.isCancelled = true
                         if (!e.message.contains("cancel|取消|Cancel".toRegex())) {
-                            if (Regex(reg).matches(e.message)) {
+                            if (reg.matches(e.message)) {
                                 DataManage.getMailPlayerData(e.player.uniqueId)?.let {
                                     it.mail = e.message
                                     DataManage.update(it)
