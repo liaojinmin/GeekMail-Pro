@@ -17,6 +17,12 @@ data_storage:
     maximum_lifetime: 1800000
     keepalive_time: 0
     connection_timeout: 5000
+Redis:
+  use: true
+  host: 192.168.0.102
+  port: 6379
+  password: Liao17303069590
+  ssl: false
 SmtpSet:
   start: false
   account: '****r@163.com' # 发件账号

@@ -20,6 +20,7 @@ import java.util.regex.Pattern
  */
 abstract class MailSub : MailPlaceholder() {
 
+
     val name: String = javaClass.simpleName.uppercase(Locale.ROOT)
 
 
@@ -121,4 +122,5 @@ abstract class MailSub : MailPlaceholder() {
         }
         return Str.toString()
     }
+
 }

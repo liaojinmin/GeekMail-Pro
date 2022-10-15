@@ -2,6 +2,7 @@ package me.geek.mail.modules.settings
 
 import me.geek.mail.GeekMail
 import me.geek.mail.modules.settings.sub.SetManager
+import me.geek.mail.modules.settings.sub.redis.RedisData
 import me.geek.mail.modules.settings.sub.smtp.SmtpData
 import me.geek.mail.modules.settings.sub.storage.StorageDate
 import me.geek.mail.utils.colorify
@@ -39,7 +40,10 @@ object SetTings {
         measureTimeMillis {
             val data = config.getObject<StorageDate>("data_storage", false)
             val smtp = config.getObject<SmtpData>("SmtpSet", false)
-            SetTingsCache["config"] = SetManager(data, smtp)
+            val redis = config.getObject<RedisData>("Redis", false)
+
+
+            SetTingsCache["config"] = SetManager(data, smtp, redis)
             onLoadConf()
             onLoadType()
         }
@@ -53,6 +57,9 @@ object SetTings {
     }
     val SmtpData by lazy {
         getConfig().SmtpData
+    }
+    val redisData by lazy {
+        getConfig().redisData
     }
 
 

@@ -1,4 +1,4 @@
-
+val taboolibVersion: String by project
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.7.20"
@@ -39,7 +39,7 @@ taboolib {
     relocate("com.zaxxer.hikari", "com.zaxxer.hikari_4_0_3_mail")
     relocate("javax.mail", "javax.mail_1_5_0_mail")
     classifier = null
-    version = "6.0.9-local"
+    version = taboolibVersion
 }
 
 repositories {
@@ -58,6 +58,8 @@ repositories {
 
 
 dependencies {
+
+    taboo(project(":Scheduler")) { isTransitive = false }
 
     compileOnly(kotlin("stdlib"))
     // Libraries

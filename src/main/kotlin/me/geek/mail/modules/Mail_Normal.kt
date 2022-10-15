@@ -145,4 +145,8 @@ class Mail_Normal(
         itemStacks = null,
         command = null
     )
+
+    companion object {
+        private const val serialVersionUID = -202210150501L
+    }
 }

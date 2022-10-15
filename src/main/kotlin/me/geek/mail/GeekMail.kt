@@ -9,9 +9,11 @@ import me.geek.mail.common.data.Task
 import me.geek.mail.common.menu.Menu
 import me.geek.mail.common.template.Template
 import me.geek.mail.modules.*
+import me.geek.mail.modules.redis.RedisKt
 import me.geek.mail.modules.settings.SetTings
 import me.geek.mail.utils.colorify
 import org.bukkit.Bukkit
+import taboolib.common.env.DependencyScope
 import taboolib.common.env.RuntimeDependencies
 import taboolib.common.env.RuntimeDependency
 import taboolib.common.platform.Platform
@@ -36,11 +38,22 @@ import kotlin.system.measureTimeMillis
      //   relocate = ["!javax.activation", "!javax.activation_1_1_1_mail"],
         repository = "https://repo1.maven.org/maven2"
     ),
+    RuntimeDependency(value = "org.apache.commons:commons-pool2:2.11.1",
+        test = "org.apache.commons.pool2.impl.GenericObjectPoolConfig",
+        transitive = false, ignoreOptional = true, scopes = [DependencyScope.PROVIDED],
+       // repository = "https://repo.alessiodp.com/releases/"
+    ),
+    RuntimeDependency(value = "redis.clients:jedis:4.2.2",
+        test = "redis.clients.jedis.exceptions.JedisException",
+        transitive = false, ignoreOptional = true, scopes = [DependencyScope.PROVIDED]
+    )
 )
 object GeekMail : Plugin() {
 
 
     val instance by lazy { BukkitPlugin.getInstance() }
+
+    lateinit var dataScheduler: RedisKt
 
     const val VERSION = 2.05
 
@@ -63,7 +76,6 @@ object GeekMail : Plugin() {
 
         SetTings.onLoadSetTings() // 插件配置加载
 
-
         Event.onloadEventPack() // 自定义事件加载
 
         Template.onLoad() // 邮件模板加载
@@ -71,6 +83,17 @@ object GeekMail : Plugin() {
         DataManage.start() // 启动数据库
 
         HookPlugin.onHook() // 挂钩软依赖
+
+        // Redis
+        if (SetTings.redisData.use) {
+            this.dataScheduler = RedisKt(
+                SetTings.redisData.host,
+                SetTings.redisData.port,
+                SetTings.redisData.password,
+                SetTings.redisData.ssl,
+                5000
+            )
+        }
 
 
 

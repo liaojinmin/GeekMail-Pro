@@ -68,5 +68,8 @@ class Mail_Money(
         if (!d) player.sendMessage("[!] 你没有足够的金币")
         return d
     }
+    companion object {
+        private const val serialVersionUID = -202210150401L
+    }
 
 }

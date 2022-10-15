@@ -78,4 +78,12 @@ class Mail_Cmd(
         return player.isOp
     }
 
+
+
+
+    companion object {
+        private const val serialVersionUID = -202210150101L
+    }
+
+
 }

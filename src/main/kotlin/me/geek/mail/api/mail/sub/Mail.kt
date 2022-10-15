@@ -2,13 +2,14 @@ package me.geek.mail.api.mail.sub
 
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import java.io.Serializable
 import java.util.*
 
 /**
  * 作者: 老廖
  * 时间: 2022/7/28
  */
-interface Mail : Cloneable {
+interface Mail : Serializable {
     val mailID: UUID
     val mailType: String
 
