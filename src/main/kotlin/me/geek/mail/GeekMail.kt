@@ -3,7 +3,7 @@ package me.geek.mail
 
 import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.api.mail.MailManage
-import me.geek.mail.common.data.Database
+import me.geek.mail.common.data.SqlManage
 import me.geek.mail.common.customevent.Event
 import me.geek.mail.common.data.Task
 import me.geek.mail.common.menu.Menu
@@ -19,8 +19,6 @@ import taboolib.common.env.RuntimeDependency
 import taboolib.common.platform.Platform
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
-import taboolib.module.configuration.Config
-import taboolib.module.configuration.ConfigFile
 import taboolib.module.metrics.Metrics
 import taboolib.platform.BukkitPlugin
 import kotlin.system.measureTimeMillis
@@ -41,7 +39,6 @@ import kotlin.system.measureTimeMillis
     RuntimeDependency(value = "org.apache.commons:commons-pool2:2.11.1",
         test = "org.apache.commons.pool2.impl.GenericObjectPoolConfig",
         transitive = false, ignoreOptional = true, scopes = [DependencyScope.PROVIDED],
-       // repository = "https://repo.alessiodp.com/releases/"
     ),
     RuntimeDependency(value = "redis.clients:jedis:4.2.2",
         test = "redis.clients.jedis.exceptions.JedisException",
@@ -53,15 +50,19 @@ object GeekMail : Plugin() {
 
     val instance by lazy { BukkitPlugin.getInstance() }
 
-    lateinit var dataScheduler: RedisKt
+    val dataScheduler by lazy {
+        if (SetTings.redisData.use) {
+            RedisKt(SetTings.redisData)
+        } else null
+    }
 
-    const val VERSION = 2.05
+    const val VERSION = 2.1
 
     val BukkitVersion by lazy { Bukkit.getVersion().substringAfter("MC:").filter { it.isDigit() }.toInt() }
 
     var plugin_status: Boolean = false // 插件状态
 
-    val DataManage by lazy { Database() } // 数据库管理器
+   // val DataManage by lazy { DataManage() } // 数据库管理器
 
 
     override fun onLoad() {
@@ -80,20 +81,10 @@ object GeekMail : Plugin() {
 
         Template.onLoad() // 邮件模板加载
 
-        DataManage.start() // 启动数据库
-
         HookPlugin.onHook() // 挂钩软依赖
 
-        // Redis
-        if (SetTings.redisData.use) {
-            this.dataScheduler = RedisKt(
-                SetTings.redisData.host,
-                SetTings.redisData.port,
-                SetTings.redisData.password,
-                SetTings.redisData.ssl,
-                5000
-            )
-        }
+        SqlManage.start() // 启动数据库
+
 
 
 
@@ -108,7 +99,7 @@ object GeekMail : Plugin() {
 
         Menu.closeGui()
 
-        DataManage.closeData()
+        SqlManage.closeData()
     }
 
 

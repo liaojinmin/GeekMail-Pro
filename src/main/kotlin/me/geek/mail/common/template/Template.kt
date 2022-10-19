@@ -51,7 +51,6 @@ object Template {
                     val additional: String = var1.getString("Template.package.appendix.additional", "0")!!
                     val items: String = buildItemsString(var1.getStringList("Template.package.appendix.items"))
                     val command: String = Joiner.on(";").join(var1.getStringList("Template.package.appendix.command"))
-                    GeekMail.debug("$packID-command: $command")
                     if (var1.getBoolean("Template.Server")) {
                         SERVER_PACK_MAP[packID] = TempPack(packID, condition, action, deny, title, text, type, additional, items, command)
                     } else TEMP_PACK_MAP[packID] = TempPack(packID, condition, action, deny, title, text, type, additional, items, command)
@@ -114,13 +113,11 @@ object Template {
         if (items.isNotEmpty()) {
             val item: MutableList<ItemStack> = ArrayList()
             items.forEach { m ->
-                GeekMail.debug(m)
                 mutableListOf<ItemStack>()
                 m.split(";").forEach {
                     val args = it.split(",")
                     val i = buildItem(XMaterial.STONE) {
                         args.forEach { it2 ->
-                            GeekMail.debug(it2)
                             when {
                                 it2.contains(mats) -> setMaterial(XMaterial.valueOf(it2.replace(mats, "").uppercase()))
                                 it2.contains(Name) -> name = it2.replace(Name, "").colorify()
@@ -131,7 +128,6 @@ object Template {
                             }
                         }
                     }
-                    GeekMail.debug("物品数量: ${i.amount}")
                     item.add(i)
                 }
 

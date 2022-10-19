@@ -3,7 +3,7 @@ package me.geek.mail.common.menu
 
 import com.google.common.base.Joiner
 import me.geek.mail.GeekMail
-import me.geek.mail.GeekMail.DataManage
+import me.geek.mail.common.data.SqlManage
 import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.api.mail.MailManage.sound
@@ -29,6 +29,8 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.BundleMeta
 import taboolib.common.platform.function.adaptPlayer
+import taboolib.common.platform.function.submit
+import taboolib.common.platform.function.submitAsync
 import taboolib.module.lang.sendLang
 import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
@@ -50,10 +52,9 @@ class MAction(private val player: Player, private val tag: Session, private val 
     private val air = ItemStack(Material.AIR)
 
     private val icon = tag.micon
-    // 插件实列
-    private val plugin = GeekMail.instance
+
     // 会话邮件缓存
-    private val mail = MailManage.getTargetCache(player.uniqueId)
+    private val mail = MailManage.getPlayerMailCache(player.uniqueId)
 
     private var view: Boolean = false
 
@@ -125,7 +126,7 @@ class MAction(private val player: Player, private val tag: Session, private val 
                                         return
                                     }
                                     BIND -> {
-                                        if (DataManage.getMailPlayerData(player.uniqueId)!!.mail.isEmpty()) {
+                                        if (MailManage.getMailPlayerData(player.uniqueId)!!.mail.isEmpty()) {
                                             Chat(player).start()
                                             player.closeInventory()
                                             return
@@ -181,7 +182,7 @@ class MAction(private val player: Player, private val tag: Session, private val 
                     Menu.isOpen.removeIf { it === player }
                 }
             }
-        }, plugin)
+        }, GeekMail.instance)
     }
 
     /**
@@ -199,7 +200,6 @@ class MAction(private val player: Player, private val tag: Session, private val 
                             return
                         }
                         val itemStacks = inv.contents
-                        mail.giveAppendix()
 
                         mail.state = "已提取"
                         mail.getTime = System.currentTimeMillis().toString()
@@ -221,17 +221,27 @@ class MAction(private val player: Player, private val tag: Session, private val 
                             itemMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS)
                             itemStacks[index]!!.itemMeta = itemMeta
                         }
-
                         // 更新当前页面
                         inv.contents = itemStacks
                         // 更新翻页
                         contents[page] = itemStacks
 
-                        // 更新数据库
-                        Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin) {
-                            DataManage.update(mail)
+                        // 更新数据库 数据安全更新后发放附件
+
+                        var execute: Boolean
+                        submitAsync {
+                            // 数据是否更新成功
+                           execute = SqlManage.updateMail(mail)
+                           submit {
+                               if (execute) {
+                                   // 已更新给予玩家邮件附件
+                                   mail.giveAppendix()
+                                   poxPlayer.sendLang("玩家-领取附件-成功", mail.appendixInfo)
+                               } else {
+                                   poxPlayer.sendLang("PLAYER-ERROR-LOCK", "getAppendix()")
+                               }
+                           }
                         }
-                        poxPlayer.sendLang("玩家-领取附件-成功", mail.appendixInfo)
                     } else {
                         if (mail.state != "无") {
                             poxPlayer.sendLang("玩家-领取附件-失败")
@@ -242,6 +252,39 @@ class MAction(private val player: Player, private val tag: Session, private val 
         }
     }
 
+    /**
+     * 获取所有邮件奖励
+     */
+    private fun onGetRewardAll() {
+        contents.clear()
+        cache.clear()
+        val data = mutableListOf<MailSub>()
+        for ((i, m) in mail.withIndex()) {
+            if (m.state == "未提取") {
+                m.state = "已提取"
+                m.getTime = System.currentTimeMillis().toString()
+                // 更新缓存状态
+                this.mail[i] = m
+                data.add(m)
+            }
+        }
+
+        var execute: IntArray
+        if (data.isNotEmpty()) {
+            submitAsync {
+                execute = SqlManage.updateListMail(data)
+                submit {
+                    if (execute.size == data.size) {
+                        for ((index, value) in execute.withIndex()) {
+                            if (value != 0) {
+                                data[index].giveAppendix()
+                            }
+                        }
+                    } else poxPlayer.sendLang("PLAYER-ERROR-LOCK", "GetRewardAll()")
+                }
+            }
+        }
+    }
     /**
      * 删除指定槽位的邮件
      * @param index 槽位索引
@@ -258,19 +301,17 @@ class MAction(private val player: Player, private val tag: Session, private val 
                     cache.remove(key(index, page))
                     inv.contents = itemStacks
                     contents[page] = itemStacks
-                    MailManage.remIndexTofTarget(player.uniqueId, m.mailID)
+                    MailManage.remPlayerMail(player.uniqueId, m.mailID)
 
-                    Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin) { DataManage.delete(m.mailID) }
+                    // 更新数据库
+                    submitAsync { SqlManage.deleteMail(m.mailID) }
 
                     // 发送邮件删除消息
                     poxPlayer.sendLang("玩家-删除邮件-成功")
-
-                    player.sound("BLOCK_NOTE_BLOCK_DIDGERIDOO",1f, 2f)
                 } else {
                     // 发送邮件不可删除消息
 
                     poxPlayer.sendLang("玩家-删除邮件-失败")
-                    player.sound("BLOCK_NOTE_BLOCK_DIDGERIDOO",1f, 1f)
                 }
             }
         }
@@ -287,31 +328,11 @@ class MAction(private val player: Player, private val tag: Session, private val 
         for (m in mail) {
             if (m.state == "已提取" || m.state == "无") {
                 c = true
-                MailManage.remIndexTofTarget(player.uniqueId, m.mailID)
+                MailManage.remPlayerMail(player.uniqueId, m.mailID)
             }
         }
-        if (c) Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin) { DataManage.delete(player.uniqueId, "已提取") }
-
-    }
-    /**
-     * 获取所有邮件奖励
-     */
-    private fun onGetRewardAll() {
-        contents.clear()
-        cache.clear()
-        var c = false
-        for ((i, m) in mail.withIndex()) {
-            if (m.state == "未提取") {
-                c = true
-                m.giveAppendix()
-                m.state = "已提取"
-                m.getTime = System.currentTimeMillis().toString()
-
-                // 更新缓存状态
-                this.mail[i] = m
-            }
-        }
-        if (c) Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin) { DataManage.update(mail) }
+        // 更新数据库
+        if (c) submitAsync { SqlManage.deleteStateMail(player.uniqueId, "已提取") }
 
     }
 
@@ -329,7 +350,7 @@ class MAction(private val player: Player, private val tag: Session, private val 
                     val meta = itemMeta
                     if (meta != null) {
                         meta.lore = Joiner.on(",").join(it.lore)
-                            .replace("[mail_Info]", DataManage.getMailPlayerData(player.uniqueId)!!.mail)
+                            .replace("[mail_Info]", MailManage.getMailPlayerData(player.uniqueId)!!.mail)
                             .split(",")
                     }
                     itemMeta = meta

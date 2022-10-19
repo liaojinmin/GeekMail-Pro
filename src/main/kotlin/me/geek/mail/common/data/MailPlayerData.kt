@@ -1,6 +1,7 @@
-package me.geek.mail.common.data.sub
+package me.geek.mail.common.data
 
-import me.geek.mail.GeekMail
+import me.geek.mail.api.mail.MailSub
+import java.io.Serializable
 import java.util.UUID
 
 /**
@@ -12,22 +13,21 @@ class MailPlayerData(
     val uuid: UUID,
     var mail: String,
     var OneJoin: Boolean = true,
-) {
-    fun reset() {
-        this.mail = ""
-        this.OneJoin = true
-    }
-
+    var mailData: MutableList<MailSub> = mutableListOf()
+): Serializable {
 
 
     companion object {
 
         fun MailPlayerData.update() {
-            GeekMail.DataManage.update(this)
+            SqlManage.updatePlayerData(this)
         }
 
         fun defaultsData(name: String, uuid: UUID): MailPlayerData {
             return MailPlayerData(name, uuid, "",true)
         }
+
+
+        private const val serialVersionUID = -2022101501991L
     }
 }

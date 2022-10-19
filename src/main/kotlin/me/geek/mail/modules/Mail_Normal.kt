@@ -2,7 +2,7 @@ package me.geek.mail.modules
 
 import me.geek.mail.GeekMail
 import me.geek.mail.api.hook.HookPlugin
-import me.geek.mail.api.mail.sub.AppendixType.*
+import me.geek.mail.api.mail.AppendixType.*
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.modules.settings.SetTings
 import org.bukkit.Bukkit

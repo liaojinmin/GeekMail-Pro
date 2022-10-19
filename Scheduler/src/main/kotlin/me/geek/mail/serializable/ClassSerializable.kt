@@ -6,12 +6,14 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 
 
+
 /**
  * 作者: 老廖
  * 时间: 2022/10/15
  *
  **/
 object ClassSerializable {
+
     fun serialize(objs: Any): ByteArray? {
         val b = ByteArrayOutputStream()
         val a = ObjectOutputStream(b)
@@ -24,4 +26,15 @@ object ClassSerializable {
         return b.readObject()
     }
 
+    fun toHexString(Byte: ByteArray): String {
+        return SerializeUtil.toHexString(Byte)
+    }
+
+
+    fun toByteArrays(str: String): ByteArray {
+        return SerializeUtil.toByteArray(str)
+    }
+
 }
+
+

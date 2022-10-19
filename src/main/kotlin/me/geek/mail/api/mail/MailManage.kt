@@ -3,6 +3,7 @@ package me.geek.mail.api.mail
 
 import me.geek.mail.GeekMail
 import me.geek.mail.GeekMail.say
+import me.geek.mail.common.data.MailPlayerData
 
 import me.geek.mail.common.webmail.WebManager
 import me.geek.mail.modules.settings.SetTings
@@ -10,7 +11,6 @@ import taboolib.expansion.geek.serialize.serializeItemStacks
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.jetbrains.annotations.NotNull
-import taboolib.common.platform.function.adaptPlayer
 import taboolib.common.platform.function.getProxyPlayer
 import taboolib.library.reflex.Reflex.Companion.invokeConstructor
 import taboolib.library.xseries.XSound
@@ -26,10 +26,14 @@ import kotlin.collections.HashMap
  */
 object MailManage {
 
-    private val senderCache: MutableMap<UUID, MutableList<MailSub>> = ConcurrentHashMap()
-    private val targetCache: MutableMap<UUID, MutableList<MailSub>> = ConcurrentHashMap()
+    private val MailPlayerCache: MutableMap<UUID, MailPlayerData> = ConcurrentHashMap()
+
     private val MailData: MutableMap<String, MailSub> = HashMap()
+
     private val WebMail by lazy { if (SetTings.SMTP_SET) { WebManager() } else null }
+
+
+    val PlayerLock: MutableList<UUID> = mutableListOf()
 
     /**
      * 发送web邮件提醒
@@ -49,9 +53,9 @@ object MailManage {
     }
 
     @JvmStatic
-    fun senderMail(
-        @NotNull mailType: String, @NotNull title: String, @NotNull text: String,
-        @NotNull senderUuid: UUID, @NotNull targetUuid: UUID, additional: String, cmd: String, item: Array<ItemStack>?) {
+    fun senderMail(@NotNull mailType: String, @NotNull title: String, @NotNull text: String,
+        @NotNull senderUuid: UUID, @NotNull targetUuid: UUID, additional: String, cmd: String, item: Array<ItemStack>?)
+    {
          if (MailData.containsKey(mailType)) {
              val senderTime = System.currentTimeMillis().toString()
              val getTime = "0"
@@ -100,26 +104,6 @@ object MailManage {
         return MailData.keys.filter { it != "MAIL_NORMAL" }
     }
 
-    /**
-     * 此方法会先判断缓存中是否存在对应 目标UID 的数据 再进行存入
-     *
-     * @param senderUuid 发送者ID
-     * @param mail 邮件
-     */
-    fun addSenderCache(senderUuid: UUID, mail: MailSub) {
-        if (senderCache.containsKey(senderUuid)) {
-            senderCache.forEach { (key: UUID, value: MutableList<MailSub>) ->
-                if (key == senderUuid) {
-                    value.add(mail)
-                    return
-                }
-            }
-        } else {
-            val mail1: MutableList<MailSub> = ArrayList()
-            mail1.add(mail)
-            senderCache[senderUuid] = mail1
-        }
-    }
 
     /**
      * 此方法会先判断缓存中是否存在对应 目标UID 的数据 再进行存入
@@ -127,42 +111,19 @@ object MailManage {
      * @param targetUuid 目标ID
      * @param mail 邮件
      */
-    fun addTargetCache(targetUuid: UUID, mail: MailSub) {
-        if (targetCache.containsKey(targetUuid)) {
-            targetCache.forEach { (key: UUID, value: MutableList<MailSub>) ->
-                if (key == targetUuid) { value.add(mail) }
-            }
-        } else {
-            val mail1: MutableList<MailSub> = ArrayList()
-            mail1.add(mail)
-            targetCache[targetUuid] = mail1
+    fun addPlayerMailCache(targetUuid: UUID, mail: MailSub) {
+        MailPlayerCache[targetUuid]?.mailData?.add(mail)
+    }
+
+    fun remPlayerMail(targetUuid: UUID, mailID: UUID) {
+        MailPlayerCache[targetUuid]?.let {
+            it.mailData.removeIf { v -> v.mailID == mailID }
         }
     }
 
-    // 直接替换缓存中的数据
-    fun upTargetCache(targetUuid: UUID, mail: MutableList<MailSub>) {
-        targetCache[targetUuid] = mail
-    }
-
-    fun remTargetCache(targetUuid: UUID) {
-        targetCache.remove(targetUuid)
-    }
-
-    fun remIndexTofTarget(targetUuid: UUID, mailID: UUID) {
-        if (targetCache.containsKey(targetUuid)) {
-            targetCache.forEach { (key: UUID, value: MutableList<MailSub>) ->
-                if (key == targetUuid) {
-                    value.removeIf { it.mailID == mailID }
-                }
-            }
-        } else {
-            say("缓存 null 异常")
-        }
-    }
-
-    fun getTargetCache(@NotNull uuid: UUID): MutableList<MailSub> {
-        return ArrayList(targetCache[uuid]?.let {
-            it.also { value ->
+    fun getPlayerMailCache(@NotNull uuid: UUID): MutableList<MailSub> {
+        return ArrayList(MailPlayerCache[uuid]?.let {
+            it.mailData.also { value ->
                 val s = value.size
                 value.removeIf { mail ->
                    mail.sender == SetTings.Console && mail.senderTime.toLong() <= (System.currentTimeMillis() - SetTings.ExpiryTime)
@@ -174,6 +135,21 @@ object MailManage {
             }
         } ?: mutableListOf())
     }
+
+
+
+    fun getMailPlayerData(uuid: UUID): MailPlayerData? {
+        return MailPlayerCache[uuid]
+    }
+    fun addMailPlayerData(uuid: UUID, data: MailPlayerData?) {
+        data?.let { MailPlayerCache[uuid] = it }
+    }
+    fun remMailPlayerData(uuid: UUID) {
+        MailPlayerCache.remove(uuid)
+    }
+
+
+
 
 
     fun Player.sound(name: String, volume: Float, potch: Float) {

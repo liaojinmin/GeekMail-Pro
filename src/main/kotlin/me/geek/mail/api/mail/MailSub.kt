@@ -3,7 +3,7 @@ package me.geek.mail.api.mail
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.event.MailReceiveEvent
 import me.geek.mail.api.mail.event.MailSenderEvent
-import me.geek.mail.api.mail.sub.MailPlaceholder
+import me.geek.mail.common.data.SqlManage
 import me.geek.mail.modules.settings.SetTings
 import org.bukkit.Bukkit
 import org.jetbrains.annotations.NotNull
@@ -25,6 +25,13 @@ abstract class MailSub : MailPlaceholder() {
 
 
     override fun sendMail() {
+        val send = Bukkit.getPlayer(this.sender)
+        send?.let {
+            if (MailManage.PlayerLock.contains(it.uniqueId)) {
+                adaptPlayer(it).sendLang("PLAYER-LOCK")
+                return
+            }
+        }
 
         val event = MailSenderEvent(this)
         event.call()
@@ -32,25 +39,22 @@ abstract class MailSub : MailPlaceholder() {
 
         Bukkit.getScheduler().scheduleAsyncDelayedTask(GeekMail.instance) {
 
-            val send = Bukkit.getPlayer(this.sender)
             val targets = Bukkit.getPlayer(this.target)
 
             var targetName = "目标"
 
             if (targets != null) {
                 targetName = targets.name
-                MailManage.addTargetCache(this.target, this)
+                MailManage.addPlayerMailCache(this.target, this)
                 adaptPlayer(targets).sendLang("玩家-接收邮件", title)
             }
 
             if (this.sender != SetTings.Console) {
                 if (send != null) {
-                    MailManage.addSenderCache(this.sender, this)
                     adaptPlayer(send).sendLang("玩家-发送邮件", targetName)
                 }
             }
-
-            GeekMail.DataManage.insertMailData(this)
+            SqlManage.insertMail(this)
         }
 
         MailManage.senderWebMail(this.title, this.text, this.appendixInfo, this.target)
@@ -60,7 +64,7 @@ abstract class MailSub : MailPlaceholder() {
 
     fun sendGlobalMail() {
         val player = Bukkit.getOfflinePlayers()
-        GeekMail.DataManage.insert(this, player)
+        SqlManage.insertGlobalMail(this, player)
     }
 
     fun parseMailInfo(@NotNull lore: List<String>): List<String> {

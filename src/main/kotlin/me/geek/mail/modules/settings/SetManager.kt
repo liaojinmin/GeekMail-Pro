@@ -1,8 +1,8 @@
-package me.geek.mail.modules.settings.sub
+package me.geek.mail.modules.settings
 
 import me.geek.mail.modules.settings.sub.redis.RedisData
 import me.geek.mail.modules.settings.sub.smtp.SmtpData
-import me.geek.mail.modules.settings.sub.storage.StorageDate
+import me.geek.mail.scheduler.sql.SqlConfig
 
 /**
  * 作者: 老廖
@@ -10,7 +10,7 @@ import me.geek.mail.modules.settings.sub.storage.StorageDate
  *
  **/
 data class SetManager(
-    val storageDate: StorageDate,
+    val SqlData: SqlConfig,
     val SmtpData: SmtpData,
     val redisData: RedisData
 )

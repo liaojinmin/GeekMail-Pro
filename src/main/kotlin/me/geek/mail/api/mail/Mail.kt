@@ -1,4 +1,4 @@
-package me.geek.mail.api.mail.sub
+package me.geek.mail.api.mail
 
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack

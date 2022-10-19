@@ -1,6 +1,7 @@
 package me.geek.mail.common.kether
 
 import me.geek.mail.GeekMail
+import me.geek.mail.api.mail.MailManage
 import me.geek.mail.common.kether.sub.KetherSub
 import taboolib.library.kether.ArgTypes
 import taboolib.library.kether.ParsedAction
@@ -23,7 +24,7 @@ class GNewPlayer(private val context: ParsedAction<*>): KetherSub<Boolean>() {
                 false
             } else {
                 GeekMail.debug("NewPlayer 条件正确")
-                val data = GeekMail.DataManage.getMailPlayerData(getPlayer(frame).uniqueId)!!
+                val data = MailManage.getMailPlayerData(getPlayer(frame).uniqueId)!!
                 data.OneJoin
             }
         }

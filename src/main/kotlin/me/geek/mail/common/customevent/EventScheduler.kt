@@ -3,7 +3,7 @@ package me.geek.mail.common.customevent
 
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.event.NewPlayerJoinEvent
-import me.geek.mail.common.data.sub.MailPlayerData.Companion.update
+import me.geek.mail.common.data.MailPlayerData.Companion.update
 import me.geek.mail.common.kether.sub.KetherAPI
 import org.bukkit.event.player.AsyncPlayerChatEvent
 import taboolib.common.platform.event.EventPriority

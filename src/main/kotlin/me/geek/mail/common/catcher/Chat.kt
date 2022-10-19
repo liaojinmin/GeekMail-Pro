@@ -1,7 +1,8 @@
 package me.geek.mail.common.catcher
 
 import me.geek.mail.GeekMail
-import me.geek.mail.GeekMail.DataManage
+import me.geek.mail.api.mail.MailManage
+import me.geek.mail.common.data.SqlManage
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -29,9 +30,9 @@ class Chat(
                         e.isCancelled = true
                         if (!e.message.contains("cancel|取消|Cancel".toRegex())) {
                             if (reg.matches(e.message)) {
-                                DataManage.getMailPlayerData(e.player.uniqueId)?.let {
+                                MailManage.getMailPlayerData(e.player.uniqueId)?.let {
                                     it.mail = e.message
-                                    DataManage.update(it)
+                                    SqlManage.updatePlayerData(it)
                                 }
                                 player.sendMessage("§a绑定成功.")
                             } else player.sendMessage("§c错误的邮箱格式.")

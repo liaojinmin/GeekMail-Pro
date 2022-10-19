@@ -1,6 +1,7 @@
 package me.geek.mail.common.webmail
 
 import me.geek.mail.GeekMail
+import me.geek.mail.api.mail.MailManage
 import me.geek.mail.api.mail.event.WebMailSenderEvent
 import me.geek.mail.common.webmail.sub.SubWebMail
 import taboolib.common.platform.function.releaseResourceFile
@@ -29,14 +30,11 @@ class WebManager : SubWebMail() {
         submitAsync {
             var to = ""
             var name = ""
-            val data = GeekMail.DataManage.getMailPlayerData(targetID)
+            val data = MailManage.getMailPlayerData(targetID)
 
             if (data != null) {
                 to = data.mail
                 name = data.name
-            } else GeekMail.DataManage.selectPlayerBindMail(targetID)?.let {
-                name = it[0]
-                to = it[1]
             }
 
             if (to.isEmpty() || name.isEmpty()) {

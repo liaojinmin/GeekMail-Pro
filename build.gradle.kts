@@ -3,6 +3,7 @@ val taboolibVersion: String by project
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.7.20"
     id("io.izzel.taboolib") version "1.42"
+    id("org.jetbrains.dokka") version "1.7.20"
 }
 
 taboolib {
@@ -56,9 +57,13 @@ repositories {
     maven("https://maven.pkg.github.com/LoneDev6/API-ItemsAdder")
 }
 
+tasks.dokkaHtml.configure {
+    outputDirectory.set(buildDir.resolve("dokka"))
+}
 
 dependencies {
 
+    dokkaHtmlPlugin("org.jetbrains.dokka:kotlin-as-java-plugin:1.7.20")
     taboo(project(":Scheduler")) { isTransitive = false }
 
     compileOnly(kotlin("stdlib"))

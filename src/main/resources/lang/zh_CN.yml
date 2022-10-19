@@ -133,8 +133,29 @@
   - '&l'
   - '&e    你有 {0} 封邮件已到期删除...'
   - '&f'
-
-
+PLAYER-LOCK:
+  - type: sound
+    sound: 'BLOCK_NOTE_BLOCK_DIDGERIDOO'
+    volume: 1
+    pitch: 2
+  - '&1'
+  - '&7  Geek&fMail &8>&7>&f>'
+  - '&l'
+  - '&c   数据正在等待获取...请稍后再试'
+  - '&c   如仍然无法使用，请联系管理员！'
+  - '&f'
+PLAYER-ERROR-LOCK:
+  - type: sound
+    sound: 'BLOCK_NOTE_BLOCK_DIDGERIDOO'
+    volume: 1
+    pitch: 2
+  - '&1'
+  - '&7  Geek&fMail &8>&7>&f>'
+  - '&l'
+  - '&c   数据提交异常...请稍后再试'
+  - '&c   异常节点: {0}'
+  - '&c   如仍然无法使用，请联系管理员！'
+  - '&f'
 
 CMD-HELP-ADMIN:
   - '  &c管理员: '

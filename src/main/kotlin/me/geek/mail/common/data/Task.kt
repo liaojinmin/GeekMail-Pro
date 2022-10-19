@@ -1,9 +1,9 @@
 package me.geek.mail.common.data
 
 import me.geek.mail.GeekMail
-import me.geek.mail.common.data.sub.actions
-import me.geek.mail.common.data.sub.use
 import me.geek.mail.modules.settings.SetTings
+import me.geek.mail.scheduler.sql.actions
+import me.geek.mail.scheduler.sql.use
 import taboolib.common.platform.function.submitAsync
 import kotlin.system.measureTimeMillis
 
@@ -22,7 +22,7 @@ class Task {
         submitAsync(delay = SetTings.ExpiryAuto.toLong() * 20, period = SetTings.ExpiryAuto.toLong() * 20) {
             var res = 0
             measureTimeMillis {
-                GeekMail.DataManage.getConnection().use {
+                SqlManage.getConnection().use {
                     this.prepareStatement("DELETE FROM `maildata` WHERE sender=? AND `sendertime`<=?").actions { s ->
                         s.setString(1, SetTings.Console.toString())
                         s.setString(2, (System.currentTimeMillis() - SetTings.ExpiryTime).toString())

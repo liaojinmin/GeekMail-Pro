@@ -1,10 +1,9 @@
 package me.geek.mail.modules.settings
 
 import me.geek.mail.GeekMail
-import me.geek.mail.modules.settings.sub.SetManager
 import me.geek.mail.modules.settings.sub.redis.RedisData
 import me.geek.mail.modules.settings.sub.smtp.SmtpData
-import me.geek.mail.modules.settings.sub.storage.StorageDate
+import me.geek.mail.scheduler.sql.SqlConfig
 import me.geek.mail.utils.colorify
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -38,10 +37,10 @@ object SetTings {
     @Synchronized
     fun onLoadSetTings() {
         measureTimeMillis {
-            val data = config.getObject<StorageDate>("data_storage", false)
+            val data = config.getObject<SqlConfig>("data_storage", false)
+            data.sqlite = GeekMail.instance.dataFolder
             val smtp = config.getObject<SmtpData>("SmtpSet", false)
             val redis = config.getObject<RedisData>("Redis", false)
-
 
             SetTingsCache["config"] = SetManager(data, smtp, redis)
             onLoadConf()
@@ -53,7 +52,7 @@ object SetTings {
     }
 
     val StorageDate by lazy {
-        getConfig().storageDate
+        getConfig().SqlData
     }
     val SmtpData by lazy {
         getConfig().SmtpData

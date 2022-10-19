@@ -1,4 +1,4 @@
-package me.geek.mail.common.data.sub
+package me.geek.mail.scheduler.sql
 
 import java.sql.Connection
 import java.sql.ResultSet
@@ -30,6 +30,11 @@ fun <T> Connection.use(func: Connection.() -> T): T {
         close()
     }
 }
+
+
+
+
+
 
 fun <T: Statement, R> T.action(func: Statement.(T) -> R) {
     try {

@@ -1,6 +1,6 @@
 package me.geek.mail.api.mail.event
 
-import me.geek.mail.common.data.sub.MailPlayerData
+import me.geek.mail.common.data.MailPlayerData
 import org.bukkit.entity.Player
 import taboolib.platform.type.BukkitProxyEvent
 
