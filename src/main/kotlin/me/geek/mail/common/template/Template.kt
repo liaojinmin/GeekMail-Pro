@@ -9,7 +9,7 @@ import me.geek.mail.GeekMail.say
 import me.geek.mail.common.template.Sub.Temp
 import me.geek.mail.common.template.Sub.TempPack
 import me.geek.mail.utils.colorify
-import taboolib.expansion.geek.serialize.serializeItemStacks
+import me.geek.mail.utils.serializeItemStacks
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.releaseResourceFile
 import taboolib.library.xseries.XMaterial
@@ -113,7 +113,6 @@ object Template {
         if (items.isNotEmpty()) {
             val item: MutableList<ItemStack> = ArrayList()
             items.forEach { m ->
-                mutableListOf<ItemStack>()
                 m.split(";").forEach {
                     val args = it.split(",")
                     val i = buildItem(XMaterial.STONE) {

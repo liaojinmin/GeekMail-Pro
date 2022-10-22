@@ -7,6 +7,7 @@ import me.geek.mail.modules.settings.SetTings
 import org.bukkit.command.CommandSender
 import taboolib.common.platform.command.subCommand
 import taboolib.library.reflex.Reflex.Companion.invokeConstructor
+import java.util.*
 
 /**
  * 作者: 老廖
@@ -25,8 +26,9 @@ object CmdSendGlobal: CmdExp {
                 }
                 execute<CommandSender> { _, context, _ ->
                     val pack = Template.getAdminPack(context.args()[1])!!
-                    MailManage.getMailData(pack.type)?.javaClass?.invokeConstructor(arrayOf(
-                       "", pack.title, pack.text,
+                    MailManage.getMailData(pack.type)?.javaClass?.invokeConstructor(
+                        arrayOf(
+                       UUID.randomUUID(), pack.title, pack.text,
                         SetTings.Console.toString(), "", "未提取",
                         pack.additional, System.currentTimeMillis().toString(), "0", pack.itemStacks, pack.command))
                         ?.sendGlobalMail()

@@ -7,7 +7,7 @@ import me.geek.mail.common.data.MailPlayerData
 
 import me.geek.mail.common.webmail.WebManager
 import me.geek.mail.modules.settings.SetTings
-import taboolib.expansion.geek.serialize.serializeItemStacks
+import me.geek.mail.utils.serializeItemStacks
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.jetbrains.annotations.NotNull

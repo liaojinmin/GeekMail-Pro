@@ -43,6 +43,10 @@ import kotlin.system.measureTimeMillis
     RuntimeDependency(value = "redis.clients:jedis:4.2.2",
         test = "redis.clients.jedis.exceptions.JedisException",
         transitive = false, ignoreOptional = true, scopes = [DependencyScope.PROVIDED]
+    ),
+    RuntimeDependency(value = "com.google.code.gson:gson:2.9.0",
+        relocate = ["!com.google.gson", "!com.google.gson.2_9_0"],
+    transitive = false, ignoreOptional = true, scopes = [DependencyScope.PROVIDED]
     )
 )
 object GeekMail : Plugin() {
@@ -85,7 +89,7 @@ object GeekMail : Plugin() {
 
         SqlManage.start() // 启动数据库
 
-
+        dataScheduler // 初始化
 
 
         register() // 注册邮件类型

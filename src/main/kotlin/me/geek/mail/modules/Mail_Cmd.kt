@@ -81,9 +81,5 @@ class Mail_Cmd(
 
 
 
-    companion object {
-        private const val serialVersionUID = -202210150101L
-    }
-
 
 }

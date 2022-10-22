@@ -65,7 +65,5 @@ class Mail_Points(
         if (!d) player.sendMessage("[!] 你没有足够的点券")
         return d
     }
-    companion object {
-        private const val serialVersionUID = -202210150601L
-    }
+
 }

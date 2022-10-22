@@ -60,7 +60,4 @@ class Mail_Text(
     override fun condition(player: Player, appendix: String): Boolean {
         return true
     }
-    companion object {
-        private const val serialVersionUID = -202210150701L
-    }
 }

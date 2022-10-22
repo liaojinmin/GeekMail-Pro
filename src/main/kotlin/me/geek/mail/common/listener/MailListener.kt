@@ -2,6 +2,7 @@ package me.geek.mail.common.listener
 
 
 
+import me.geek.mail.GeekMail
 import me.geek.mail.GeekMail.dataScheduler
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.api.mail.event.NewPlayerJoinEvent
@@ -13,9 +14,7 @@ import me.geek.mail.common.menu.MAction
 import me.geek.mail.common.menu.Menu
 import me.geek.mail.common.menu.Menu.openMenu
 import me.geek.mail.modules.settings.SetTings
-import me.geek.mail.scheduler.redis.classUnSerializable
-import me.geek.mail.scheduler.redis.toByteArrays
-import me.geek.mail.scheduler.redis.toHexString
+import me.geek.mail.scheduler.redis.*
 import org.bukkit.Bukkit
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.player.PlayerInteractEvent
@@ -34,25 +33,28 @@ import taboolib.platform.util.isLeftClickBlock
  *
  **/
 object MailListener {
+    private val server = Bukkit.getPort().toString()
     @SubscribeEvent(priority = EventPriority.LOW, ignoreCancelled = true )
     fun onJoin(e: PlayerJoinEvent) {
         submitAsync {
             val player = e.player
             MailManage.PlayerLock.add(player.uniqueId)
-            Thread.sleep(400)
+           // Thread.sleep(100)
             var data: MailPlayerData? = null
-
-            // 处理数据
-            SqlManage.getMessage(player.uniqueId.toString())?.let {
-                val a = it.toByteArrays().classUnSerializable()
-                if (a is MailPlayerData) {
-                    data = a
+            dataScheduler?.let { Scheduler ->
+                SqlManage.getMessage(player.uniqueId.toString())?.let { server ->
+                    val uid = player.uniqueId.toString()
+                    data = Scheduler.getPlayerData(server, uid) as MailPlayerData
+                    Scheduler.rmePlayerData(server, uid)
                 }
-            } ?: SqlManage.selectPlayerData(player.uniqueId, player.name)?.let { data = it }
+            } ?: SqlManage.selectPlayerData(player.uniqueId, player.name)?.let {
+                GeekMail.debug(" 通过数据库获取数据...")
+                data = it }
 
             // + 缓存
             data?.let {
                 MailManage.addMailPlayerData(player.uniqueId, it)
+                MailManage.PlayerLock.remove(player.uniqueId)
                 var amt = 0
                 it.mailData.forEach { mail ->
                     if (mail.state == "未提取") amt++
@@ -61,7 +63,6 @@ object MailListener {
                         adaptPlayer(player).sendLang("玩家-加入游戏-提醒", amt)
                     }
                 }
-                MailManage.PlayerLock.remove(player.uniqueId)
                 if (it.OneJoin) {
                     NewPlayerJoinEvent(player, it).call()
                 }
@@ -84,8 +85,10 @@ object MailListener {
             val uuid = e.player.uniqueId
             MailManage.getMailPlayerData(uuid)?.let {
                 dataScheduler?.let { scheduler ->
-                    val str = scheduler.toBytes(it).toHexString()
-                    scheduler.sendPublish(Bukkit.getPort().toString(), uuid.toString(), str)
+                    val server = Bukkit.getPort().toString()
+                    val uid = uuid.toString()
+                    scheduler.setPlayerData(server, uid, it)
+                    scheduler.sendPublish(Bukkit.getPort().toString(), RedisMessageType.PLAYER_CROSS_SERVER, uuid.toString())
                 }
                 MailManage.remMailPlayerData(uuid)
             }

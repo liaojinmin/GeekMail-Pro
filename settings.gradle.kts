@@ -5,4 +5,3 @@
  */
 
 rootProject.name = "GeekMail-Pro"
-include(":Scheduler")

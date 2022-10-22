@@ -1,12 +1,13 @@
 package me.geek.mail.modules
 
+import com.google.gson.annotations.Expose
 import me.geek.mail.GeekMail
 
 import me.geek.mail.api.mail.MailManage.sound
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.menu.Menu
+import me.geek.mail.utils.deserializeItemStacks
 
-import taboolib.expansion.geek.serialize.deserializeItemStacks
 import java.util.UUID
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -32,7 +33,9 @@ class Mail_Item(
     override var state: String,
     override var appendixInfo: String,
 
+    @Expose
     override var itemStacks: Array<ItemStack>?,
+
     override val senderTime: String,
     override var getTime: String,
     override val permission: String = "mail.exp.items",
@@ -75,7 +78,7 @@ class Mail_Item(
 
     override fun sendMail() {
         if (itemStacks == null) {
-            Bukkit.getPlayer(this.sender)?.action()
+            Bukkit.getPlayer(this.sender)?.action(false)
         } else {
             super.sendMail()
         }
@@ -88,14 +91,13 @@ class Mail_Item(
             }
         }
     }
-    private fun Player.action() {
+    private fun Player.action(isCross: Boolean) {
         Menu.isOpen.add(this)
 
         this.openInventory(Bukkit.createInventory(player, 27, "§0放入物品 §7| §0关闭菜单 "))
 
         this.sound("BLOCK_NOTE_BLOCK_HARP", 1f, 1f)
 
-        GeekMail.debug("开启物品UI")
         Bukkit.getPluginManager().registerEvents(object : Listener {
 
 
@@ -113,7 +115,9 @@ class Mail_Item(
                         }
                         if (i1.size > 0) {
                             itemStacks = i1.toTypedArray()
-                            sender()
+                            if (!isCross) {
+                                sender()
+                            }
                             HandlerList.unregisterAll(this)
                             return
                         }
@@ -139,7 +143,8 @@ class Mail_Item(
         return true
     }
 
-    companion object {
-        private const val serialVersionUID = -202210150301L
+    fun sendCrossMail() {
+        Bukkit.getPlayer(this.sender)?.action(true)
     }
+
 }

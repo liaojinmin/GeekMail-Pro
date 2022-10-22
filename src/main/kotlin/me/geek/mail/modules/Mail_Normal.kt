@@ -1,15 +1,16 @@
 package me.geek.mail.modules
 
+import com.google.gson.annotations.Expose
 import me.geek.mail.GeekMail
 import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.api.mail.AppendixType.*
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.modules.settings.SetTings
+import me.geek.mail.utils.deserializeItemStacks
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.submitAsync
-import taboolib.expansion.geek.serialize.deserializeItemStacks
 import taboolib.platform.compat.replacePlaceholder
 import taboolib.platform.util.giveItem
 import java.util.*
@@ -31,6 +32,7 @@ class Mail_Normal(
     override val senderTime: String,
     override var getTime: String,
     override var appendixInfo: String,
+    @Expose
     override var itemStacks: Array<ItemStack>?,
     override var command: List<String>?
 ) : MailSub() {
@@ -146,7 +148,5 @@ class Mail_Normal(
         command = null
     )
 
-    companion object {
-        private const val serialVersionUID = -202210150501L
-    }
+
 }

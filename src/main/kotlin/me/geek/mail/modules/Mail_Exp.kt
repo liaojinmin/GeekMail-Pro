@@ -66,7 +66,4 @@ class Mail_Exp(
         return d
     }
 
-    companion object {
-        private const val serialVersionUID = -202210150201L
-    }
 }

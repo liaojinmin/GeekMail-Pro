@@ -1,6 +1,5 @@
 package me.geek.mail.api.mail
 
-import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.event.MailReceiveEvent
 import me.geek.mail.api.mail.event.MailSenderEvent
 import me.geek.mail.common.data.SqlManage
@@ -8,6 +7,7 @@ import me.geek.mail.modules.settings.SetTings
 import org.bukkit.Bukkit
 import org.jetbrains.annotations.NotNull
 import taboolib.common.platform.function.adaptPlayer
+import taboolib.common.platform.function.submitAsync
 import taboolib.expansion.geek.Expiry
 import taboolib.module.lang.sendLang
 import taboolib.module.nms.getI18nName
@@ -18,7 +18,10 @@ import java.util.regex.Pattern
  * 作者: 老廖
  * 时间: 2022/8/2
  */
-abstract class MailSub : MailPlaceholder() {
+abstract class MailSub(
+) : MailPlaceholder() {
+    // 序列化用
+    override var itemStackString: String = ""
 
 
     val name: String = javaClass.simpleName.uppercase(Locale.ROOT)
@@ -37,28 +40,23 @@ abstract class MailSub : MailPlaceholder() {
         event.call()
         if (event.isCancelled) return
 
-        Bukkit.getScheduler().scheduleAsyncDelayedTask(GeekMail.instance) {
-
-            val targets = Bukkit.getPlayer(this.target)
-
+        submitAsync {
+            val targets = Bukkit.getPlayer(this@MailSub.target)
             var targetName = "目标"
-
             if (targets != null) {
                 targetName = targets.name
-                MailManage.addPlayerMailCache(this.target, this)
+                MailManage.addPlayerMailCache(this@MailSub.target, this@MailSub)
                 adaptPlayer(targets).sendLang("玩家-接收邮件", title)
             }
-
-            if (this.sender != SetTings.Console) {
+            if (this@MailSub.sender != SetTings.Console) {
                 if (send != null) {
                     adaptPlayer(send).sendLang("玩家-发送邮件", targetName)
                 }
             }
-            SqlManage.insertMail(this)
+            SqlManage.insertMail(this@MailSub)
         }
 
         MailManage.senderWebMail(this.title, this.text, this.appendixInfo, this.target)
-
         MailReceiveEvent(this).call() // StarrySky
     }
 

@@ -2,16 +2,16 @@ package me.geek.mail.common.data
 
 import com.google.common.base.Joiner
 import me.clip.placeholderapi.PlaceholderAPI
-import me.geek.mail.GeekMail
+
 import me.geek.mail.api.mail.MailManage.buildMailClass
 
 import me.geek.mail.api.mail.MailManage.senderWebMail
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.scheduler.sql.*
-import me.geek.mail.common.data.MailPlayerData.Companion.defaultsData
+
 import me.geek.mail.modules.settings.SetTings
 import org.bukkit.OfflinePlayer
-import taboolib.expansion.geek.serialize.serializeItemStacks
+import me.geek.mail.utils.serializeItemStacks
 import java.sql.Connection
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -30,12 +30,22 @@ object SqlManage {
         } else return@lazy Sqlite(SetTings.StorageDate)
     }
 
+    /**
+     * key = targetUid  value = server
+     */
     private val messageCache: MutableMap<String, String> by lazy { ConcurrentHashMap() }
 
+    /**
+     * key = targetUid  value = server
+     */
     fun addMessage(key: String, value: String) {
         messageCache[key] = value
     }
 
+    /**
+     * key = targetUid
+     * @return serverID
+     */
     fun getMessage(key: String): String? {
        return messageCache[key]
     }
@@ -73,6 +83,7 @@ object SqlManage {
             }
         }
     }
+
 
 
 
@@ -125,7 +136,7 @@ object SqlManage {
 
                     // 无数据情况
                     if (!r.isBeforeFirst) {
-                        data = defaultsData(name, targetUid)
+                        data = MailPlayerData(name, targetUid, "null",true)
                         insertPlayerData(data!!)
                         return@actions data
                     }
@@ -135,7 +146,7 @@ object SqlManage {
                         val n = r.getString("name")
                         val mails = r.getString("mail")
                         val join = r.getBoolean("one_join")
-                        data = MailPlayerData(n, u, mails, join)
+                        data = MailPlayerData(n, u, mails.ifEmpty { "null" }, join)
                     }
                     val mailData = selectMail(targetUid)
                     data?.mailData?.addAll(mailData)
@@ -179,7 +190,7 @@ object SqlManage {
                     p.setString(9, "null")
                 }
                 if (mailDate.command != null) {
-                    p.setString(10, Joiner.on(",").join(mailDate.command))
+                    p.setString(10, Joiner.on(",").join(mailDate.command!!))
                 } else {
                     p.setString(10, "")
                 }
@@ -277,7 +288,6 @@ object SqlManage {
                 a = s.executeUpdate()
             }
         }
-        GeekMail.debug("&8updateMail * $a")
         return a != 0
     }
 
@@ -295,7 +305,6 @@ object SqlManage {
                 a = s.executeBatch()
             }
         }
-        GeekMail.debug("&8updateMail * ${a.joinToString()}")
         return a
     }
     /**
@@ -319,7 +328,7 @@ object SqlManage {
                         val target = r.getString("target")
                         val title = r.getString("title")
                         val text = r.getString("text")
-                        val additional = r.getString("additional")
+                        val additional = r.getString("additional").ifEmpty { "0" }
                         val itemStacks = r.getString("item")
                         val commands = r.getString("commands")
                         val senderTime = r.getString("sendertime")
@@ -382,5 +391,7 @@ object SqlManage {
                 " PRIMARY KEY (`id`,`target`)" +
                 ");")
     }
+
+
 
 }
