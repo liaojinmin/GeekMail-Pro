@@ -1,5 +1,6 @@
 package me.geek.mail.scheduler.redis
 
+import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.data.MailPlayerData
 import me.geek.mail.modules.Mail_Item
 import me.geek.mail.modules.Mail_Normal
@@ -72,20 +73,18 @@ abstract class Redis: RedisApi {
     /**
      * 发布订阅消息 通知集群
      */
-    override fun sendPublish(@NotNull server: String, @NotNull messageType: RedisMessageType, @NotNull targetUid: String) {
+    override fun sendPublish(@NotNull server: String, @NotNull messageType: RedisMessageType, @NotNull targetUid: String, @NotNull MailUUid: String) {
         getRedisConnection().use {
-            it.publish(CHANNEL, "$server$division$messageType$division$targetUid")
+            it.publish(CHANNEL, "$server$division$messageType$division$targetUid$division$MailUUid")
         }
     }
 
 
     /**
      * 发送玩家数据流
-     * @param server 服务器ID
-     * @param targetUid 目标Uid
      * @param Clazz 要储存的玩家数据类
      */
-    fun setPlayerData(@NotNull server: String, @NotNull targetUid: String, Clazz: MailPlayerData) {
+    fun setPlayerData(@NotNull Clazz: MailPlayerData) {
         Clazz.mailData.forEach {
             when (it) {
                 is Mail_Item -> it.itemStackString = it.itemStacks.serializeItemStacks()
@@ -93,30 +92,22 @@ abstract class Redis: RedisApi {
             }
         }
         getRedisConnection().use {
-            it.setex("$server$division$targetUid".toByteArray(),10 , Clazz.classSerializable())
+            it.setex(Clazz.uuid.toString().toByteArray(),10 , Clazz.classSerializable())
         }
     }
 
     /**
      * 获取玩家数据流
-     * @param server 服务器ID
      * @param targetUid 目标Uid
      */
-    fun getPlayerData(@NotNull server: String, @NotNull targetUid: String): Any? {
+    fun getPlayerData(@NotNull targetUid: String): Any? {
         return getRedisConnection().use {
-            it.get("$server$division$targetUid".toByteArray())?.classUnSerializable(MailPlayerData::class.java, true)
+            it.get(targetUid.toByteArray())?.classUnSerializable(MailPlayerData::class.java, true)
+
         }
 
     }
 
-    /**
-     * 删除玩家数据流
-     */
-    fun rmePlayerData(@NotNull server: String, @NotNull targetUid: String) {
-        getRedisConnection().use {
-            it.del("$server$division$targetUid".toByteArray())
-        }
-    }
 
 
 
@@ -124,31 +115,22 @@ abstract class Redis: RedisApi {
     /**
      * 设置邮件数据流
      */
-    fun setMailData(@NotNull server: String, @NotNull targetUid: String, @NotNull Clazz: Any) {
+    fun setMailData(@NotNull Clazz: MailSub) {
         getRedisConnection().use {
-            it.setex("$server$division$targetUid".toByteArray(), 10, Clazz.classSerializable())
+            it.setex(Clazz.mailID.toString().toByteArray(), 10, Clazz.classSerializable())
         }
     }
-
 
     /**
      * 获取邮件数据流
      */
     @Nullable
-    fun getMailData(@NotNull server: String, @NotNull targetUid: String, @NotNull Clazz: Class<*>): Any? {
+    fun getMailData(@NotNull MailUid: String, @NotNull Clazz: Class<*>): Any? {
         return getRedisConnection().use {
-            it.get("$server$division$targetUid".toByteArray())?.classUnSerializable(Clazz, false)
+            it.get(MailUid.toByteArray())?.classUnSerializable(Clazz, false)
         }
     }
 
-    /**
-     * 删除邮件数据流
-     */
-    fun remMailData(@NotNull server: String, @NotNull targetUid: String){
-        getRedisConnection().use {
-            it.del("$server$division$targetUid".toByteArray())
-        }
-    }
 
 }
 

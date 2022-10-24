@@ -1,6 +1,7 @@
 package me.geek.mail.modules
 
 
+import com.google.gson.annotations.Expose
 import me.geek.mail.api.mail.MailSub
 import org.bukkit.entity.Player
 import java.util.UUID
@@ -22,6 +23,8 @@ class Mail_Text(
     override val appendixInfo: String,
     override val senderTime: String,
     override var getTime: String,
+
+    @Expose
     override val permission: String = "mail.exp.text",
 
     ) : MailSub() {

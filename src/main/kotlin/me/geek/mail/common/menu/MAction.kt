@@ -406,6 +406,7 @@ class MAction(private val player: Player, private val tag: Session, private val 
                 }
 
                 val itemMeta = if (SetTings.USE_BUNDLE) {
+                    itemStack.type = Material.BUNDLE
                     (itemStack.itemMeta as BundleMeta).also {
                         it.setItems(mail.itemStacks?.asList())
                     }

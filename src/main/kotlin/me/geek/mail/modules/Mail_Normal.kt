@@ -56,7 +56,6 @@ class Mail_Normal(
             itemStacks = args[9].deserializeItemStacks()
         }
         if (args.size >= 11 && args[10].isNotEmpty()) {
-            GeekMail.debug("command-args[0] ${args[10]}")
             command = args[10].split(";")
         }
 

@@ -8,6 +8,7 @@ import me.geek.mail.GeekMail
 import me.geek.mail.GeekMail.say
 import me.geek.mail.api.hook.impl.ItemsAdder
 import me.geek.mail.api.hook.impl.Money
+import me.geek.mail.api.hook.impl.MythicMobs
 import me.geek.mail.api.hook.impl.Points
 
 import me.geek.mail.modules.settings.SetTings
@@ -25,6 +26,7 @@ object HookPlugin {
     val money  by lazy { Money() }
     val points by lazy { Points() }
     val itemsAdder by lazy { ItemsAdder() }
+    val mythicMobs by lazy { MythicMobs() }
 
 
 
@@ -35,6 +37,7 @@ object HookPlugin {
         money
         points
         itemsAdder
+        mythicMobs
         display()
     }
 

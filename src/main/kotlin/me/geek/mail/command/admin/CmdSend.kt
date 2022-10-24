@@ -7,12 +7,16 @@ import me.geek.mail.modules.Mail_Item
 import me.geek.mail.modules.settings.SetTings
 import me.geek.mail.scheduler.redis.RedisMessageType
 import me.geek.mail.utils.colorify
+import me.geek.mail.utils.serializeItemStacks
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.subCommand
+import taboolib.common.platform.function.adaptPlayer
+import taboolib.common.platform.function.submit
 import taboolib.common.platform.function.submitAsync
 import taboolib.library.reflex.Reflex.Companion.invokeConstructor
+import taboolib.module.lang.sendLang
 import java.util.UUID
 
 
@@ -27,7 +31,7 @@ object CmdSend: CmdExp {
         dynamic("目标玩家") {
             suggestion<CommandSender>(uncheck = true) { _, _ ->
                 // 自行管理玩家列表
-                Bukkit.getOfflinePlayers().map { it.name!! }
+                Bukkit.getOnlinePlayers().map { it.name }
             }
             dynamic("邮件种类") {
                 suggestion<CommandSender> { _, _ ->
@@ -55,15 +59,26 @@ object CmdSend: CmdExp {
                             MailManage.getMailData(mailType)?.javaClass?.invokeConstructor(pack)?.let { mailSub ->
                                 if (target.isOnline) {
                                     mailSub.sendMail()
-                                } else GeekMail.dataScheduler?.let {
-                                    if (mailSub is Mail_Item) {
-                                        mailSub.sendCrossMail()
-                                    }
+                                } else GeekMail.dataScheduler?.let { // 未解决问题，在所以服务器都找不到玩家的情况下，该邮件将失效..无法正确送达
                                     submitAsync {
-                                        val server = Bukkit.getPort().toString()
-                                        val uid = target.uniqueId.toString()
-                                        it.setMailData(server, uid, mailSub)
-                                        it.sendPublish(server, RedisMessageType.CROSS_SERVER_MAIL, uid)
+                                        if (mailSub is Mail_Item) {
+                                            submit {
+                                                mailSub.sendCrossMail()
+                                            }
+                                            while (!mailSub.isOk) {
+                                                Thread.sleep(100)
+                                            }
+                                            mailSub.itemStacks?.let { items ->
+                                                mailSub.itemStackString = items.serializeItemStacks()
+                                            } ?: return@submitAsync
+                                        }
+                                        if (senders != SetTings.Console) {
+                                            if (sender is Player) {
+                                                adaptPlayer(sender).sendLang("玩家-发送邮件", target.name!!)
+                                            }
+                                        }
+                                        it.setMailData(mailSub)
+                                        it.sendPublish(Bukkit.getPort().toString(), RedisMessageType.CROSS_SERVER_MAIL, target.uniqueId.toString(), mailSub.mailID.toString())
                                     }
                                 } ?: mailSub.sendMail()
                             }

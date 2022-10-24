@@ -5,7 +5,7 @@ package me.geek.mail.common.customevent.sub
  * 时间: 2022/10/3
  *
  **/
-class EventPack(
+data class EventPack(
     val id: String = "",
     val event: String = "",
     val condition: String = "",

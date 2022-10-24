@@ -14,8 +14,6 @@ import me.geek.mail.common.menu.MAction
 import me.geek.mail.common.menu.Menu
 import me.geek.mail.common.menu.Menu.openMenu
 import me.geek.mail.modules.settings.SetTings
-import me.geek.mail.scheduler.redis.*
-import org.bukkit.Bukkit
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
@@ -24,6 +22,7 @@ import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.adaptPlayer
 import taboolib.common.platform.function.submitAsync
+import taboolib.common.util.random
 import taboolib.module.lang.sendLang
 import taboolib.platform.util.isLeftClickBlock
 
@@ -33,26 +32,28 @@ import taboolib.platform.util.isLeftClickBlock
  *
  **/
 object MailListener {
-    private val server = Bukkit.getPort().toString()
     @SubscribeEvent(priority = EventPriority.LOW, ignoreCancelled = true )
     fun onJoin(e: PlayerJoinEvent) {
         submitAsync {
             val player = e.player
             MailManage.PlayerLock.add(player.uniqueId)
-           // Thread.sleep(100)
             var data: MailPlayerData? = null
+
             dataScheduler?.let { Scheduler ->
-                SqlManage.getMessage(player.uniqueId.toString())?.let { server ->
-                    val uid = player.uniqueId.toString()
-                    data = Scheduler.getPlayerData(server, uid) as MailPlayerData
-                    Scheduler.rmePlayerData(server, uid)
-                }
-            } ?: SqlManage.selectPlayerData(player.uniqueId, player.name)?.let {
-                GeekMail.debug(" 通过数据库获取数据...")
-                data = it }
+                GeekMail.debug("进入数据等待时间...")
+                Thread.sleep(random(0, 500).toLong()) // 确保上一个服务器的数据已缓存
+                GeekMail.debug("开始获取数据...")
+                val a = Scheduler.getPlayerData(player.uniqueId.toString())
+                // 任何数据异常，都通过数据库再次获取...
+                data = if (a is MailPlayerData) { a } else { SqlManage.selectPlayerData(player.uniqueId, player.name).also { GeekMail.debug(" 通过数据库获取数据...") } }
+            } ?: SqlManage.selectPlayerData(player.uniqueId, player.name)?.let { playerData ->
+                GeekMail.debug("dataScheduler is null 通过数据库获取数据...")
+                data = playerData
+            }
 
             // + 缓存
             data?.let {
+                GeekMail.debug("添加玩家数据...")
                 MailManage.addMailPlayerData(player.uniqueId, it)
                 MailManage.PlayerLock.remove(player.uniqueId)
                 var amt = 0
@@ -84,12 +85,9 @@ object MailListener {
         submitAsync {
             val uuid = e.player.uniqueId
             MailManage.getMailPlayerData(uuid)?.let {
-                dataScheduler?.let { scheduler ->
-                    val server = Bukkit.getPort().toString()
-                    val uid = uuid.toString()
-                    scheduler.setPlayerData(server, uid, it)
-                    scheduler.sendPublish(Bukkit.getPort().toString(), RedisMessageType.PLAYER_CROSS_SERVER, uuid.toString())
-                }
+                GeekMail.debug("玩家数据发布...")
+                dataScheduler?.setPlayerData(it)
+
                 MailManage.remMailPlayerData(uuid)
             }
         }
@@ -110,7 +108,7 @@ object MailListener {
                             return
                         }
                         Menu.getMenuCommand(Menu.cmd!!)?.let {
-                            MAction(player, Menu.getSession(it), Menu.Build(player, it))
+                            MAction(player, Menu.getSession(it), Menu.build(player, it))
                         }
                     }
                 }

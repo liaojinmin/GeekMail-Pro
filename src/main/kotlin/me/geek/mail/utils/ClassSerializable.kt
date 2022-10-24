@@ -29,6 +29,7 @@ object ClassSerializable {
         if (isMailPlayerData) {
             gson.registerTypeAdapter(MailPlayerData::class.java, UnSerializeMailPlayerData())
         } else gson.registerTypeAdapter(MailSub::class.java, UnSerializeMail())
+
         return gson.create().fromJson(String(objs, charset = Charsets.UTF_8), obj)
     }
 
@@ -62,8 +63,9 @@ object ClassSerializable {
                         val cmd = if (a.get("command") != null) a.get("command").asString else ""
                         val time = if (a.get("getTime") != null) a.get("getTime").asString else "0"
                         val items = if (a.get("itemStackString") != null) a.get("itemStackString").asString else ""
+                        val add = if (a.get("additional") != null) a.get("additional").asString else ""
                         MailManage.buildMailClass(a.get("mailID").asString, a.get("name").asString, a.get("title").asString, a.get("text").asString,
-                            a.get("sender").asString, a.get("target").asString, a.get("state").asString, a.get("additional").asString, a.get("senderTime").asString,
+                            a.get("sender").asString, a.get("target").asString, a.get("state").asString, add, a.get("senderTime").asString,
                             time, items, cmd,
                         )?.let { it2 ->
                             add(it2)
@@ -83,12 +85,13 @@ object ClassSerializable {
     }
     class UnSerializeMail : JsonDeserializer<MailSub> {
         override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): MailSub {
-            val jsonObject = json.asJsonObject
-            val cmd = if (jsonObject.get("command") != null) jsonObject.get("command").asString else ""
-            val time = if (jsonObject.get("getTime") != null) jsonObject.get("getTime").asString else "0"
-            val items = if (jsonObject.get("itemStackString") != null) jsonObject.get("itemStackString").asString else ""
-            return MailManage.buildMailClass(jsonObject.get("mailID").asString, jsonObject.get("name").asString, jsonObject.get("title").asString, jsonObject.get("text").asString,
-                jsonObject.get("sender").asString, jsonObject.get("target").asString, jsonObject.get("state").asString, jsonObject.get("additional").asString, jsonObject.get("senderTime").asString,
+            val a = json.asJsonObject
+            val cmd = if (a.get("command") != null) a.get("command").asString else ""
+            val time = if (a.get("getTime") != null) a.get("getTime").asString else "0"
+            val items = if (a.get("itemStackString") != null) a.get("itemStackString").asString else ""
+            val add = if (a.get("additional") != null) a.get("additional").asString else ""
+            return MailManage.buildMailClass(a.get("mailID").asString, a.get("name").asString, a.get("title").asString, a.get("text").asString,
+                a.get("sender").asString, a.get("target").asString, a.get("state").asString, add, a.get("senderTime").asString,
                 time, items, cmd,
             )!!
         }

@@ -30,27 +30,6 @@ object SqlManage {
         } else return@lazy Sqlite(SetTings.StorageDate)
     }
 
-    /**
-     * key = targetUid  value = server
-     */
-    private val messageCache: MutableMap<String, String> by lazy { ConcurrentHashMap() }
-
-    /**
-     * key = targetUid  value = server
-     */
-    fun addMessage(key: String, value: String) {
-        messageCache[key] = value
-    }
-
-    /**
-     * key = targetUid
-     * @return serverID
-     */
-    fun getMessage(key: String): String? {
-       return messageCache[key]
-    }
-
-
 
 
 
@@ -136,7 +115,7 @@ object SqlManage {
 
                     // 无数据情况
                     if (!r.isBeforeFirst) {
-                        data = MailPlayerData(name, targetUid, "null",true)
+                        data = MailPlayerData(name, targetUid, "",true)
                         insertPlayerData(data!!)
                         return@actions data
                     }
@@ -146,7 +125,7 @@ object SqlManage {
                         val n = r.getString("name")
                         val mails = r.getString("mail")
                         val join = r.getBoolean("one_join")
-                        data = MailPlayerData(n, u, mails.ifEmpty { "null" }, join)
+                        data = MailPlayerData(n, u, mails.ifEmpty { "" }, join)
                     }
                     val mailData = selectMail(targetUid)
                     data?.mailData?.addAll(mailData)

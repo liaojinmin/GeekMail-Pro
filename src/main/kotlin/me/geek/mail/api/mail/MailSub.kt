@@ -117,8 +117,7 @@ abstract class MailSub(
             }
         }
         if (index > 0 || bs >= 6) {
-            val vv = bs - 6
-            if (vv > 0) {
+            if ((bs - 6) > 0) {
                 Str.append("§7剩余 §6${index + (bs - 6)} §7项未显示...")
             }
         }

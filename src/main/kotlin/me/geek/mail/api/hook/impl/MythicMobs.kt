@@ -1,37 +1,33 @@
 package me.geek.mail.api.hook.impl
 
-import dev.lone.itemsadder.api.CustomStack
-import dev.lone.itemsadder.api.Events.ItemsAdderLoadDataEvent
+import ink.ptms.um.Mythic
 import me.geek.mail.GeekMail
-import me.geek.mail.api.hook.HookPlugin
-import me.geek.mail.common.menu.Menu
 import org.bukkit.Bukkit
 import org.bukkit.inventory.ItemStack
-import taboolib.common.platform.event.SubscribeEvent
 import taboolib.library.xseries.XMaterial
 import taboolib.platform.util.buildItem
 
 /**
  * 作者: 老廖
- * 时间: 2022/10/9
+ * 时间: 2022/10/24
  *
  **/
-class ItemsAdder {
+class MythicMobs {
     private val empty = buildItem(XMaterial.STONE) { name = "错误的物品命名" }
     var isHook = false
+
     init {
         hook()
     }
 
     private fun hook() {
-        if (Bukkit.getPluginManager().getPlugin("ItemsAdder") != null) {
-            GeekMail.say("&7软依赖 &fItemsAdder &7已兼容.")
+        if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null) {
+            GeekMail.say("&7软依赖 &fMythicMobs &7已兼容.")
             isHook = true
         }
     }
 
     fun getItem(id: String): ItemStack {
-        return CustomStack.getInstance(id)?.itemStack ?: empty
+        return Mythic.API.getItemStack(id) ?: empty
     }
-
 }

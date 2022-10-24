@@ -133,6 +133,17 @@
   - '&l'
   - '&e    你有 {0} 封邮件已到期删除...'
   - '&f'
+玩家-发送物品邮件-物品筛选:
+  - type: sound
+    sound: 'BLOCK_NOTE_BLOCK_DIDGERIDOO'
+    volume: 1
+    pitch: 2
+  - '&1'
+  - '&7  Geek&fMail &8>&7>&f>'
+  - '&l'
+  - '&c   你有 {0} 个违规物品禁止邮寄...'
+  - '&a   物品已返回你的背包'
+  - '&f'
 PLAYER-LOCK:
   - type: sound
     sound: 'BLOCK_NOTE_BLOCK_DIDGERIDOO'

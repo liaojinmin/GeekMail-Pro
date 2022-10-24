@@ -1,5 +1,6 @@
 package me.geek.mail.modules
 
+import com.google.gson.annotations.Expose
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.modules.settings.SetTings
@@ -25,6 +26,8 @@ class Mail_Cmd(
     override var command: List<String>?,
     override val senderTime: String,
     override var getTime: String,
+
+    @Expose
     override val permission: String = "mail.exp.command",
 
     ) : MailSub() {
@@ -69,7 +72,9 @@ class Mail_Cmd(
         Bukkit.getPlayer(target)?.let {
             command?.let { cmd ->
                 cmd.replacePlaceholder(it).forEach { out ->
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), out)
+                    try {
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), out)
+                    } catch (_: Exception) {}
                 }
             } ?: GeekMail.say("giveAppendix 异常&c null")
         }

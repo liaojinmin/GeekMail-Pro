@@ -1,6 +1,7 @@
 package me.geek.mail.modules.settings
 
 import me.geek.mail.GeekMail
+import me.geek.mail.modules.settings.sub.config.ItemFilter
 import me.geek.mail.modules.settings.sub.redis.RedisData
 import me.geek.mail.modules.settings.sub.smtp.SmtpData
 import me.geek.mail.scheduler.sql.SqlConfig
@@ -41,8 +42,8 @@ object SetTings {
             data.sqlite = GeekMail.instance.dataFolder
             val smtp = config.getObject<SmtpData>("SmtpSet", false)
             val redis = config.getObject<RedisData>("Redis", false)
-
-            SetTingsCache["config"] = SetManager(data, smtp, redis)
+            val filter = config.getObject<ItemFilter>("config.item_filter", false)
+            SetTingsCache["config"] = SetManager(data, smtp, redis, filter)
             onLoadConf()
             onLoadType()
         }
@@ -51,6 +52,9 @@ object SetTings {
         return SetTingsCache["config"]!!
     }
 
+    val filter by lazy {
+        getConfig().filter
+    }
     val StorageDate by lazy {
         getConfig().SqlData
     }

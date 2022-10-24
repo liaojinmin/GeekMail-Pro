@@ -1,5 +1,6 @@
 package me.geek.mail.modules
 
+import com.google.gson.annotations.Expose
 import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.kether.sub.KetherAPI
@@ -24,6 +25,8 @@ class Mail_Money(
     override var appendixInfo: String,
     override val senderTime: String,
     override var getTime: String,
+
+    @Expose
     override val permission: String = "mail.exp.money",
 ) : MailSub() {
 

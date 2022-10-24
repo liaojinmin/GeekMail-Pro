@@ -43,7 +43,7 @@ object Menu {
      * @return 返回界面
      */
     @JvmStatic
-    fun Build(player: Player?, MenuID: String): Inventory {
+    fun build(player: Player?, MenuID: String): Inventory {
         val tag = MenuCache[MenuID]!!
         val item = tag.itemStacks
         val inventory = Bukkit.createInventory(player, tag.size, tag.title)
@@ -128,8 +128,7 @@ object Menu {
                 }
                 index++
             }
-        } catch (ignored: StringIndexOutOfBoundsException) {
-        }
+        } catch (ignored: StringIndexOutOfBoundsException) { }
         return item.toTypedArray()
     }
 
@@ -187,5 +186,5 @@ object Menu {
         }
         dir
     }
-    fun Player.openMenu(MenuID: String) = MAction(this, getSession(MenuID), Build(this, MenuID))
+    fun Player.openMenu(MenuID: String) = MAction(this, getSession(MenuID), build(this, MenuID))
 }

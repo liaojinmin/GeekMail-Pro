@@ -33,7 +33,6 @@ object CmdSendPack: CmdExp {
                 }
                 execute<CommandSender> { senders, context, _ ->
                     val pack = Template.getAdminPack(context.args()[1])!!
-                    GeekMail.debug("command: ${pack.command}")
                     val target = Bukkit.getOfflinePlayer(context.args()[2])
                     val title = PlaceholderAPI.setPlaceholders(target, pack.title)
                     val text = PlaceholderAPI.setPlaceholders(target, pack.text)

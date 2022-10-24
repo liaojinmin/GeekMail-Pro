@@ -2,7 +2,7 @@ val taboolibVersion: String by project
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.7.20"
-    id("io.izzel.taboolib") version "1.42"
+    id("io.izzel.taboolib") version "1.50"
     id("org.jetbrains.dokka") version "1.7.20"
 }
 
@@ -20,7 +20,6 @@ taboolib {
         "module-nms",
         "module-nms-util",
         "expansion-geek-tool"
-
     )
     description {
         contributors {
@@ -33,6 +32,7 @@ taboolib {
             name("PlayerPoints").optional(true)
             name("ItemsAdder").optional(true)
             name("TrHologram").optional(true)
+            name("MythicMobs").optional(true)
         }
     }
 
@@ -63,6 +63,7 @@ tasks.dokkaHtml.configure {
 
 dependencies {
 
+    taboo("ink.ptms:um:1.0.0-beta-20")
     dokkaHtmlPlugin("org.jetbrains.dokka:kotlin-as-java-plugin:1.7.20")
 
     compileOnly(kotlin("stdlib"))
@@ -79,7 +80,6 @@ dependencies {
     compileOnly("ink.ptms.core:v11701:11701-minimize:mapped")
     compileOnly("ink.ptms.core:v11701:11701-minimize:universal")
     compileOnly("ink.ptms.core:v11604:11604")
-
 
     compileOnly("me.clip:placeholderapi:2.10.9") { isTransitive = false }
     compileOnly("com.github.MilkBowl:VaultAPI:-SNAPSHOT") { isTransitive = false }

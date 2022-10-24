@@ -14,7 +14,7 @@ abstract class MailPlaceholder : Mail {
     val format = SimpleDateFormat("yyyy年 MM月 dd日 HH:mm:ss")
 
     @Expose
-    val TYPE = Regex("(\\{|\\[)(type|种类)(}|])")
+    val TYPE = Regex("(\\{|\\[)(type|种类)(}|])") // [type] [种类] {type} {种类}
 
     @Expose
     val SENDER = Regex("(\\{|\\[)(sender|发送者)(}|])")

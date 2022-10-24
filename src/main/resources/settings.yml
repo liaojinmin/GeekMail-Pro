@@ -34,7 +34,15 @@ SmtpSet:
 
 config:
   # 期限设置，如果使用，邮件到期将自动删除
-  use_bundle: false # 物品邮件，物品预览使用lore展示 (只限 1.17+)
+  use_bundle: false # 物品邮件 物品预览使用 lore 展示 (只限 1.17+)
+
+  item_filter: # 针对 物品邮件 发送的物品进行筛选
+    use: true
+    type: '黑名单' # 支持 黑名单 / 白名单
+    contains_name:
+      - '你妈妈个大傻逼'
+    contains_lore: &id001 []
+
   Expiry:
     use: true
     # 邮件默认到期时间

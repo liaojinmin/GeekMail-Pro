@@ -27,37 +27,34 @@ class RedisKt(data: RedisData) : Redis() {
 
     private val server = Bukkit.getServer().port.toString()
 
-    // m[0] = server  m[1] = type  m[2] = targetUid
+    // m[0] = server  m[1] = type  m[2] = targetUid  m[3] = MailUid
+    // 主要用于接收跨服邮件
     override fun processMessage(msg: String) {
         submitAsync {
             val m = msg.split(division)
             GeekMail.debug("Redis message ${m[0]}")
-            if (m.size >= 2 && m[0] != server) {
+            if (m.size == 4 && m[0] != server) { // 防止本服发送本服处理
                 when (RedisMessageType.valueOf(m[1])) {
-                    RedisMessageType.PLAYER_CROSS_SERVER -> SqlManage.addMessage(m[2], m[0])
-                    RedisMessageType.CROSS_SERVER_MAIL -> crossServerMail(m[0], m[2])
+                    RedisMessageType.PLAYER_CROSS_SERVER -> TODO()
+                    RedisMessageType.CROSS_SERVER_MAIL -> crossServerMail(m[3], m[2])
                 }
-
                 GeekMail.debug("------[Debug]------")
                 GeekMail.debug("服务器: ${m[0]}")
-                GeekMail.debug("玩家UUID: ${m[2]}")
                 GeekMail.debug("消息种类: ${m[1]}")
+                GeekMail.debug("目标Uid: ${m[2]}")
+                GeekMail.debug("邮件Uid: ${m[3]}")
                 GeekMail.debug("-------------------")
             }
         }
     }
 
-    /**
-     * 跨服 发送邮件处理
-     * @param redisKey 一个包含发送端和目标Uid的Redis key
-     */
-    private fun crossServerMail(server: String, targetUid: String) {
+
+    private fun crossServerMail(MailUUID: String, targetUid: String) {
         // 直接获取玩家，如果 null 说明玩家不在这个服务器
         Bukkit.getPlayer(UUID.fromString(targetUid))?.let {
-            val clazz = this.getMailData(server, targetUid, MailSub::class.java)
+            val clazz = this.getMailData(MailUUID, MailSub::class.java)
             if (clazz is MailSub) {
                 clazz.sendMail()
-                this.remMailData(server, targetUid)
             }
         }
     }

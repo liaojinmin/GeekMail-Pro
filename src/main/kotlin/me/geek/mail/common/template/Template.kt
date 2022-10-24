@@ -1,15 +1,19 @@
 package me.geek.mail.common.template
 
 import com.google.common.base.Joiner
+import ink.ptms.um.Mythic
+import ink.ptms.um.impl5.Mythic5
 import me.geek.mail.GeekMail
 import me.geek.mail.GeekMail.instance
 import me.geek.mail.GeekMail.say
+import me.geek.mail.api.hook.HookPlugin
 
 
 import me.geek.mail.common.template.Sub.Temp
 import me.geek.mail.common.template.Sub.TempPack
 import me.geek.mail.utils.colorify
 import me.geek.mail.utils.serializeItemStacks
+import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.releaseResourceFile
 import taboolib.library.xseries.XMaterial
@@ -115,26 +119,44 @@ object Template {
             items.forEach { m ->
                 m.split(";").forEach {
                     val args = it.split(",")
-                    val i = buildItem(XMaterial.STONE) {
-                        args.forEach { it2 ->
-                            when {
-                                it2.contains(mats) -> setMaterial(XMaterial.valueOf(it2.replace(mats, "").uppercase()))
-                                it2.contains(Name) -> name = it2.replace(Name, "").colorify()
-                                it2.contains(Lore) -> lore.addAll(it2.replace(Lore, "").colorify().split("\n"))
-                                it2.contains(data) -> damage = it2.replace(data, "").toIntOrNull() ?: 0
-                                it2.contains(amt) -> amount = it2.replace(amt, "").toIntOrNull() ?: 1
-                                it2.contains(mode) -> customModelData = it2.replace(mode, "").toIntOrNull() ?: 0
+                    item.add(
+                        if (it.contains(mats)) {
+                            buildItem(XMaterial.STONE) {
+                                args.forEach { a ->
+                                    when {
+                                        a.contains(mats) -> setMaterial(XMaterial.valueOf(a.replace(mats, "").uppercase()))
+                                        a.contains(Name) -> name = a.replace(Name, "").colorify()
+                                        a.contains(Lore) -> lore.addAll(a.replace(Lore, "").colorify().split("\n"))
+                                        a.contains(data) -> damage = a.replace(data, "").toIntOrNull() ?: 0
+                                        a.contains(amt) -> amount = a.replace(amt, "").toIntOrNull() ?: 1
+                                        a.contains(mode) -> customModelData = a.replace(mode, "").toIntOrNull() ?: 0
+                                    }
+                                }
                             }
+                        } else when {
+                            it.contains(IA) -> {
+                                HookPlugin.itemsAdder.getItem(args[0].replace(IA,"")).also { stack ->
+                                    stack.amount = args[1].replace(IA,"").toIntOrNull() ?: 1
+                                }
+                            }
+                            it.contains(MM) -> {
+                                if (HookPlugin.mythicMobs.isHook) {
+                                    HookPlugin.mythicMobs.getItem(args[0].replace(MM,"")).also { stack ->
+                                        stack.amount = args[1].replace(amt,"").toIntOrNull() ?: 1
+                                    }
+                                } else ItemStack(Material.STONE)
+                            }
+                            else -> { ItemStack(Material.STONE) }
                         }
-                    }
-                    item.add(i)
+                    )
                 }
-
             }
             return item.toTypedArray().serializeItemStacks()
         }
         return "null"
     }
+    private val IA = Regex("(IA|ia|ItemsAdder):")
+    private val MM = Regex("(MM|mm|MythicMobs):")
     private val mats = Regex("(material|mats):")
     private val Name = Regex("name:")
     private val Lore = Regex("lore:")

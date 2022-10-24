@@ -20,7 +20,6 @@ object EventScheduler {
     @SubscribeEvent(priority = EventPriority.LOW, ignoreCancelled = true )
     fun a(e: NewPlayerJoinEvent) {
         submitAsync {
-            GeekMail.debug("NewPlayerJoinEvent")
             Event.get().forEach { (_, pack) ->
                 if (pack.event == e.eventName) {
                     if (KetherAPI.instantKether(e.player, pack.condition).any as Boolean) {
@@ -35,7 +34,6 @@ object EventScheduler {
     @SubscribeEvent(priority = EventPriority.LOW, ignoreCancelled = true )
     fun b(e: AsyncPlayerChatEvent) {
         submitAsync {
-            GeekMail.debug("AsyncPlayerChatEvent")
             Event.get().forEach { (_, pack) ->
                 if (pack.event == e.eventName) {
                     if (KetherAPI.instantKether(e.player, pack.condition).any as Boolean) {

@@ -60,13 +60,12 @@ object GeekMail : Plugin() {
         } else null
     }
 
-    const val VERSION = 2.1
+    const val VERSION = 2.10
 
     val BukkitVersion by lazy { Bukkit.getVersion().substringAfter("MC:").filter { it.isDigit() }.toInt() }
 
     var plugin_status: Boolean = false // 插件状态
 
-   // val DataManage by lazy { DataManage() } // 数据库管理器
 
 
     override fun onLoad() {
@@ -83,18 +82,19 @@ object GeekMail : Plugin() {
 
         Event.onloadEventPack() // 自定义事件加载
 
-        Template.onLoad() // 邮件模板加载
-
-        HookPlugin.onHook() // 挂钩软依赖
-
         SqlManage.start() // 启动数据库
 
         dataScheduler // 初始化
 
+        HookPlugin.onHook() // 挂钩软依赖
 
         register() // 注册邮件类型
         plugin_status = true
         if (SetTings.UseExpiry) Task()
+    }
+    override fun onActive() {
+        Template.onLoad()
+        Menu.loadMenu()
     }
 
 

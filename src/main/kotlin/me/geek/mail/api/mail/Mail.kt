@@ -1,9 +1,7 @@
 package me.geek.mail.api.mail
 
-import com.google.gson.annotations.Expose
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import java.io.Serializable
 import java.util.*
 
 /**

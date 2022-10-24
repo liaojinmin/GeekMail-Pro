@@ -16,6 +16,6 @@ interface RedisApi {
 
     fun onStart()
 
-    fun sendPublish(@NotNull server: String, @NotNull messageType: RedisMessageType, @NotNull targetUid: String)
+    fun sendPublish(@NotNull server: String, @NotNull messageType: RedisMessageType, @NotNull targetUid: String, @NotNull MailUUid: String)
 
 }
