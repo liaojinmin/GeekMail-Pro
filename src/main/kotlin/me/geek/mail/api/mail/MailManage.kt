@@ -60,7 +60,6 @@ object MailManage {
              val senderTime = System.currentTimeMillis().toString()
              val getTime = "0"
              val items = item.serializeItemStacks()
-
              val args = arrayOf(UUID.randomUUID(), title, text, senderUuid, targetUuid, "未提取", additional, senderTime, getTime, items, cmd)
              MailData[mailType]?.javaClass?.invokeConstructor(args)?.sendMail()
          }
@@ -92,7 +91,7 @@ object MailManage {
      * @return 种类对象 如果不存在则 null
      * 使用: getMailData("MAIL_ITEM")
      */
-    fun getMailData(mailType: String) : MailSub? {
+    fun getMailObjData(mailType: String) : MailSub? {
         return MailData[mailType]
     }
 
@@ -100,7 +99,7 @@ object MailManage {
      * 获取邮件类型 缓存键
      * @return 所有已注册 邮件类型 Key
      */
-    fun getMailDataMap(): List<String> {
+    fun getMailTypeKeyMap(): List<String> {
         return MailData.keys.filter { it != "MAIL_NORMAL" }
     }
 

@@ -1,0 +1,14 @@
+Template:
+  ID: "市场发货模板"
+  Server: true
+
+  package:
+    title: "&#FF6A6A【市场拍卖】 商品已发货 "
+    text: |-
+      &l
+      &#FFC1C1 购买的商品: &f{item-name} ;
+      &#FFC1C1  你在市场所购买的商品已发货 ;
+      &#FFC1C1  请及时领取你的商品... ;
+      &b
+    type: MAIL_ITEM
+

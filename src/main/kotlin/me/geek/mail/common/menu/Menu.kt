@@ -99,7 +99,7 @@ object Menu {
                     .replace("]", "")
                     .replace(", ", "")
                 size = menu.getStringList("Layout").size * 9
-                bindings = menu.getString("Bindings.Commands")!!
+                bindings = menu.getString("Bindings.Commands") ?: ""
 
                 menu.getMap<String, ConfigurationSection>("Icons").forEach { (name, obj) ->
                     icon.add(Micon(name, obj))
@@ -107,7 +107,7 @@ object Menu {
                 val listIcon = ArrayList(icon)
                 MenuCache[menuTag] = Session(menuTag, title, layout, size, bindings, listIcon, type, builds(listIcon, layout, size))
                 MenuCmd[bindings] = menuTag
-                cmd = bindings
+                if (type == "main") cmd = bindings
             }
         }.also {
             GeekMail.say("§7菜单界面加载完成... §8(耗时 $it ms)");
@@ -135,7 +135,8 @@ object Menu {
     private fun item(iconID: String, miconObj: List<Micon>): ItemStack {
         for (icon in miconObj) {
             if (icon.icon == iconID) {
-                if (icon.type == IconType.TEXT) {
+                // 将显示邮件的图标设置为空气
+                if (icon.type == IconType.TEXT || icon.type == IconType.MARKET_ITEM) {
                     return AIR
                 }
                 val itemStack = try {
@@ -182,9 +183,18 @@ object Menu {
         if (!dir.exists()) {
             arrayOf(
                 "menu/def.yml",
+                "menu/Market.yml",
+                "menu/MarketBuy.yml",
             ).forEach { releaseResourceFile(it, true) }
         }
         dir
     }
-    fun Player.openMenu(MenuID: String) = MAction(this, getSession(MenuID), build(this, MenuID))
+    fun Player.openMenu(MenuID: String) {
+        val sess = getSession(MenuID)
+        if (sess.type == "Market") {
+            MarketMenu(this, sess, build(this, MenuID))
+            return
+        }
+        MailMenu(this, sess, build(this, MenuID))
+    }
 }

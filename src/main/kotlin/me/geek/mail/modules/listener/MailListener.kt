@@ -1,4 +1,4 @@
-package me.geek.mail.common.listener
+package me.geek.mail.modules.listener
 
 
 
@@ -10,7 +10,7 @@ import me.geek.mail.common.customevent.Event
 import me.geek.mail.common.data.SqlManage
 import me.geek.mail.common.data.MailPlayerData
 import me.geek.mail.common.kether.sub.KetherAPI
-import me.geek.mail.common.menu.MAction
+import me.geek.mail.common.menu.MailMenu
 import me.geek.mail.common.menu.Menu
 import me.geek.mail.common.menu.Menu.openMenu
 import me.geek.mail.modules.settings.SetTings
@@ -108,7 +108,7 @@ object MailListener {
                             return
                         }
                         Menu.getMenuCommand(Menu.cmd!!)?.let {
-                            MAction(player, Menu.getSession(it), Menu.build(player, it))
+                            MailMenu(player, Menu.getSession(it), Menu.build(player, it))
                         }
                     }
                 }

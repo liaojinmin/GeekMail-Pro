@@ -1,9 +1,10 @@
 package me.geek.mail.modules.settings
 
 import me.geek.mail.GeekMail
-import me.geek.mail.modules.settings.sub.config.ItemFilter
-import me.geek.mail.modules.settings.sub.redis.RedisData
-import me.geek.mail.modules.settings.sub.smtp.SmtpData
+import me.geek.mail.modules.settings.market.MarketData
+import me.geek.mail.modules.settings.config.ItemFilter
+import me.geek.mail.modules.settings.redis.RedisData
+import me.geek.mail.modules.settings.smtp.SmtpData
 import me.geek.mail.scheduler.sql.SqlConfig
 import me.geek.mail.utils.colorify
 import org.bukkit.Bukkit
@@ -42,8 +43,9 @@ object SetTings {
             data.sqlite = GeekMail.instance.dataFolder
             val smtp = config.getObject<SmtpData>("SmtpSet", false)
             val redis = config.getObject<RedisData>("Redis", false)
-            val filter = config.getObject<ItemFilter>("config.item_filter", false)
-            SetTingsCache["config"] = SetManager(data, smtp, redis, filter)
+            val filter = onloadFilter()
+            val market = onloadMarket()
+            SetTingsCache["config"] = SetManager(data, smtp, redis, filter, market)
             onLoadConf()
             onLoadType()
         }
@@ -52,6 +54,9 @@ object SetTings {
         return SetTingsCache["config"]!!
     }
 
+    val market by lazy {
+        getConfig().marker
+    }
     val filter by lazy {
         getConfig().filter
     }
@@ -66,6 +71,19 @@ object SetTings {
     }
 
 
+    private fun onloadFilter(): ItemFilter {
+        val use = config.getBoolean("config.item_filter.use")
+        val type = config.getString("config.item_filter.type") ?: "黑名单"
+        val name = config.getStringList("config.item_filter.contains_name")
+        val lore = config.getStringList("config.item_filter.contains_lore")
+        return ItemFilter(use, type, name, lore)
+    }
+    private fun onloadMarket(): MarketData {
+        val use = config.getBoolean("Market.use")
+        val buy = config.getString("Market.player_buy_sendPack") ?: ""
+        val sell = config.getString("Market.player_sell_sendPack") ?: ""
+        return MarketData(use, buy, sell)
+    }
     /**
      * config
      */

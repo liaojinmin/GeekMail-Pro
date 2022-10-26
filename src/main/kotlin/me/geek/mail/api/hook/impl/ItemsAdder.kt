@@ -34,4 +34,9 @@ class ItemsAdder {
         return CustomStack.getInstance(id)?.itemStack ?: empty
     }
 
+    companion object {
+        @SubscribeEvent
+        fun onHook(e: ItemsAdderLoadDataEvent) { Menu.loadMenu() }
+    }
+
 }

@@ -9,7 +9,7 @@ import me.geek.mail.common.data.Task
 import me.geek.mail.common.menu.Menu
 import me.geek.mail.common.template.Template
 import me.geek.mail.modules.*
-import me.geek.mail.modules.redis.RedisKt
+import me.geek.mail.common.data.RedisKt
 import me.geek.mail.modules.settings.SetTings
 import me.geek.mail.utils.colorify
 import org.bukkit.Bukkit
@@ -60,7 +60,7 @@ object GeekMail : Plugin() {
         } else null
     }
 
-    const val VERSION = 2.10
+    const val VERSION = 2.13
 
     val BukkitVersion by lazy { Bukkit.getVersion().substringAfter("MC:").filter { it.isDigit() }.toInt() }
 
@@ -137,7 +137,7 @@ object GeekMail : Plugin() {
             MailManage.register(Mail_Cmd())
             MailManage.register(Mail_Normal())
         }.also {
-            say("&7已注册 &f${MailManage.getMailDataMap().size} &7种邮件类型... §8(耗时 $it Ms)")
+            say("&7已注册 &f${MailManage.getMailTypeKeyMap().size} &7种邮件类型... §8(耗时 $it Ms)")
         }
     }
 

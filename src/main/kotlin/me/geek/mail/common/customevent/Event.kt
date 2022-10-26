@@ -2,8 +2,6 @@ package me.geek.mail.common.customevent
 
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailManage
-import me.geek.mail.common.customevent.sub.EventPack
-import me.geek.mail.common.customevent.sub.EventType
 import me.geek.mail.common.kether.sub.KetherAPI
 import me.geek.mail.modules.settings.SetTings
 import me.geek.mail.common.template.Template
@@ -61,7 +59,7 @@ object Event {
             when (a[0]) {
                 "sendTemPlate" -> {
                     Template.getAdminPack(a[1])?.let { pack ->
-                        MailManage.getMailData(pack.type)?.javaClass?.invokeConstructor(
+                        MailManage.getMailObjData(pack.type)?.javaClass?.invokeConstructor(
                             arrayOf(UUID.randomUUID().toString(), pack.title.replacePlaceholder(player), pack.text.replacePlaceholder(player),
                                 SetTings.Console.toString(), player.uniqueId.toString(), "未提取",
                                 pack.additional, System.currentTimeMillis().toString(), "0", pack.itemStacks, pack.command)

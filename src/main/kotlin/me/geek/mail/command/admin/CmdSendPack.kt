@@ -1,12 +1,10 @@
 package me.geek.mail.command.admin
 
 import me.clip.placeholderapi.PlaceholderAPI
-import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.command.CmdExp
 
 
-import me.geek.mail.common.kether.sub.KetherAPI
 import me.geek.mail.common.template.Template
 import me.geek.mail.modules.settings.SetTings
 import org.bukkit.Bukkit
@@ -49,7 +47,7 @@ object CmdSendPack: CmdExp {
                             pack.additional, System.currentTimeMillis().toString(), "0", pack.itemStacks, pack.command
                         )
                     }
-                    MailManage.getMailData(pack.type)?.javaClass?.invokeConstructor(mail)?.sendMail()
+                    MailManage.getMailObjData(pack.type)?.javaClass?.invokeConstructor(mail)?.sendMail()
                 }
             }
         }

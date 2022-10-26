@@ -51,6 +51,7 @@ object Template {
 
                     val title: String = var1.getString("Template.package.title")!!.colorify()
                     val text: String = var1.getString("Template.package.text")!!.colorify().replace("\n", "")
+
                     val type: String = var1.getString("Template.package.type")!!.uppercase(Locale.ROOT)
                     val additional: String = var1.getString("Template.package.appendix.additional", "0")!!
                     val items: String = buildItemsString(var1.getStringList("Template.package.appendix.items"))
@@ -107,7 +108,9 @@ object Template {
                 "template/def3.yml",
                 "template/items.yml",
                 "template/mail_cmd.yml",
-                "template/mail_Normal.yml"
+                "template/mail_Normal.yml",
+                "template/market/buy.yml",
+                "template/market/sell.yml",
             ).forEach { releaseResourceFile(it, true) }
         }
         dir

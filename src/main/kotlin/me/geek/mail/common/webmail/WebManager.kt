@@ -3,7 +3,6 @@ package me.geek.mail.common.webmail
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.api.mail.event.WebMailSenderEvent
-import me.geek.mail.common.webmail.sub.SubWebMail
 import taboolib.common.platform.function.releaseResourceFile
 import taboolib.common.platform.function.submitAsync
 import java.io.*

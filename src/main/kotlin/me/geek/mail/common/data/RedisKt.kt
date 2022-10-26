@@ -1,11 +1,11 @@
-package me.geek.mail.modules.redis
+package me.geek.mail.common.data
 
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailSub
-import me.geek.mail.common.data.SqlManage
-import me.geek.mail.modules.settings.sub.redis.RedisData
+import me.geek.mail.modules.settings.redis.RedisData
 import me.geek.mail.scheduler.redis.Redis
 import me.geek.mail.scheduler.redis.RedisMessageType
+import me.geek.mail.scheduler.redis.RedisMessageType.*
 import org.bukkit.Bukkit
 import taboolib.common.platform.function.submitAsync
 import java.util.*
@@ -34,9 +34,11 @@ class RedisKt(data: RedisData) : Redis() {
             val m = msg.split(division)
             GeekMail.debug("Redis message ${m[0]}")
             if (m.size == 4 && m[0] != server) { // 防止本服发送本服处理
-                when (RedisMessageType.valueOf(m[1])) {
-                    RedisMessageType.PLAYER_CROSS_SERVER -> TODO()
-                    RedisMessageType.CROSS_SERVER_MAIL -> crossServerMail(m[3], m[2])
+                when (valueOf(m[1])) {
+                    PLAYER_CROSS_SERVER -> TODO()
+                    CROSS_SERVER_MAIL -> crossServerMail(m[3], m[2])
+                    MARKET_ADD -> TODO()
+                    MARKET_REM -> TODO()
                 }
                 GeekMail.debug("------[Debug]------")
                 GeekMail.debug("服务器: ${m[0]}")

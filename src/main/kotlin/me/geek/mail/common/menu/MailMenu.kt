@@ -8,7 +8,7 @@ import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.api.mail.MailManage.sound
 import me.geek.mail.api.mail.MailSub
-import me.geek.mail.common.catcher.Chat
+import me.geek.mail.modules.catcher.Chat
 import me.geek.mail.common.menu.sub.IconType.*
 import me.geek.mail.common.menu.sub.Session
 import me.geek.mail.modules.settings.SetTings
@@ -40,7 +40,7 @@ import java.util.*
  * 作者: 老廖
  * 时间: 2022/8/1
  */
-class MAction(private val player: Player, private val tag: Session, private val inv: Inventory) {
+class MailMenu(private val player: Player, private val tag: Session, private val inv: Inventory) {
     private val format = SimpleDateFormat("yyyy年 MM月 dd日 HH:mm:ss")
     // 邮件索引缓存， key = 邮件所在槽位， value = 邮件唯一标识
     private val cache: MutableMap<String, String> = HashMap()
@@ -77,9 +77,9 @@ class MAction(private val player: Player, private val tag: Session, private val 
             var cd: Long = 0
             @EventHandler
             fun onClick(e: InventoryClickEvent) {
+                if (e.view.title != tag.title || e.view.player !== player) return
                 if (cd < System.currentTimeMillis()) {
                     cd = System.currentTimeMillis() + 300
-                    if (e.view.title != tag.title || e.view.player !== player) return
                     if (e.rawSlot < 0) return
                     e.isCancelled = true
                     if (e.rawSlot < tag.stringLayout.length) {
@@ -157,6 +157,7 @@ class MAction(private val player: Player, private val tag: Session, private val 
                                         }
                                         return
                                     }
+                                    else -> {}
                                 }
                             }
                         }

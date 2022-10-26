@@ -24,6 +24,11 @@ object ClassSerializable {
         return toJson(objs).toByteArray(charset = Charsets.UTF_8)
     }
 
+    fun gsonUnSerialize(objs: ByteArray, obj: Class<*>): Any {
+        val gson = GsonBuilder().setExclusionStrategies(A())
+        return gson.create().fromJson(String(objs, charset = Charsets.UTF_8), obj)
+    }
+
     fun gsonUnSerialize(objs: ByteArray, obj: Class<*>, isMailPlayerData: Boolean): Any {
         val gson = GsonBuilder().setExclusionStrategies(A())
         if (isMailPlayerData) {
@@ -50,6 +55,7 @@ object ClassSerializable {
         }
 
     }
+
     class UnSerializeMailPlayerData : JsonDeserializer<MailPlayerData> {
         override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): MailPlayerData {
             val jsonObject = json.asJsonObject
@@ -104,6 +110,9 @@ fun Any.classSerializable(): ByteArray {
 
 fun ByteArray.classUnSerializable(obj: Class<*>, isMailPlayerData: Boolean) : Any {
     return ClassSerializable.gsonUnSerialize(this, obj, isMailPlayerData)
+}
+fun ByteArray.classUnSerializable(obj: Class<*>) : Any {
+    return ClassSerializable.gsonUnSerialize(this, obj)
 }
 
 

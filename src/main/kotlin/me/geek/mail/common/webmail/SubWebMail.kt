@@ -1,4 +1,4 @@
-package me.geek.mail.common.webmail.sub
+package me.geek.mail.common.webmail
 
 
 import me.geek.mail.modules.settings.SetTings

@@ -1,0 +1,41 @@
+
+TITLE: '&0 GeekMail-Pro 市场'
+TYPE: MarketBuy
+Layout:
+  - '#########'
+  - '#A##1##2#'
+  - '#########'
+
+Icons:
+  A:
+    Type: MARKET_ITEM
+    display:
+      mats: STONE
+      name: '&7商品: &f[item_name]'
+      lore:
+        - ''
+        - '------------'
+        - ' &7卖家: &f[seller]'
+        - ' &7商品价格:'
+        - '   &f[moneyPrice] &e金币'
+        - '   &f[pointsPrice] &e点券'
+        - ' &7上架时间: &f[time]'
+        - ' &7到期时间: &f[expire]'
+        - '------------'
+        - ''
+  '1':
+    Type: CONFIRM
+    display:
+      mats: CHEST_MINECART
+      name: '&3# &a确认购买'
+  '2':
+    Type: CANCEL
+    display:
+      mats: BARRIER
+      name: '&3# &c取消购买'
+  '#':
+    Type: null
+    display:
+      mats: BLACK_STAINED_GLASS_PANE
+      data: 0
+      name: '&b&l 挡板'

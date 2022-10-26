@@ -97,7 +97,7 @@ class Mail_Item(
                                     this.add(i2)
                                 }
                             }
-                            if (!this@action.isOp) this@action.itemFilter(this)
+                            if (!this@action.isOp && SetTings.filter.use) this@action.itemFilter(this)
                         }
 
                         if (i1.size > 0) {
@@ -142,32 +142,39 @@ class Mail_Item(
         val outItem = mutableListOf<ItemStack>()
         itemStacks.forEach { stack ->
             stack.itemMeta?.let { meta ->
+                var isOut = false
                 SetTings.filter.contains_name.forEach {
-                    if (meta.displayName.contains(it)) {
-                        outItem.add(stack)
+                    if (meta.hasDisplayName()) {
+                        if (meta.displayName.contains(it)) {
+                            isOut = true
+                        }
                     }
                 }
                 SetTings.filter.contains_lore.forEach {
                     meta.lore?.let { a ->
                         if (a.contains(it)) {
-                            outItem.add(stack)
+                            isOut = true
                         }
                     }
                 }
+                if (isOut) outItem.add(stack) //修复错误的返回双倍物品
             }
         }
-        if (SetTings.filter.type == "黑名单") {
-            itemStacks.removeAll(outItem)
-            for (a in outItem) {
-                this.inventory.addItem(a)
+
+        if (outItem.size > 0) {
+            if (SetTings.filter.type == "黑名单") {
+                itemStacks.removeAll(outItem)
+                for (a in outItem) {
+                    this.inventory.addItem(a)
+                }
+                adaptPlayer(this).sendLang("玩家-发送物品邮件-物品筛选", outItem.size)
+            } else {
+                itemStacks.retainAll(outItem)
+                for (a in itemStacks) {
+                    this.inventory.addItem(a)
+                }
+                adaptPlayer(this).sendLang("玩家-发送物品邮件-物品筛选", itemStacks.size)
             }
-            adaptPlayer(this).sendLang("玩家-发送物品邮件-物品筛选", outItem.size)
-        } else {
-            itemStacks.retainAll(outItem)
-            for (a in itemStacks) {
-                this.inventory.addItem(a)
-            }
-            adaptPlayer(this).sendLang("玩家-发送物品邮件-物品筛选", itemStacks.size)
         }
     }
 

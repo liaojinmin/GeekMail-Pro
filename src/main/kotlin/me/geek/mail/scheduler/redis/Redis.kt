@@ -2,6 +2,7 @@ package me.geek.mail.scheduler.redis
 
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.data.MailPlayerData
+import me.geek.mail.common.market.Item
 import me.geek.mail.modules.Mail_Item
 import me.geek.mail.modules.Mail_Normal
 import me.geek.mail.utils.classSerializable
@@ -70,14 +71,6 @@ abstract class Redis: RedisApi {
     }
 
 
-    /**
-     * 发布订阅消息 通知集群
-     */
-    override fun sendPublish(@NotNull server: String, @NotNull messageType: RedisMessageType, @NotNull targetUid: String, @NotNull MailUUid: String) {
-        getRedisConnection().use {
-            it.publish(CHANNEL, "$server$division$messageType$division$targetUid$division$MailUUid")
-        }
-    }
 
 
     /**
@@ -92,7 +85,7 @@ abstract class Redis: RedisApi {
             }
         }
         getRedisConnection().use {
-            it.setex(Clazz.uuid.toString().toByteArray(),10 , Clazz.classSerializable())
+            it.setex(Clazz.uuid.toString().toByteArray(),15, Clazz.classSerializable())
         }
     }
 
@@ -113,11 +106,19 @@ abstract class Redis: RedisApi {
 
 
     /**
+     * 发布订阅消息 通知集群 (用于跨服邮件)
+     */
+    override fun sendCrossMailPublish(@NotNull server: String, @NotNull messageType: RedisMessageType, @NotNull targetUid: String, @NotNull MailUUid: String) {
+        getRedisConnection().use {
+            it.publish(CHANNEL, "$server$division$messageType$division$targetUid$division$MailUUid")
+        }
+    }
+    /**
      * 设置邮件数据流
      */
     fun setMailData(@NotNull Clazz: MailSub) {
         getRedisConnection().use {
-            it.setex(Clazz.mailID.toString().toByteArray(), 10, Clazz.classSerializable())
+            it.setex(Clazz.mailID.toString().toByteArray(), 15, Clazz.classSerializable())
         }
     }
 
@@ -128,6 +129,33 @@ abstract class Redis: RedisApi {
     fun getMailData(@NotNull MailUid: String, @NotNull Clazz: Class<*>): Any? {
         return getRedisConnection().use {
             it.get(MailUid.toByteArray())?.classUnSerializable(Clazz, false)
+        }
+    }
+
+/**********************  市场  *************************/
+
+    /**
+     * 发送跨服商品上架消息
+     */
+    override fun sendMarketPublish(@NotNull server: String, @NotNull messageType: RedisMessageType, @NotNull PackUid: String) {
+        getRedisConnection().use {
+            it.publish(CHANNEL, "$server$division$messageType$division$PackUid")
+        }
+    }
+    /**
+     * 设置商品数据
+     */
+    fun setMarketData(@NotNull item: Item) {
+        getRedisConnection().use {
+            it.setex(item.packUid.toString().toByteArray(), 20, item.classSerializable())
+        }
+    }
+    /**
+     * 获取商品数据
+     */
+    fun getMarketData(@NotNull packUid: String): Any? {
+      return getRedisConnection().use {
+            it.get(packUid.toByteArray())?.classUnSerializable(Item::class.java)
         }
     }
 

@@ -1,0 +1,52 @@
+
+TITLE: '&0 GeekMail-Pro 市场'
+TYPE: Market
+Layout:
+  - '#########'
+  - '#2222222#'
+  - '#2222222#'
+  - '#2222222#'
+  - '#########'
+  - '<       >'
+
+Bindings:
+  Commands: '市场'
+
+Icons:
+  2:
+    Type: MARKET_ITEM
+    display:
+      mats: STONE
+      name: '&7商品: &f[item_name]'
+      lore:
+        - ''
+        - '------------'
+        - ' &7卖家: &f[seller]'
+        - ' &7商品价格:'
+        - '   &f[moneyPrice] &e金币'
+        - '   &f[pointsPrice] &e点券'
+        - ' &7上架时间: &f[time]'
+        - ' &7到期时间: &f[expire]'
+        - '------------'
+        - ''
+        - '&8[&B左键_点击&8] &7# 查看商品'
+  '<':
+    Type: LAST_PAGE
+    display:
+      mats: 'IRON_DOOR'
+      name: '&3# &b跳转至'
+      lore:
+        - '&7上一页'
+  '>':
+    Type: NEXT_PAGE
+    display:
+      mats: IRON_DOOR
+      name: '&3# &b跳转至'
+      lore:
+        - '&7下一页'
+  '#':
+    Type: null
+    display:
+      mats: BLACK_STAINED_GLASS_PANE
+      data: 0
+      name: '&b&l 挡板'

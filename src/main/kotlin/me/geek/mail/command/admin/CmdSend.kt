@@ -35,7 +35,7 @@ object CmdSend: CmdExp {
             }
             dynamic("邮件种类") {
                 suggestion<CommandSender> { _, _ ->
-                    MailManage.getMailDataMap().map { it }
+                    MailManage.getMailTypeKeyMap().map { it }
                 }
                 dynamic("标题") {
                     suggestion<CommandSender>(uncheck = true) { _, _ ->
@@ -56,10 +56,11 @@ object CmdSend: CmdExp {
                             } catch (e: IndexOutOfBoundsException) {
                                 arrayOf(UUID.randomUUID().toString(), title, args[0], senders.toString(), target.uniqueId.toString(), "未提取", "0", System.currentTimeMillis().toString(), "0")
                             }
-                            MailManage.getMailData(mailType)?.javaClass?.invokeConstructor(pack)?.let { mailSub ->
+                            MailManage.getMailObjData(mailType)?.javaClass?.invokeConstructor(pack)?.let { mailSub ->
                                 if (target.isOnline) {
                                     mailSub.sendMail()
-                                } else GeekMail.dataScheduler?.let { // 未解决问题，在所以服务器都找不到玩家的情况下，该邮件将失效..无法正确送达
+                                } else GeekMail.dataScheduler?.let {
+                                    // 未解决问题，在所以服务器都找不到玩家的情况下，该邮件将失效..无法正确送达
                                     submitAsync {
                                         if (mailSub is Mail_Item) {
                                             submit {
@@ -78,7 +79,7 @@ object CmdSend: CmdExp {
                                             }
                                         }
                                         it.setMailData(mailSub)
-                                        it.sendPublish(Bukkit.getPort().toString(), RedisMessageType.CROSS_SERVER_MAIL, target.uniqueId.toString(), mailSub.mailID.toString())
+                                        it.sendCrossMailPublish(Bukkit.getPort().toString(), RedisMessageType.CROSS_SERVER_MAIL, target.uniqueId.toString(), mailSub.mailID.toString())
                                     }
                                 } ?: mailSub.sendMail()
                             }

@@ -1,4 +1,4 @@
-package me.geek.mail.common.catcher
+package me.geek.mail.modules.catcher
 
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailManage

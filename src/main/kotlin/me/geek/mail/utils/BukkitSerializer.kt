@@ -30,6 +30,7 @@ fun ItemStack.serializeItemStacks(): String {
     val byteOutputStream = ByteArrayOutputStream()
     try {
         BukkitObjectOutputStream(byteOutputStream).use {
+            it.writeInt(1)
             it.writeObject(serialize(this))
             return Base64Coder.encodeLines(byteOutputStream.toByteArray())
         }

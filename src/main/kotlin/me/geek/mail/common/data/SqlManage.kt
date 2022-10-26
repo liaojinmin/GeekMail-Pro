@@ -50,11 +50,13 @@ object SqlManage {
                         if (dataSub is Mysql) {
                             statement.addBatch(SqlTab.MYSQL_1.tab)
                             statement.addBatch(SqlTab.MYSQL_2.tab)
+                            statement.addBatch(SqlTab.MYSQL_3.tab)
                         } else {
                             statement.addBatch("PRAGMA foreign_keys = ON;")
                             statement.addBatch("PRAGMA encoding = 'UTF-8';")
                             statement.addBatch(SqlTab.SQLITE_1.tab)
                             statement.addBatch(SqlTab.SQLITE_2.tab)
+                            statement.addBatch(SqlTab.SQLITE_3.tab)
                         }
                         statement.executeBatch()
                     }
@@ -344,6 +346,15 @@ object SqlManage {
                 " `commands` longtext NOT NULL," +
                 " `sendertime` BIGINT(20) NOT NULL," +
                 " `gettime` BIGINT(20) NOT NULL);"),
+        SQLITE_3("CREATE TABLE IF NOT EXISTS `market_data` (" +
+                " `id` integer PRIMARY KEY, " +
+                " `uid` CHAR(36) NOT NULL UNIQUE," +
+                " `user` CHAR(36) NOT NULL," +
+                " `time` BIGINT(20) NOT NULL," +
+                " `points` BIGINT(20) NOT NULL," +
+                " `money` BIGINT(20) NOT NULL," +
+                " `item` longtext NOT NULL" +
+                ");"),
 
         MYSQL_1("CREATE TABLE IF NOT EXISTS `mail_player_data` (" +
                 " `uuid` CHAR(36) NOT NULL UNIQUE," +
@@ -368,9 +379,16 @@ object SqlManage {
                 " `sendertime` BIGINT(20) NOT NULL, " +
                 " `gettime` BIGINT(20) NOT NULL, " +
                 " PRIMARY KEY (`id`,`target`)" +
-                ");")
+                ");"),
+        MYSQL_3("CREATE TABLE IF NOT EXISTS `market_data` (" +
+        " `id` integer NOT NULL AUTO_INCREMENT, " +
+        " `uid` CHAR(36) NOT NULL UNIQUE," +
+        " `user` CHAR(36) NOT NULL," +
+        " `time` BIGINT(20) NOT NULL," +
+        " `points` BIGINT(20) NOT NULL," +
+        " `money` BIGINT(20) NOT NULL," +
+        " `item` longtext NOT NULL," +
+        "PRIMARY KEY (`uid`)" +
+        ");"),
     }
-
-
-
 }

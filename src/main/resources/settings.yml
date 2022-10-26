@@ -18,10 +18,10 @@ data_storage:
     keepalive_time: 0
     connection_timeout: 5000
 Redis:
-  use: true
+  use: false
   host: 192.168.0.102
   port: 6379
-  password: Liao17303069590
+  password: pwm
   ssl: false
 SmtpSet:
   start: false
@@ -35,20 +35,23 @@ SmtpSet:
 config:
   # 期限设置，如果使用，邮件到期将自动删除
   use_bundle: false # 物品邮件 物品预览使用 lore 展示 (只限 1.17+)
-
   item_filter: # 针对 物品邮件 发送的物品进行筛选
     use: true
     type: '黑名单' # 支持 黑名单 / 白名单
     contains_name:
       - '你妈妈个大傻逼'
     contains_lore: &id001 []
-
   Expiry:
     use: true
     # 邮件默认到期时间
     time: 2d
     # 数据维护任务时间 单位 秒
     auto: 600
+
+Market:
+  use: true
+  player_buy_sendPack: 市场发货模板
+  player_sell_sendPack: 市场拍卖模板
 
 # 邮件种类显示名称转换
 MailType:

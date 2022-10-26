@@ -31,7 +31,7 @@ object CmdMail: CmdExp {
             }
             dynamic("邮件种类") {
                 suggestion<CommandSender> { _, _ ->
-                    MailManage.getMailDataMap().map { it }
+                    MailManage.getMailTypeKeyMap().map { it }
                 }
                 dynamic("标题") {
                     suggestion<CommandSender>(uncheck = true) { _, _ ->
@@ -47,7 +47,7 @@ object CmdMail: CmdExp {
                             val args = context.args()[4].colorify().split(" ", limit = 2)
                             val target = Bukkit.getOfflinePlayer(context.args()[1])
                             val senders = sender.uniqueId
-                            MailManage.getMailData(mailType)?.let {
+                            MailManage.getMailObjData(mailType)?.let {
                                if (sender.hasPermission(it.permission)) {
                                    try {
                                        if (it.condition(sender, args[1])) it.javaClass.invokeConstructor(

@@ -1,4 +1,4 @@
-package me.geek.mail.modules.settings.sub.config
+package me.geek.mail.modules.settings.config
 
 /**
  * 作者: 老廖

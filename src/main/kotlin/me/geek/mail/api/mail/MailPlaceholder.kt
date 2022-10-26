@@ -1,6 +1,10 @@
 package me.geek.mail.api.mail
 
 import com.google.gson.annotations.Expose
+import me.geek.mail.modules.settings.SetTings
+import org.bukkit.Bukkit
+import org.jetbrains.annotations.NotNull
+import taboolib.expansion.geek.Expiry
 import java.text.SimpleDateFormat
 
 /**
@@ -37,5 +41,25 @@ abstract class MailPlaceholder : Mail {
     @Expose
     val EXPIRE = Regex("(\\{|\\[)(expire|到期时间)(}|])")
 
-
+    fun parseMailInfo(@NotNull lore: List<String>): List<String> {
+        val list = mutableListOf<String>()
+        lore.forEach {
+            when {
+                it.contains(TYPE) -> list.add(it.replace(TYPE, this.mailType))
+                it.contains(SENDER) -> list.add(it.replace(SENDER, if (this.sender == SetTings.Console) "系统" else Bukkit.getOfflinePlayer(this.sender).name!!))
+                it.contains(SERDER_TIME) -> list.add(it.replace(SERDER_TIME, format.format(this.senderTime.toLong())))
+                it.contains(GET_TIME) -> list.add(it.replace(GET_TIME, if (getTime.toLong() < 1000) "未领取" else format.format(this.getTime.toLong())))
+                it.contains(TEXT) -> list.addAll(it.replace(TEXT, this.text).split(";"))
+                it.contains(STATE) -> list.add(it.replace(STATE, this.state))
+                it.contains(ITEM) -> list.addAll(it.replace(ITEM, this.appendixInfo).split(","))
+                it.contains(EXPIRE) -> {
+                    if (SetTings.UseExpiry) {
+                        list.add(it.replace(EXPIRE, Expiry.getExpiryDate(this.senderTime.toLong() + SetTings.ExpiryTime, false)))
+                    } else list.add(it.replace(EXPIRE, ""))
+                }
+                else -> list.add(it)
+            }
+        }
+        return list
+    }
 }
