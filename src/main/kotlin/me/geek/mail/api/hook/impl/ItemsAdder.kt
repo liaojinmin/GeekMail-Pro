@@ -27,7 +27,7 @@ class ItemsAdder {
         if (Bukkit.getPluginManager().getPlugin("ItemsAdder") != null) {
             GeekMail.say("&7软依赖 &fItemsAdder &7已兼容.")
             isHook = true
-        }
+        } else Menu.loadMenu()
     }
 
     fun getItem(id: String): ItemStack {

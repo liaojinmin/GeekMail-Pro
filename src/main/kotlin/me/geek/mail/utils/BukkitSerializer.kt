@@ -13,16 +13,7 @@ import java.io.IOException
  * 时间: 2022/7/28
  */
 
-/**
-反序列化 获取单个物品stack
- */
-fun String.deserializeItemStack(): ItemStack? {
-    ByteArrayInputStream(Base64Coder.decodeLines(this)).use {
-        BukkitObjectInputStream(it).use { var2 ->
-            return deserialize(var2.readObject())
-        }
-    }
-}
+
 /**
  * 序列化 ItemStack 数组 为字符串
  */
@@ -59,7 +50,17 @@ fun Array<ItemStack>?.serializeItemStacks(): String {
         throw IllegalArgumentException("无法序列化物品堆栈数据")
     }
 }
-
+/**
+反序列化 获取单个物品stack
+ */
+fun String.deserializeItemStack(): ItemStack? {
+    ByteArrayInputStream(Base64Coder.decodeLines(this)).use {
+        BukkitObjectInputStream(it).use { var2 ->
+            var2.readInt()
+            return deserialize(var2.readObject())
+        }
+    }
+}
 /**
  * 反序列化字符串为  ItemStack 数组
  */

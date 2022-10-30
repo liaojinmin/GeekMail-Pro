@@ -111,6 +111,11 @@ object MailManage {
      * @param mail 邮件
      */
     fun addPlayerMailCache(targetUuid: UUID, mail: MailSub) {
+        GeekMail.debug("addPlayerMailCache()")
+        GeekMail.debug("------[Debug]------")
+        GeekMail.debug("targetUuid = $targetUuid")
+        GeekMail.debug("mail = ${mail.mailID}")
+        GeekMail.debug("-------------------")
         MailPlayerCache[targetUuid]?.mailData?.add(mail)
     }
 

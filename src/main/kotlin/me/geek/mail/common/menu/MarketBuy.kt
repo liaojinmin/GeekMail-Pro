@@ -7,7 +7,6 @@ import me.geek.mail.common.menu.sub.IconType
 import me.geek.mail.common.template.Template
 import me.geek.mail.common.market.Market
 import me.geek.mail.modules.settings.SetTings
-import me.geek.mail.utils.serializeItemStacks
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -113,40 +112,38 @@ class MarketBuy(
         val i2 = Market.getMarketItem(MarketItemUid) //获取商品
         if (i2 != null) {
              if (i2.condition(player)) {
-
-                val buy = Template.getAdminPack(SetTings.market.player_buy_sendPack)
-                val sell = Template.getAdminPack(SetTings.market.player_sell_sendPack)
-                if (buy == null || sell == null) {
-                    GeekMail.say("&c你的市场邮箱发货模板未正确配置...")
-                    return
-                }
-
-                Market.remMarketItem(i2.packUid) // 删缓存
-                i2.runCondition(player) // 扣除玩家需求
-
-                // 发送给购买者
-                MailManage.getMailObjData(buy.type)?.javaClass?.invokeConstructor(
-                    arrayOf(
-                        UUID.randomUUID().toString(),
-                        buy.title,
-                        buy.text.replace("{item-name}", I18n.instance.getName(i2.item)),
-                        SetTings.Console.toString(),
-                        player.uniqueId.toString(),
-                        "未提取",
-                        "",
-                        System.currentTimeMillis().toString(),
-                        "0",
-                        i2.itemString,
-                        ""
-                    )
-                )?.sendMail()
+                 val buy = Template.getAdminPack(SetTings.market.player_buy_sendPack)
+                 val sell = Template.getAdminPack(SetTings.market.player_sell_sendPack)
+                 if (buy == null || sell == null) {
+                     GeekMail.say("&c你的市场邮箱发货模板未正确配置...")
+                     return
+                 }
+                 i2.runCondition(player) // 扣除玩家需求
+                 Market.remMarketItem(i2.packUid, true) // 删缓存
+                 val names = if (i2.item.itemMeta!!.hasDisplayName()) i2.item.itemMeta!!.displayName else I18n.instance.getName(i2.item)
+                 // 发送给购买者
+                 MailManage.getMailObjData(buy.type)?.javaClass?.invokeConstructor(
+                     arrayOf(
+                         UUID.randomUUID().toString(),
+                         buy.title,
+                         buy.text.replace("{item-name}", names),
+                         SetTings.Console.toString(),
+                         player.uniqueId.toString(),
+                         "未提取",
+                         "",
+                         System.currentTimeMillis().toString(),
+                         "0",
+                         i2.itemString,
+                         ""
+                     )
+                 )?.sendMail()
 
                 // 发送给出售者
                 MailManage.getMailObjData(sell.type)?.javaClass?.invokeConstructor(
                     arrayOf(
                         UUID.randomUUID().toString(),
                         sell.title,
-                        sell.text.replace("{item-name}", I18n.instance.getName(i2.item)),
+                        sell.text.replace("{item-name}", names),
                         SetTings.Console.toString(),
                         i2.user.toString(),
                         "未提取",
@@ -157,6 +154,7 @@ class MarketBuy(
                         ""
                     )
                 )?.sendMail()
+
                  this@MarketBuy.inv.clear()
                  player.closeInventory()
 

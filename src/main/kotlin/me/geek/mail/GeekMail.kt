@@ -10,6 +10,7 @@ import me.geek.mail.common.menu.Menu
 import me.geek.mail.common.template.Template
 import me.geek.mail.modules.*
 import me.geek.mail.common.data.RedisKt
+import me.geek.mail.common.market.Market
 import me.geek.mail.modules.settings.SetTings
 import me.geek.mail.utils.colorify
 import org.bukkit.Bukkit
@@ -80,21 +81,25 @@ object GeekMail : Plugin() {
 
         SetTings.onLoadSetTings() // 插件配置加载
 
-        Event.onloadEventPack() // 自定义事件加载
-
         SqlManage.start() // 启动数据库
 
-        dataScheduler // 初始化
+        dataScheduler // 数据调度初始化
+
+        Market.loadItem() // 加载市场商品
+
+        Event.onloadEventPack() // 自定义事件加载
+
+        register() // 注册邮件类型
 
         HookPlugin.onHook() // 挂钩软依赖
 
-        register() // 注册邮件类型
-        plugin_status = true
         if (SetTings.UseExpiry) Task()
     }
     override fun onActive() {
+
         Template.onLoad()
-        Menu.loadMenu()
+
+        plugin_status = true // 更改插件状态
     }
 
 

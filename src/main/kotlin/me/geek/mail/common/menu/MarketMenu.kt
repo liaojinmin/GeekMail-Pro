@@ -157,6 +157,7 @@ class MarketMenu(
                                 cache[key(index, contents.size)] = value(index, itemPack[packIndex].packUid)
 
                                 val itemStack = itemPack[packIndex].item.clone()
+
                                 val locLore = itemPack[packIndex].parseItemInfo(" ", micon.lore)
                                 val itemMeta = itemStack.itemMeta
                                 if (itemMeta != null) {
@@ -164,7 +165,8 @@ class MarketMenu(
                                         itemMeta.setDisplayName(micon.name.replace("[item_name]",itemMeta.displayName))
                                     } else itemMeta.setDisplayName(micon.name.replace("[item_name]", I18n.instance.getName(itemStack)))
                                     if (itemMeta.hasLore()) {
-                                        itemMeta.lore!!.addAll(locLore)
+                                        locLore.addAll(0, itemMeta.lore!!)
+                                        itemMeta.lore = locLore
                                     } else {
                                         itemMeta.lore = locLore
                                     }

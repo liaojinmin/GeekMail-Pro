@@ -2,6 +2,8 @@ package me.geek.mail.common.data
 
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailSub
+import me.geek.mail.common.market.Item
+import me.geek.mail.common.market.Market
 import me.geek.mail.modules.settings.redis.RedisData
 import me.geek.mail.scheduler.redis.Redis
 import me.geek.mail.scheduler.redis.RedisMessageType
@@ -32,19 +34,17 @@ class RedisKt(data: RedisData) : Redis() {
     override fun processMessage(msg: String) {
         submitAsync {
             val m = msg.split(division)
-            GeekMail.debug("Redis message ${m[0]}")
-            if (m.size == 4 && m[0] != server) { // 防止本服发送本服处理
+            if (m.size >= 3 && m[0] != server) { // 防止本服发送本服处理
                 when (valueOf(m[1])) {
                     PLAYER_CROSS_SERVER -> TODO()
                     CROSS_SERVER_MAIL -> crossServerMail(m[3], m[2])
-                    MARKET_ADD -> TODO()
-                    MARKET_REM -> TODO()
+                    MARKET_ADD -> crossAddMarket(m[2])
+                    MARKET_REM -> crossRemMarket(m[2])
                 }
+                GeekMail.debug("Redis message ${m[0]}")
                 GeekMail.debug("------[Debug]------")
                 GeekMail.debug("服务器: ${m[0]}")
                 GeekMail.debug("消息种类: ${m[1]}")
-                GeekMail.debug("目标Uid: ${m[2]}")
-                GeekMail.debug("邮件Uid: ${m[3]}")
                 GeekMail.debug("-------------------")
             }
         }
@@ -60,6 +60,17 @@ class RedisKt(data: RedisData) : Redis() {
             }
         }
     }
+    private fun crossAddMarket(packUid: String) {
+        this.getMarketData(packUid)?.let {
+            if (it is Item) {
+                Market.addMarketItem(it)
+            }
+        }
+    }
+    private fun crossRemMarket(packUid: String) {
+        Market.remMarketItem(UUID.fromString(packUid), false)
+    }
+
 
 
 }

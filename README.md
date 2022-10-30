@@ -1,5 +1,5 @@
 ![alt](https://web-1301331373.cos.ap-guangzhou.myqcloud.com/mail/mail-b-gq.png)
-# 📬GeekMail-Pro  高级邮件系统 2.11
+# 📬GeekMail-Pro  高级邮件系统 2.13
 - **地表超强邮件系统**，**多模块**，**高端实用**，**支持邮件模板**，覆盖你能想到的所有邮箱功能 💯
 - **公开售价:** **158** 元人民币
 - **购买联系:** QQ1349517404 (回应迅速)
@@ -38,6 +38,7 @@
 - ❇️ **SMTP服务** ❇️ 支持使用 SMTP 服务 发送邮件到玩家的QQ邮箱、网易邮箱 - _(邮件提醒支持离线)_
 - ❇️ **ItemsAdder** ❇️ 使用ia自定义你的图和UI
 - ❇️ **Redis跨服** ❇️ 使用 Redis服务器 进行多域跨服
+- ❇️ **内置全球市场** ❇️ 依托邮件收发货的全球市场
 
 <br/>
 
@@ -56,8 +57,13 @@ me.Geek.GeekMail.api.mail.MailSub // 邮件模板扩展
 
 
 # 🔆更多图片展示
+
+### 内置的全球市场
+<img src="libs/img/20221030122102.png" width="50%"><img src="libs/img/20221030122125.png" width="50%">
+
+
 ### 1.17+ 物品类型预览
-<img src="libs/img/UFPGA441G.png" width="50%">
+<img src="libs/img/UFPGA441G.png" width="50%"><img src="libs/img/0221024003228.png" width="50%">
 
 ### ItemsAdder支持
 <img src="https://web-1301331373.cos.ap-guangzhou.myqcloud.com/docs/%7BRF6T%40AH0Y6J%40JWP6PD%7B9%7D7.png" width="50%">

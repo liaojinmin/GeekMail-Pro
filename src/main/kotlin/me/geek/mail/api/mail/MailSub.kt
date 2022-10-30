@@ -8,7 +8,6 @@ import org.bukkit.Bukkit
 import org.jetbrains.annotations.NotNull
 import taboolib.common.platform.function.adaptPlayer
 import taboolib.common.platform.function.submitAsync
-import taboolib.expansion.geek.Expiry
 import taboolib.module.lang.sendLang
 import taboolib.module.nms.getI18nName
 import java.util.*
@@ -46,7 +45,8 @@ abstract class MailSub(
             if (targets != null) {
                 targetName = targets.name
                 MailManage.addPlayerMailCache(this@MailSub.target, this@MailSub)
-                adaptPlayer(targets).sendLang("玩家-接收邮件", title, "${text.substring(0,10)} §8...")
+                val info = if (text.length >= 11) text.substring(0,10) else text
+                adaptPlayer(targets).sendLang("玩家-接收邮件", title, "$info §8...")
             }
             if (this@MailSub.sender != SetTings.Console) {
                 if (send != null) {

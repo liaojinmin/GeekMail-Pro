@@ -381,14 +381,14 @@ object SqlManage {
                 " PRIMARY KEY (`id`,`target`)" +
                 ");"),
         MYSQL_3("CREATE TABLE IF NOT EXISTS `market_data` (" +
-        " `id` integer NOT NULL AUTO_INCREMENT, " +
-        " `uid` CHAR(36) NOT NULL UNIQUE," +
-        " `user` CHAR(36) NOT NULL," +
-        " `time` BIGINT(20) NOT NULL," +
-        " `points` BIGINT(20) NOT NULL," +
-        " `money` BIGINT(20) NOT NULL," +
-        " `item` longtext NOT NULL," +
-        "PRIMARY KEY (`uid`)" +
-        ");"),
+                " `id` integer NOT NULL AUTO_INCREMENT, " +
+                " `uid` CHAR(36) NOT NULL UNIQUE," +
+                " `user` CHAR(36) NOT NULL," +
+                " `time` BIGINT(20) NOT NULL," +
+                " `points` BIGINT(20) NOT NULL," +
+                " `money` BIGINT(20) NOT NULL," +
+                " `item` longtext NOT NULL," +
+                "PRIMARY KEY (`id`)" +
+                ");"),
     }
 }

@@ -27,6 +27,7 @@ data class Item (
 
     override fun addToMarket() {
         Market.addMarketItem(this)
+        Market.insertItem(this) //上库
     }
     fun condition(player: Player): Boolean {
         return HookPlugin.money.hasMoney(player, money) && HookPlugin.points.hasPoints(player.uniqueId, points)

@@ -96,9 +96,7 @@ abstract class Redis: RedisApi {
     fun getPlayerData(@NotNull targetUid: String): Any? {
         return getRedisConnection().use {
             it.get(targetUid.toByteArray())?.classUnSerializable(MailPlayerData::class.java, true)
-
         }
-
     }
 
 

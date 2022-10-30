@@ -66,7 +66,7 @@ class MailMenu(private val player: Player, private val tag: Session, private val
         Menu.isOpen.add(player)
         GeekMail.debug("为玩家: ${player.uniqueId} 打开UI")
 
-        Build()
+        build()
         if (contents.size != 0) {
             inv.contents = contents[0]
         }
@@ -338,7 +338,7 @@ class MailMenu(private val player: Player, private val tag: Session, private val
     }
 
     // 构建邮件图标
-    private fun Build() {
+    private fun build() {
         var item = inv.contents
         val layout = tag.stringLayout
         var index = layout.indexOf("M")
@@ -423,7 +423,6 @@ class MailMenu(private val player: Player, private val tag: Session, private val
                     }
                     itemStack.itemMeta = itemMeta
                 }
-
                 return itemStack
             }
         }

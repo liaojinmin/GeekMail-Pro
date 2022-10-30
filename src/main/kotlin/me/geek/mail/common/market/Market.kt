@@ -1,8 +1,15 @@
 package me.geek.mail.common.market
 
+import me.geek.mail.GeekMail
 import me.geek.mail.common.data.SqlManage
+import me.geek.mail.scheduler.redis.RedisMessageType
+import me.geek.mail.scheduler.sql.action
 import me.geek.mail.scheduler.sql.actions
 import me.geek.mail.scheduler.sql.use
+import me.geek.mail.utils.deserializeItemStack
+import org.bukkit.Bukkit
+import taboolib.common.platform.function.submitAsync
+import java.sql.ResultSet
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -27,19 +34,50 @@ object Market {
     }
 
     @JvmStatic
-    fun getMarketItem(user: UUID): Item? {
-        return MarketCache[user]
+    fun getMarketItem(packUid: UUID): Item? {
+        return MarketCache[packUid]
     }
 
+    /**
+     * @param packUid 要删除的商品ID
+     * @param publish 双层意思，是否删除数据库商品， 如果是Redis模式，将发布删除消息，通知其它服务器删除缓存，但不会再次访问数据库。
+     */
     @JvmStatic
-    fun remMarketItem(user: UUID) {
-        MarketCache.remove(user)
+    fun remMarketItem(packUid: UUID, publish: Boolean) {
+        if (publish) {
+            deleteItem(packUid) // 只在本机发起删除时修改数据库
+            GeekMail.dataScheduler?.let {
+                getMarketItem(packUid)?.let { item ->
+                    submitAsync {
+                        it.setMarketData(item)
+                        it.sendMarketPublish(Bukkit.getPort().toString(), RedisMessageType.MARKET_REM, item.packUid.toString())
+                    }
+                }
+            }
+        }
+        MarketCache.remove(packUid)
     }
 
     @JvmStatic
     fun addMarketItem(item: Item) {
         MarketCache[item.packUid] = item
-        insertItem(item)
+    }
+    fun loadItem() {
+        SqlManage.getConnection().use {
+            createStatement().action { statement ->
+               val res = statement.executeQuery("SELECT * FROM `market_data` WHERE id;")
+                if (!res.isBeforeFirst) return@action
+                while (res.next()) {
+                    val packUid = UUID.fromString(res.getString("uid"))
+                    val user = UUID.fromString(res.getString("user"))
+                    val time = res.getString("time")
+                    val points = res.getString("points")
+                    val money = res.getString("money").toDouble()
+                    val item = res.getString("item").deserializeItemStack()
+                    MarketCache[packUid] = Item(packUid, user, time, points, money = money, item = item!!)
+                }
+            }
+        }
     }
     @Synchronized
     fun insertItem(item: Item) {

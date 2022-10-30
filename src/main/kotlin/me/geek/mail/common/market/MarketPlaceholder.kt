@@ -36,7 +36,7 @@ abstract class MarketPlaceholder: MarketPack {
     @Expose
     val expires = Regex("(\\{|\\[)(expire|到期时间)(}|])")
 
-    override fun parseItemInfo(@NotNull name: String, @NotNull iconLore: List<String>): List<String> {
+    override fun parseItemInfo(@NotNull name: String, @NotNull iconLore: List<String>): MutableList<String> {
         val list = mutableListOf<String>()
         iconLore.forEach {
             when {
