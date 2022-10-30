@@ -10,7 +10,6 @@ taboolib {
     install(
         "common",
         "common-5",
-        "module-metrics",
         "platform-bukkit",
         "module-configuration",
         "module-chat",

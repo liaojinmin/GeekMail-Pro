@@ -31,7 +31,7 @@ class RedisKt(data: RedisData) : Redis() {
 
     // m[0] = server  m[1] = type  m[2] = targetUid  m[3] = MailUid
     // 主要用于接收跨服邮件
-    override fun processMessage(msg: String) {
+    override fun redisMessage(msg: String) {
         submitAsync {
             val m = msg.split(division)
             if (m.size >= 3 && m[0] != server) { // 防止本服发送本服处理

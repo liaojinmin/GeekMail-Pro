@@ -49,7 +49,7 @@ abstract class Redis: RedisApi {
     val CHANNEL = "GeekMail"
     val division = "‖"
 
-    abstract fun processMessage(msg: String)
+    abstract fun redisMessage(msg: String)
 
     override fun onStart() {
         submitAsync {
@@ -63,7 +63,7 @@ abstract class Redis: RedisApi {
                 it.subscribe( object : JedisPubSub() {
                     override fun onMessage(channel: String, message: String) {
                         if (channel != CHANNEL) return
-                        processMessage(message)
+                        redisMessage(message)
                     }
                 }, CHANNEL)
             }
