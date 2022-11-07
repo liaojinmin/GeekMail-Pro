@@ -191,6 +191,51 @@ PLAYER-ERROR-LOCK:
   - '&l'
   - '&c    商品不存在或已被购买...'
   - '&B'
+玩家-市场上架-NotInt:
+  - type: sound
+    sound: 'BLOCK_NOTE_BLOCK_DIDGERIDOO'
+    volume: 1
+    pitch: 1
+  - '&1'
+  - '&7  Geek&fMail-市场 &8>&7>&f>'
+  - '&l'
+  - '&c    你输入的 {0},{1} 不是数字'
+  - '&c    如果你不想使用两种货币，请将其中一个设置为 0'
+  - '&f'
+玩家-市场上架-为零:
+  - type: sound
+    sound: 'BLOCK_NOTE_BLOCK_DIDGERIDOO'
+    volume: 1
+    pitch: 1
+  - '&1'
+  - '&7  Geek&fMail-市场 &8>&7>&f>'
+  - '&l'
+  - '&c    你不能将两种货币都设置为 0'
+  - '&f'
+玩家-市场上架-成功:
+  - type: sound
+    sound: 'ENTITY_LLAMA_CHEST'
+    volume: 1
+    pitch: 1
+  - type: sound
+    sound: 'ENTITY_EXPERIENCE_ORB_PICKUP'
+    volume: 1
+    pitch: 1
+  - '&1'
+  - '&7  Geek&fMail-市场 &8>&7>&f>'
+  - '&l'
+  - '&a    你的 {0} 已成功发布至市场...'
+  - '&f'
+玩家-市场上架-失败:
+  - type: sound
+    sound: 'BLOCK_NOTE_BLOCK_DIDGERIDOO'
+    volume: 1
+    pitch: 1
+  - '&1'
+  - '&7  Geek&fMail-市场 &8>&7>&f>'
+  - '&l'
+  - '&c    你不能上架空气...'
+  - '&f'
 
 CMD-HELP-ADMIN:
   - '  &c管理员: '
@@ -209,4 +254,6 @@ CMD-HELP-PLAYER:
   - '    &7-&f mail &f<&7目标玩家&f> <&7邮件种类&f> <&7标题&f> <&7文本&f> &e<附件参数>'
   - '      &8发送一封邮件给指定玩家 需要鉴权并需要满足附件要求'
   - '    &7-&f pack &f<&7模板ID&f> <&7目标玩家&f>'
-  - '      &8需要根据模板Kether脚本进行条件判断'
+  - '      &8发送一个邮件模板，需要判断条件'
+  - '    &7-&f sell &f<&7金币价格&f> <&7钻币价格&f>'
+  - '      &8上架商品至市场'

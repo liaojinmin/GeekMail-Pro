@@ -21,6 +21,10 @@ import taboolib.common.platform.function.submitAsync
 import taboolib.module.chat.TellrawJson
 import taboolib.module.kether.isInt
 import taboolib.module.lang.sendLang
+import taboolib.module.nms.getI18nName
+import taboolib.module.nms.getName
+import taboolib.platform.util.hasName
+import taboolib.platform.util.sendLang
 import taboolib.platform.util.takeItem
 import java.util.*
 
@@ -69,23 +73,39 @@ object CmdCore {
                     listOf("钻币价格")
                 }
                 execute<Player> { sender, context, _ ->
-                    if (context.args()[1].isInt() && context.args()[1].isInt()) {
+                    if (context.args()[1].isInt() && context.args()[2].isInt()) {
                         if (context.args()[1] != "0" || context.args()[2] != "0") {
                             val money = context.args()[1].toDouble()
                             val points = context.args()[2].toInt()
                             val item = sender.inventory.itemInMainHand.clone()
-                            sender.inventory.setItemInMainHand(null)
-                            val pack = Item(UUID.randomUUID(), sender.uniqueId, System.currentTimeMillis().toString(), "0", points, money, item)
-                            GeekMail.dataScheduler?.let {
-                                submitAsync {
-                                    it.setMarketData(pack)
-                                    it.sendMarketPublish(Bukkit.getPort().toString(), RedisMessageType.MARKET_ADD, pack.packUid.toString())
+                            if (item.type != Material.AIR) {
+                                sender.inventory.setItemInMainHand(null)
+                                val pack = Item(
+                                    UUID.randomUUID(),
+                                    sender.uniqueId,
+                                    System.currentTimeMillis().toString(),
+                                    "0",
+                                    points,
+                                    money,
+                                    item
+                                )
+                                GeekMail.dataScheduler?.let {
+                                    submitAsync {
+                                        it.setMarketData(pack)
+                                        it.sendMarketPublish(
+                                            Bukkit.getPort().toString(),
+                                            RedisMessageType.MARKET_ADD,
+                                            pack.packUid.toString()
+                                        )
+                                    }
                                 }
-                            }
-                            pack.addToMarket()
-                            sender.sendMessage("§a你的商品已成功发布只市场")
-                        } else sender.sendMessage("§c你不能将两种货币都设置为 0")
-                    } else sender.sendMessage("§c你输入的不是数字，如果你不想使用两种货币，请将其中一个设置为 0")
+                                pack.addToMarket()
+                                sender.sendLang("玩家-市场上架-成功", item.getName())
+                            } else sender.sendLang("玩家-市场上架-失败")
+                        } else sender.sendLang("玩家-市场上架-为零")
+                    } else sender.sendLang("玩家-市场上架-NotInt",
+                        if (context.args()[1].isInt()) "" else context.args()[1],
+                        if (context.args()[2].isInt()) "" else context.args()[2])
                 }
             }
         }
@@ -107,6 +127,5 @@ object CmdCore {
             s.sendLang("CMD-HELP-ADMIN")
         }
         s.sendLang("CMD-HELP-PLAYER")
-
     }
 }
