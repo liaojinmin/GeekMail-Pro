@@ -27,10 +27,12 @@ object CmdSendGlobal: CmdExp {
                 execute<CommandSender> { _, context, _ ->
                     val pack = Template.getAdminPack(context.args()[1])!!
                     MailManage.getMailObjData(pack.type)?.javaClass?.invokeConstructor(
+
                         arrayOf(UUID.randomUUID().toString(), pack.title, pack.text,
                         SetTings.Console.toString(), SetTings.Console.toString(), "未提取",
-                        pack.additional, System.currentTimeMillis().toString(), "0", pack.itemStacks, pack.command))
-                        ?.sendGlobalMail()
+                        pack.additional, System.currentTimeMillis().toString(), "0", pack.itemStacks, pack.command)
+
+                    )?.sendGlobalMail()
                 }
             }
         }

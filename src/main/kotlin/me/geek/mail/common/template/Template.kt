@@ -71,12 +71,11 @@ object Template {
         get() = TEMP_PACK_MAP
 
     // 管理员指令展示模板
-    val adminPack by lazy {
-        mutableListOf<String>().also { list ->
-            list.addAll(SERVER_PACK_MAP.map { it.key })
-            list.addAll(TEMP_PACK_MAP.map { it.key })
+    val adminPack: MutableList<String>
+        get() = mutableListOf<String>().apply {
+            addAll(SERVER_PACK_MAP.map { it.key })
+            addAll(TEMP_PACK_MAP.map { it.key })
         }
-    }
 
 
     fun getTempPack(key: String): Temp {

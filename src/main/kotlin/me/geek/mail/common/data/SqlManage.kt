@@ -212,7 +212,7 @@ object SqlManage {
                     }
                     p.setString(9, items)
                     if (mailDate.command != null) {
-                        command = Joiner.on(",").join(mailDate.command!!)
+                        command = Joiner.on(";").join(mailDate.command!!)
                     }
                     p.setString(10, command)
                     p.setString(11, mailDate.senderTime)

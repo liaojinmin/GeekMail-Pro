@@ -146,12 +146,10 @@ class MarketMenu(
         // 循环梯减物品，直至全部分配完
         while (itemSize > 0) {
             for ((index, value) in tag.stringLayout.withIndex()) {
-             //   GeekMail.debug("build().index: $index value: $value")
                 if (value != ' ') {
                     tag.micon.forEach { micon ->
                         if (micon.icon[0] == value && micon.type == IconType.MARKET_ITEM) {
                             if (itemSize > 0) {
-                               // GeekMail.debug("itemPack.size: ${itemPack.size} 递减: ${itemPack.size - itemSize}")
 
                                 val packIndex = itemPack.size - itemSize
                                 cache[key(index, contents.size)] = value(index, itemPack[packIndex].packUid)

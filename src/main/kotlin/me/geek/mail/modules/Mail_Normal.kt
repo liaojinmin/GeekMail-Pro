@@ -110,7 +110,9 @@ class Mail_Normal(
         this.command?.let { cmd ->
             Bukkit.getPlayer(this.target)?.let {
                 cmd.replacePlaceholder(it).forEach { out ->
+                    try {
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), out)
+                    } catch (_: Exception) {}
                 }
             }
         }
