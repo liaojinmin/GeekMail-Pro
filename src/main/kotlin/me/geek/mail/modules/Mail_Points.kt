@@ -30,6 +30,8 @@ class Mail_Points(
     @Expose
     override val permission: String = "mail.exp.points",
     ) : MailSub() {
+    @Expose
+    override val mailIcon: String = SetTings.mailIcon.POINTS_MAIL
 
     constructor() : this(
         mailID = UUID.fromString("00000000-0000-0000-0000-000000000001"),

@@ -1,10 +1,13 @@
 package me.geek.mail.api.mail
 
+import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.api.mail.event.MailReceiveEvent
 import me.geek.mail.api.mail.event.MailSenderEvent
 import me.geek.mail.common.data.SqlManage
 import me.geek.mail.modules.settings.SetTings
 import org.bukkit.Bukkit
+import org.bukkit.Material
+import org.bukkit.inventory.ItemStack
 import org.jetbrains.annotations.NotNull
 import taboolib.common.platform.function.adaptPlayer
 import taboolib.common.platform.function.submitAsync
@@ -25,6 +28,27 @@ abstract class MailSub(
 
     val name: String = javaClass.simpleName.uppercase(Locale.ROOT)
 
+    fun getIcon(mats: String = "", data: Short = 0): ItemStack {
+        return if (SetTings.USE_BUNDLE) {
+             try {
+                if (mats.contains("IA:", ignoreCase = true) && HookPlugin.itemsAdder.isHook) {
+                    HookPlugin.itemsAdder.getItem(mats.substring(3))
+                } else {
+                    ItemStack(Material.valueOf(mats), 1, data)
+                }
+            } catch (ing: java.lang.IllegalArgumentException) {
+                ItemStack(Material.BOOK, 1)
+            }
+        } else try {
+            if (this.mailIcon.contains("IA:", ignoreCase = true) && HookPlugin.itemsAdder.isHook) {
+                HookPlugin.itemsAdder.getItem(this.mailIcon.substring(3))
+            } else {
+                ItemStack(Material.valueOf(this.mailIcon))
+            }
+        } catch (ing: IllegalArgumentException) {
+            ItemStack(Material.BOOK, 1)
+        }
+    }
 
     override fun sendMail() {
         val send = Bukkit.getPlayer(this.sender)

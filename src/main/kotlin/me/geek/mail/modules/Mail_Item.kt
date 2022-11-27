@@ -41,6 +41,8 @@ class Mail_Item(
     @Expose
     override val permission: String = "mail.exp.items",
     ) : MailSub() {
+    @Expose
+    override val mailIcon: String = SetTings.mailIcon.ITEM_MAIL
 
     constructor(args: Array<String>) : this(
         UUID.fromString(args[0]),

@@ -3,6 +3,7 @@ package me.geek.mail.modules
 
 import com.google.gson.annotations.Expose
 import me.geek.mail.api.mail.MailSub
+import me.geek.mail.modules.settings.SetTings
 import org.bukkit.entity.Player
 import java.util.UUID
 
@@ -28,6 +29,8 @@ class Mail_Text(
     override val permission: String = "mail.exp.text",
 
     ) : MailSub() {
+    @Expose
+    override val mailIcon: String = SetTings.mailIcon.TEXT_MAIL
 
     constructor() : this(
         mailID = UUID.fromString("00000000-0000-0000-0000-000000000001"),

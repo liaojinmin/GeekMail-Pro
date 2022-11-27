@@ -20,6 +20,12 @@ interface Mail {
     val mailType: String
 
     /**
+     * 邮件显示图标
+     */
+    val mailIcon: String
+        get() = "BOOK"
+
+    /**
      * 邮件标题
      */
     val title: String

@@ -53,6 +53,14 @@ Market:
   player_buy_sendPack: 市场发货模板
   player_sell_sendPack: 市场拍卖模板
 
+# 邮件显示的独立图标
+MailIcon:
+  MONEY_MAIL: GOLD_INGOT
+  POINTS_MAIL: EMERALD
+  EXP_MAIL: EXPERIENCE_BOTTLE
+  TEXT_MAIL: BOOK
+  CMD_MAIL: COMPASS
+  ITEM_MAIL: DIAMOND_SWORD
 # 邮件种类显示名称转换
 MailType:
   MONEY_MAIL:

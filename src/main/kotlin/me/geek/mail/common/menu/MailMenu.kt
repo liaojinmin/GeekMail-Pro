@@ -396,15 +396,8 @@ class MailMenu(private val player: Player, private val tag: Session, private val
                 cache[key(index, contents.size)] = value(index, mail.mailID)
 
                 val name = micon.name
-                val itemStack = try {
-                    if (micon.mats.contains("IA:", ignoreCase = true) && HookPlugin.itemsAdder.isHook) {
-                        HookPlugin.itemsAdder.getItem(micon.mats.substring(3))
-                    } else {
-                        ItemStack(Material.valueOf(micon.mats), 1, micon.data.toShort())
-                    }
-                } catch (ing: IllegalArgumentException) {
-                    ItemStack(Material.BOOK, 1)
-                }
+                // micon.mats   micon.data.toShort()
+                val itemStack = mail.getIcon(micon.mats, micon.data.toShort())
 
                 val itemMeta = if (SetTings.USE_BUNDLE) {
                     itemStack.type = Material.BUNDLE

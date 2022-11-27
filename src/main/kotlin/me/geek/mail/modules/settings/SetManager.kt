@@ -2,6 +2,7 @@ package me.geek.mail.modules.settings
 
 import me.geek.mail.modules.settings.market.MarketData
 import me.geek.mail.modules.settings.config.ItemFilter
+import me.geek.mail.modules.settings.mail.MailIcon
 import me.geek.mail.modules.settings.redis.RedisData
 import me.geek.mail.modules.settings.smtp.SmtpData
 import me.geek.mail.scheduler.sql.SqlConfig
@@ -16,5 +17,6 @@ data class SetManager(
     val SmtpData: SmtpData,
     val redisData: RedisData,
     val filter: ItemFilter,
-    val marker: MarketData
+    val marker: MarketData,
+    val mailIcon: MailIcon,
 )

@@ -26,11 +26,12 @@ class Mail_Cmd(
     override var command: List<String>?,
     override val senderTime: String,
     override var getTime: String,
+    ) : MailSub() {
+    @Expose
+    override val permission: String = "mail.exp.command"
 
     @Expose
-    override val permission: String = "mail.exp.command",
-
-    ) : MailSub() {
+    override val mailIcon: String = SetTings.mailIcon.CMD_MAIL
 
 
     constructor() : this (

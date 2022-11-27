@@ -3,6 +3,7 @@ package me.geek.mail.modules.settings
 import me.geek.mail.GeekMail
 import me.geek.mail.modules.settings.market.MarketData
 import me.geek.mail.modules.settings.config.ItemFilter
+import me.geek.mail.modules.settings.mail.MailIcon
 import me.geek.mail.modules.settings.redis.RedisData
 import me.geek.mail.modules.settings.smtp.SmtpData
 import me.geek.mail.scheduler.sql.SqlConfig
@@ -45,7 +46,8 @@ object SetTings {
             val redis = config.getObject<RedisData>("Redis", false)
             val filter = onloadFilter()
             val market = onloadMarket()
-            SetTingsCache["config"] = SetManager(data, smtp, redis, filter, market)
+            val mailIcon = onloadMailIcon()
+            SetTingsCache["config"] = SetManager(data, smtp, redis, filter, market, mailIcon)
             onLoadConf()
             onLoadType()
         }
@@ -69,6 +71,9 @@ object SetTings {
     val redisData by lazy {
         getConfig().redisData
     }
+    val mailIcon by lazy {
+        getConfig().mailIcon
+    }
 
 
     private fun onloadFilter(): ItemFilter {
@@ -83,6 +88,15 @@ object SetTings {
         val buy = config.getString("Market.player_buy_sendPack") ?: ""
         val sell = config.getString("Market.player_sell_sendPack") ?: ""
         return MarketData(use, buy, sell)
+    }
+    private fun onloadMailIcon(): MailIcon {
+        val m = config.getString("MailIcon.MONEY_MAIL") ?: "GOLD_INGOT"
+        val p = config.getString("MailIcon.POINTS_MAIL") ?: "EMERALD"
+        val e = config.getString("MailIcon.EXP_MAIL") ?: "EXPERIENCE_BOTTLE"
+        val t = config.getString("MailIcon.TEXT_MAIL") ?: "BOOK"
+        val c = config.getString("MailIcon.CMD_MAIL") ?: "COMPASS"
+        val i = config.getString("MailIcon.ITEM_MAIL") ?: "DIAMOND_SWORD"
+        return MailIcon(m, p, e, t, c, i)
     }
     /**
      * config

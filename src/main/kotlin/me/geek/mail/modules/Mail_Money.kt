@@ -29,6 +29,8 @@ class Mail_Money(
     @Expose
     override val permission: String = "mail.exp.money",
 ) : MailSub() {
+    @Expose
+    override val mailIcon: String = SetTings.mailIcon.MONEY_MAIL
 
     constructor() : this(
         mailID = UUID.fromString("00000000-0000-0000-0000-000000000001"),

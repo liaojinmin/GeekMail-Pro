@@ -74,7 +74,7 @@ object MailManage {
      * @param target = 接收者UUID
      * @param state = 邮件状态
      * @param additional = 附件
-     * @param senderTime = 发生时间
+     * @param senderTime = 发送时间
      * @param getTime = 附件领取时间
      * @param item = 物品类型附件
      * @param cmd = 指令类型附件
