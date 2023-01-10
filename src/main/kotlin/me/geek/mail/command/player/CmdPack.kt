@@ -32,6 +32,7 @@ object CmdPack: CmdExp {
                 execute<Player> { senders, context, _ ->
                     val pack = Template.getTempPack(context.args()[1])
                     if (context.args()[2] != "Global") {
+
                         MailManage.getMailObjData(pack.type)?.let {
 
                             if (KetherAPI.instantKether(senders, pack.condition).any as Boolean) {

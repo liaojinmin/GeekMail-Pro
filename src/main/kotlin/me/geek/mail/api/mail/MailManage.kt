@@ -79,6 +79,7 @@ object MailManage {
      * @param item = 物品类型附件
      * @param cmd = 指令类型附件
      */
+    @JvmStatic
     fun buildMailClass(mailID: String, mailType: String, title: String, text: String, sender: String, target: String,
                        state: String , additional: String, senderTime: String, getTime: String, item: String, cmd: String): MailSub? {
         val args = arrayOf(mailID, title, text, sender, target, state, additional, senderTime, getTime, item, cmd)
@@ -91,6 +92,7 @@ object MailManage {
      * @return 种类对象 如果不存在则 null
      * 使用: getMailData("MAIL_ITEM")
      */
+    @JvmStatic
     fun getMailObjData(mailType: String) : MailSub? {
         return MailData[mailType]
     }
@@ -99,6 +101,7 @@ object MailManage {
      * 获取邮件类型 缓存键
      * @return 所有已注册 邮件类型 Key
      */
+    @JvmStatic
     fun getMailTypeKeyMap(): List<String> {
         return MailData.keys.filter { it != "MAIL_NORMAL" }
     }

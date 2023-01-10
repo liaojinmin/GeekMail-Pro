@@ -5,4 +5,4 @@ event:
   condition: 'NewPlayer one' # 触发动作条件 （支持执行 Kether 动作）
   action: # 执行的动作 （支持执行 Kether 动作）
     # 发送模板包ID为  “物品包”
-    - 'sendTemPlate: 物品包'
+    - 'sendTemPlate: 物品包'  

@@ -78,10 +78,12 @@ object Template {
         }
 
 
+    @JvmStatic
     fun getTempPack(key: String): Temp {
         return TEMP_PACK_MAP[key]!!
     }
 
+    @JvmStatic
     fun getAdminPack(key: String): Temp? {
         return SERVER_PACK_MAP[key] ?: TEMP_PACK_MAP[key]
     }
