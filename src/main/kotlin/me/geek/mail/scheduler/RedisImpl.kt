@@ -1,4 +1,4 @@
-package me.geek.mail.common.data
+package me.geek.mail.scheduler
 
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailSub
@@ -6,7 +6,6 @@ import me.geek.mail.common.market.Item
 import me.geek.mail.common.market.Market
 import me.geek.mail.modules.settings.redis.RedisData
 import me.geek.mail.scheduler.redis.Redis
-import me.geek.mail.scheduler.redis.RedisMessageType
 import me.geek.mail.scheduler.redis.RedisMessageType.*
 import org.bukkit.Bukkit
 import taboolib.common.platform.function.submitAsync
@@ -17,7 +16,7 @@ import java.util.*
  * 时间: 2022/10/16
  *
  **/
-class RedisKt(data: RedisData) : Redis() {
+class RedisImpl(data: RedisData) : Redis() {
 
     init {
         this.host = data.host
@@ -54,7 +53,7 @@ class RedisKt(data: RedisData) : Redis() {
     private fun crossServerMail(MailUUID: String, targetUid: String) {
         // 直接获取玩家，如果 null 说明玩家不在这个服务器
         Bukkit.getPlayer(UUID.fromString(targetUid))?.let {
-            val clazz = this.getMailData(MailUUID, MailSub::class.java)
+            val clazz = this.getMailData(MailUUID)
             if (clazz is MailSub) {
                 clazz.sendMail()
             }
@@ -62,9 +61,7 @@ class RedisKt(data: RedisData) : Redis() {
     }
     private fun crossAddMarket(packUid: String) {
         this.getMarketData(packUid)?.let {
-            if (it is Item) {
-                Market.addMarketItem(it)
-            }
+            Market.addMarketItem(it)
         }
     }
     private fun crossRemMarket(packUid: String) {

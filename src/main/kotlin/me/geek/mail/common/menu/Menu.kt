@@ -1,15 +1,19 @@
 package me.geek.mail.common.menu
 
-import me.geek.mail.common.menu.sub.Session
-import me.geek.mail.common.menu.sub.Micon
+import me.geek.mail.common.menu.sub.MenuData
+import me.geek.mail.common.menu.sub.Icon
 import me.geek.mail.GeekMail
 import me.geek.mail.api.hook.HookPlugin
+import me.geek.mail.common.menu.action.MailMenu
 import me.geek.mail.common.menu.sub.IconType
+import me.geek.mail.common.menu.sub.MenuType
 import me.geek.mail.utils.colorify
+import me.geek.mail.utils.forFile
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.Sound
 import org.bukkit.entity.Player
-import org.bukkit.inventory.Inventory
+
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.releaseResourceFile
 import taboolib.library.configuration.ConfigurationSection
@@ -26,39 +30,40 @@ import kotlin.system.measureTimeMillis
  */
 object Menu {
     private val AIR = ItemStack(Material.AIR)
-    // key = 菜单名称 , value = 会话菜单
-    private val MenuCache: MutableMap<String, Session> = HashMap()
-    // 缓存的菜单打开指令 key = 菜单绑定的命令  value = 菜单名称
-    private val MenuCmd: MutableMap<String, String> = HashMap()
-    var cmd: String? = null
 
-    @JvmField
-    val isOpen: MutableList<Player> = ArrayList()
-
+    // start 已打开的会话界面缓存
+    val isOpen: MutableList<Player> = mutableListOf()
+    val SessionCache: MutableMap<Player, MenuBase> = mutableMapOf()
+    // end
 
     /**
-     * 为玩家构建指定页数的的界面
-     * @param player 目标玩家
-     * @param MenuTag 菜单标签
-     * @return 返回界面
+     * 菜单配置缓存
      */
-    @JvmStatic
-    fun build(player: Player?, MenuID: String): Inventory {
-        val tag = MenuCache[MenuID]!!
-        val item = tag.itemStacks
-        val inventory = Bukkit.createInventory(player, tag.size, tag.title)
-        if (item.isNotEmpty()) {
-            inventory.contents = item
+    // key = 菜单文件名称 , value = 菜单数据
+    private val MenuCache: MutableMap<String, MenuData> = HashMap()
+    // 缓存的菜单打开指令 key = 菜单绑定的命令  value = 菜单文件名称
+    private val MenuCmd: MutableMap<String, String> = HashMap()
+    var mainMenu: String = ""
+
+
+    fun Player.openMenu(cmd: String): Boolean {
+        val data = MenuCmd[cmd] ?: return false
+        val menu = MenuCache[data] ?: return false
+        this.openMenu(menu)
+        playSound(location, Sound.UI_BUTTON_CLICK, 1f, 2f)
+        return true
+    }
+    fun getMenuData(type: MenuType): MenuData {
+        return MenuCache.values.find { it.menuType == type } ?: error("未找到该类型菜单，请检查代码或类型相关开发者。。。")
+    }
+    fun Player.openMenu(data: MenuData) {
+        when (data.menuType) {
+            MenuType.MAIN -> MailMenu(this, data).build()
+            MenuType.MARKET -> me.geek.mail.common.menu.action.MarketMenu(this, data).build()
+            MenuType.MARKETBUY -> TODO()
         }
-        return inventory
     }
 
-    fun getSession(MenuID: String): Session {
-        return MenuCache[MenuID]!!
-    }
-    fun getMenuCommand(MenuID: String): String? {
-        return MenuCmd[MenuID]
-    }
 
     fun closeGui() {
         Bukkit.getOnlinePlayers().forEach { player: Player ->
@@ -74,78 +79,65 @@ object Menu {
         isOpen.clear()
         loadMenu()
     }
+
     fun loadMenu() {
         val list = mutableListOf<File>()
         measureTimeMillis {
             list.also {
                 it.addAll(forFile(saveDefaultMenu))
             }
-            val icon = mutableListOf<Micon>()
-            var menu: SecuredFile
-            var menuTag: String
-            var title: String
-            var type: String
-            var layout: String
-            var size: Int
-            var bindings: String
             list.forEach { file ->
-                icon.clear()
-                menu = SecuredFile.loadConfiguration(file)
-                menuTag = file.name.substring(0, file.name.indexOf("."))
-                title = menu.getString("TITLE")!!.colorify()
-                type = menu.getString("TYPE")!!
-                layout = menu.getStringList("Layout").toString()
-                    .replace("[", "")
-                    .replace("]", "")
-                    .replace(", ", "")
-                size = menu.getStringList("Layout").size * 9
-                bindings = menu.getString("Bindings.Commands") ?: ""
-
-                menu.getMap<String, ConfigurationSection>("Icons").forEach { (name, obj) ->
-                    icon.add(Micon(name, obj))
+                val icon = mutableListOf<Icon>()
+                val menu: SecuredFile = SecuredFile.loadConfiguration(file)
+                val menuTag: String = file.name.substring(0, file.name.indexOf("."))
+                val title: String = menu.getString("TITLE")!!.colorify()
+                val bindings: String = menu.getString("Bindings.Commands") ?: ""
+                val type: MenuType = MenuType.valueOf(menu.getString("TYPE")!!.also {
+                    if (it.contains("main", ignoreCase = true)) mainMenu = bindings
+                }.uppercase(Locale.ROOT))
+                val size: Int = menu.getStringList("layout").size * 9
+                val layout: MutableList<Char> = mutableListOf<Char>().apply {
+                    menu.getStringList("Layout").forEach {
+                        it.indices.forEach { index -> add(it[index]) }
+                    }
                 }
-                val listIcon = ArrayList(icon)
-                MenuCache[menuTag] = Session(menuTag, title, layout, size, bindings, listIcon, type, builds(listIcon, layout, size))
-                MenuCmd[bindings] = menuTag
-                if (type == "main") cmd = bindings
+                menu.getMap<String, ConfigurationSection>("Icons").forEach { (name, obj) ->
+                    icon.add(Icon(name[0], obj))
+                }
+                val items = arrayListOf<ItemStack>()
+
+                val listIcon: MutableMap<Char, Icon> = mutableMapOf<Char, Icon>().apply {
+                    layout.forEachIndexed { _, value ->
+                        if (value != ' ') {
+                            icon.forEach { ic ->
+                                if (ic.icon == value) {
+                                    items.add(buildItems(ic))
+                                    this[value] = ic
+                                }
+                            }
+                        } else items.add(AIR)
+                    }
+                }
+                MenuCache[menuTag] = MenuData(menuTag, type, title, bindings, layout, size, listIcon, items.toTypedArray())
             }
         }.also {
             GeekMail.say("§7菜单界面加载完成... §8(耗时 $it ms)");
         }
     }
 
-
-    private fun builds(var1: List<Micon>, Layout: String, size: Int): Array<ItemStack> {
-        val item = mutableListOf<ItemStack>()
-        try {
-            var index = 0
-            while (index < size) {
-                if (Layout[index] != ' ') {
-                    val IconID = Layout[index].toString()
-                    item.add(index, item(IconID, var1))
-                } else {
-                    item.add(index, AIR)
-                }
-                index++
+    private fun buildItems(icon: Icon): ItemStack {
+        return when {
+            icon.iconType == IconType.TEXT -> AIR
+            icon.iconType == IconType.MARKET_ITEM -> AIR
+            icon.mats.contains(ia) -> {
+                if (HookPlugin.itemsAdder.isHook) {
+                    val meta = icon.mats.split(":")
+                    HookPlugin.itemsAdder.getItem(meta[1])
+                } else { ItemStack(Material.STONE, 1) }
             }
-        } catch (ignored: StringIndexOutOfBoundsException) { }
-        return item.toTypedArray()
-    }
-
-    private fun item(iconID: String, miconObj: List<Micon>): ItemStack {
-        for (icon in miconObj) {
-            if (icon.icon == iconID) {
-                // 将显示邮件的图标设置为空气
-                if (icon.type == IconType.TEXT || icon.type == IconType.MARKET_ITEM) {
-                    return AIR
-                }
+            else -> {
                 val itemStack = try {
-                    if (icon.mats.contains("IA:" , ignoreCase = true) && HookPlugin.itemsAdder.isHook) {
-                        val meta = icon.mats.split(":")
-                        HookPlugin.itemsAdder.getItem(meta[1])
-                    } else {
-                        ItemStack(Material.valueOf(icon.mats), 1, icon.data.toShort())
-                    }
+                    ItemStack(Material.valueOf(icon.mats.uppercase()), 1, icon.data.toShort())
                 } catch (ing: IllegalArgumentException) {
                     ItemStack(Material.STONE, 1)
                 }
@@ -159,24 +151,13 @@ object Menu {
                     }
                     itemStack.itemMeta = itemMeta
                 }
-                return itemStack
+                itemStack
             }
-        }
-        return AIR
-    }
 
-    private fun forFile(file: File): List<File> {
-        return mutableListOf<File>().run {
-            if (file.isDirectory) {
-                file.listFiles()?.forEach {
-                    addAll(forFile(it))
-                }
-            } else if (file.exists() && file.absolutePath.endsWith(".yml")) {
-                add(file)
-            }
-            this
         }
     }
+    private val ia = Regex("(IA|ia|ItemsAdder):")
+
 
     private val saveDefaultMenu by lazy {
         val dir = File(GeekMail.instance.dataFolder, "menu")
@@ -188,13 +169,5 @@ object Menu {
             ).forEach { releaseResourceFile(it, true) }
         }
         dir
-    }
-    fun Player.openMenu(MenuID: String) {
-        val sess = getSession(MenuID)
-        if (sess.type == "Market") {
-            MarketMenu(this, sess, build(this, MenuID))
-            return
-        }
-        MailMenu(this, sess, build(this, MenuID))
     }
 }

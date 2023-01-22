@@ -1,10 +1,12 @@
 package me.geek.mail.common.webmail
 
 import me.geek.mail.GeekMail
-import me.geek.mail.api.mail.MailManage
-import me.geek.mail.api.mail.event.WebMailSenderEvent
+import me.geek.mail.api.data.SqlManage.getData
+
+import me.geek.mail.api.event.WebMailSenderEvent
+import org.bukkit.Bukkit
 import taboolib.common.platform.function.releaseResourceFile
-import taboolib.common.platform.function.submitAsync
+
 import java.io.*
 import java.util.*
 import javax.mail.*
@@ -17,7 +19,6 @@ import javax.mail.internet.InternetAddress
  *
  **/
 class WebManager : SubWebMail() {
-  //  private val logo
 
     private val html by lazy {
         File(GeekMail.instance.dataFolder, "web.html").also {
@@ -26,35 +27,33 @@ class WebManager : SubWebMail() {
     }
 
     override fun onSender(title: String, text: String, app: String, targetID: UUID){
-        submitAsync {
-            var to = ""
-            var name = ""
-            val data = MailManage.getMailPlayerData(targetID)
+        var to = ""
+        var name = ""
+        val data = Bukkit.getPlayer(targetID)?.getData()
 
-            if (data != null) {
-                to = data.mail
-                name = data.name
-            }
-
-            if (to.isEmpty() || name.isEmpty()) {
-                GeekMail.debug("目标玩家: $name 邮箱为空: $to")
-                return@submitAsync
-            }
-
-            val event = WebMailSenderEvent(to, title, text, app, name)
-            event.call()
-            if (event.isCancelled) return@submitAsync
-
-            val out = html
-                .replace("{name}", color.replace(name,""))
-                .replace("{title}", color.replace(title,""))
-                .replace("{text}", color.replace(text,""))
-                .replace("{app}", color.replace(app, ""))
-            htmlMessage.setRecipient(Message.RecipientType.TO, InternetAddress(to))
-            htmlMessage.setContent(out, "text/html;charset=gb2312")
-            GeekMail.debug("发送Web邮件提醒,目标玩家: $name")
-            Transport.send(htmlMessage)
+        if (data != null) {
+            to = data.mail
+            name = data.user
         }
+
+        if (to.isEmpty() || name.isEmpty()) {
+            GeekMail.debug("目标玩家: $name 邮箱为空: $to")
+            return
+        }
+
+        val event = WebMailSenderEvent(to, title, text, app, name)
+        event.call()
+        if (event.isCancelled) return
+
+        val out = html
+            .replace("{name}", color.replace(name,""))
+            .replace("{title}", color.replace(title,""))
+            .replace("{text}", color.replace(text,""))
+            .replace("{app}", color.replace(app, ""))
+        htmlMessage.setRecipient(Message.RecipientType.TO, InternetAddress(to))
+        htmlMessage.setContent(out, "text/html;charset=gb2312")
+        GeekMail.debug("发送Web邮件提醒,目标玩家: $name")
+        Transport.send(htmlMessage)
     }
 
 

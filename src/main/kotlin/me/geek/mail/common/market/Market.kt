@@ -1,7 +1,6 @@
 package me.geek.mail.common.market
 
-import me.geek.mail.GeekMail
-import me.geek.mail.common.data.SqlManage
+import me.geek.mail.api.data.SqlManage
 import me.geek.mail.scheduler.redis.RedisMessageType
 import me.geek.mail.scheduler.sql.action
 import me.geek.mail.scheduler.sql.actions
@@ -9,7 +8,6 @@ import me.geek.mail.scheduler.sql.use
 import me.geek.mail.utils.deserializeItemStack
 import org.bukkit.Bukkit
 import taboolib.common.platform.function.submitAsync
-import java.sql.ResultSet
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -46,7 +44,7 @@ object Market {
     fun remMarketItem(packUid: UUID, publish: Boolean) {
         if (publish) {
             deleteItem(packUid) // 只在本机发起删除时修改数据库
-            GeekMail.dataScheduler?.let {
+            SqlManage.RedisScheduler?.let {
                 getMarketItem(packUid)?.let { item ->
                     submitAsync {
                         it.setMarketData(item)

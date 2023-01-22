@@ -2,12 +2,13 @@ package me.geek.mail.modules
 
 import com.google.gson.annotations.Expose
 import me.geek.mail.GeekMail
-
-import me.geek.mail.api.mail.MailManage.sound
 import me.geek.mail.api.mail.MailSub
+
 import me.geek.mail.common.menu.Menu
+import me.geek.mail.common.menu.MenuBase
+import me.geek.mail.common.menu.action.ItemMail
 import me.geek.mail.modules.settings.SetTings
-import me.geek.mail.utils.deserializeItemStacks
+import me.geek.mail.utils.getEmptySlot
 
 import java.util.UUID
 import org.bukkit.Bukkit
@@ -15,169 +16,83 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
+import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.adaptPlayer
 import taboolib.module.lang.sendLang
 import taboolib.platform.util.giveItem
+import taboolib.platform.util.sendLang
 
 /**
  * 作者: 老廖
  * 时间: 2022/8/6
  */
-class Mail_Item(
-    override val mailID: UUID = UUID.fromString("00000000-0000-0000-0000-000000000001"),
-    override val mailType: String = "物品邮件",
-    override var title: String = "",
-    override var text: String = "",
-    override var sender: UUID = UUID.fromString("00000000-0000-0000-0000-000000000001"),
-    override var target: UUID = UUID.fromString("00000000-0000-0000-0000-000000000001"),
-    override var state: String = "",
-    override var appendixInfo: String = "-",
+class Mail_Item() : MailSub() {
+
+    constructor(
+        senders: UUID,
+        targets: UUID,
+        itemStacks: Array<ItemStack>? = emptyArray()
+    ) : this() {
+        this.sender = senders
+        this.target = targets
+        this.itemStacks = itemStacks
+        appendixInfo = getItemInfo(StringBuilder(""))
+    }
+
+    override var sender: UUID = super.sender
+    override var target: UUID = super.target
+
     @Expose
-    override var itemStacks: Array<ItemStack>? = null,
-    override val senderTime: String = "",
-    override var getTime: String = "",
-    @Expose
-    override val permission: String = "mail.exp.items",
-    ) : MailSub() {
-    @Expose
+    override var itemStacks: Array<ItemStack>? = emptyArray()
+
+    override val mailType: String = "物品邮件"
+
     override val mailIcon: String = SetTings.mailIcon.ITEM_MAIL
 
-    constructor(args: Array<String>) : this(
-        UUID.fromString(args[0]),
-        "物品邮件",
-        title = args[1],
-        text = args[2],
-        sender = UUID.fromString(args[3]),
-        target = UUID.fromString(args[4]),
-        state = args[5],
-        "",
-        itemStacks = null,
-        senderTime = args[7],
-        getTime = args[8]
-    ) {
-        if (args.size >= 10) {
-            itemStacks = args[9].deserializeItemStacks()
-            appendixInfo = getItemInfo(StringBuilder(""))
-        }
-    }
+    override val permission: String = "mail.exp.items"
+
+
 
 
     override fun sendMail() {
         if (itemStacks == null) {
-            Bukkit.getPlayer(this.sender)?.action(false)
+            Bukkit.getPlayer(this.sender)?.let {
+                ItemMail(false, it, this).build()
+            }
         } else {
             super.sendMail()
         }
     }
 
-    override fun giveAppendix() {
+    override fun giveAppendix(): Boolean {
         Bukkit.getPlayer(this.target)?.let {
-            this.itemStacks?.asList()?.let {
-                    it1 -> it.giveItem(it1)
-            }
-        }
-    }
-    private fun Player.action(isCross: Boolean) {
-        Menu.isOpen.add(this)
-
-        this.openInventory(Bukkit.createInventory(player, 27, "§0放入物品 §7| §0关闭菜单 "))
-
-        this.sound("BLOCK_NOTE_BLOCK_HARP", 1f, 1f)
-
-        Bukkit.getPluginManager().registerEvents(object : Listener {
-
-            @EventHandler
-            fun onClose(e: InventoryCloseEvent) {
-                if (player == e.player) {
-                    Menu.isOpen.removeIf { it == player }
-                    if (GeekMail.plugin_status) {
-                        val i1 = mutableListOf<ItemStack>().apply {
-                            for (i2 in e.inventory.contents) {
-                                if (i2 != null) {
-                                    this.add(i2)
-                                }
-                            }
-                            if (!this@action.isOp && SetTings.filter.use) this@action.itemFilter(this)
-                        }
-
-                        if (i1.size > 0) {
-                            itemStacks = i1.toTypedArray()
-                            if (!isCross) {
-                                sender()
-                            }
-                            HandlerList.unregisterAll(this)
-                            isOk = true
-                            return
-                        }
-                    } else {
-                        for (item in e.inventory) {
-                            this@action.inventory.addItem(item)
-                        }
-                    }
-                    // 无论任何注销监听器
-                    HandlerList.unregisterAll(this)
-                    isOk = true
+            this.itemStacks?.let { item ->
+                val air = it.getEmptySlot()
+                if (air >= item.size) {
+                    it.giveItem(item.asList())
+                    return true
+                } else {
+                    it.sendLang("玩家-没有足够背包格子", item.size-air)
+                    return false
                 }
             }
-        }, GeekMail.instance)
-    }
-
-    private fun sender() {
-        appendixInfo = getItemInfo(StringBuilder(""))
-        super.sendMail()
+        }
+        return false
     }
 
     override fun condition(player: Player, appendix: String): Boolean {
         return true
     }
 
-    fun sendCrossMail() {
-        Bukkit.getPlayer(this.sender)?.action(true)
-    }
-
-    // 用于发送跨服邮件时的等待物品装填。
-    var isOk = false
-
-    private fun Player.itemFilter(itemStacks: MutableList<ItemStack>) {
-        val outItem = mutableListOf<ItemStack>()
-        itemStacks.forEach { stack ->
-            stack.itemMeta?.let { meta ->
-                var isOut = false
-                SetTings.filter.contains_name.forEach {
-                    if (meta.hasDisplayName()) {
-                        if (meta.displayName.contains(it)) {
-                            isOut = true
-                        }
-                    }
-                }
-                SetTings.filter.contains_lore.forEach {
-                    meta.lore?.let { a ->
-                        if (a.contains(it)) {
-                            isOut = true
-                        }
-                    }
-                }
-                if (isOut) outItem.add(stack) //修复错误的返回双倍物品
+    override fun sendCrossMail() {
+        if (itemStacks == null) {
+            Bukkit.getPlayer(this.sender)?.let {
+                ItemMail(true, it, this).build()
             }
-        }
-
-        if (outItem.size > 0) {
-            if (SetTings.filter.type == "黑名单") {
-                itemStacks.removeAll(outItem)
-                for (a in outItem) {
-                    this.inventory.addItem(a)
-                }
-                adaptPlayer(this).sendLang("玩家-发送物品邮件-物品筛选", outItem.size)
-            } else {
-                itemStacks.retainAll(outItem)
-                for (a in itemStacks) {
-                    this.inventory.addItem(a)
-                }
-                adaptPlayer(this).sendLang("玩家-发送物品邮件-物品筛选", itemStacks.size)
-            }
+        } else {
+            super.sendCrossMail()
         }
     }
-
 }

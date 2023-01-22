@@ -1,18 +1,17 @@
 package me.geek.mail.command.player
 
 import me.clip.placeholderapi.PlaceholderAPI
-import me.geek.mail.api.mail.MailManage
+import me.geek.mail.api.mail.MailBuild
 import me.geek.mail.command.CmdExp
 
 
 import me.geek.mail.common.kether.sub.KetherAPI
 import me.geek.mail.common.template.Template
+import me.geek.mail.utils.deserializeItemStacks
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.subCommand
-import taboolib.library.reflex.Reflex.Companion.invokeConstructor
-import java.util.*
 
 /**
  * 作者: 老廖
@@ -32,26 +31,19 @@ object CmdPack: CmdExp {
                 execute<Player> { senders, context, _ ->
                     val pack = Template.getTempPack(context.args()[1])
                     if (context.args()[2] != "Global") {
-
-                        MailManage.getMailObjData(pack.type)?.let {
-
-                            if (KetherAPI.instantKether(senders, pack.condition).any as Boolean) {
-                                KetherAPI.instantKether(senders, pack.action)
-                                val target = Bukkit.getOfflinePlayer(context.args()[2])
-                                val title = PlaceholderAPI.setPlaceholders(target, pack.title)
-                                val text = PlaceholderAPI.setPlaceholders(target, pack.text)
-                                it.javaClass.invokeConstructor(
-                                    arrayOf(
-                                        UUID.randomUUID().toString(), title, text,
-                                        senders.uniqueId.toString(), target.uniqueId.toString(), "未提取",
-                                        pack.additional, System.currentTimeMillis().toString(), "0", pack.itemStacks, pack.command
-                                    )
-                                ).sendMail()
-
-                            } else {
-                                KetherAPI.instantKether(senders, pack.deny)
-                            }
-                        }
+                        if (KetherAPI.instantKether(senders, pack.condition).any as Boolean) {
+                            KetherAPI.instantKether(senders, pack.action)
+                            val target = Bukkit.getOfflinePlayer(context.args()[2])
+                            val title = PlaceholderAPI.setPlaceholders(target, pack.title)
+                            val text = PlaceholderAPI.setPlaceholders(target, pack.text)
+                            MailBuild(pack.type, senders, target.uniqueId).build {
+                                this.title = title
+                                this.text = text
+                                this.additional = pack.additional ?: ""
+                                this.item = pack.itemStacks?.deserializeItemStacks()
+                                this.command = pack.command?.split(";")
+                            }.sender()
+                        } else KetherAPI.instantKether(senders, pack.deny)
                     }
                 }
             }

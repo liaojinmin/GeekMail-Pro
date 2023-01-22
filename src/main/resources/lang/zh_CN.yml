@@ -6,6 +6,17 @@
   - type: title
     title: '&c你没有权限使用这个类型'
     subtitle: '&3请联系管理员授权.'
+玩家-没有足够背包格子:
+  - type: sound
+    sound: 'BLOCK_NOTE_BLOCK_DIDGERIDOO'
+    volume: 1
+    pitch: 1
+  - type: title
+    title: '&c你的背包不足以装下所有物品'
+    subtitle: '&3请请理你的背包,留出 &f{0} &3格'
+    fadein: 20
+    fadeout: 20
+    stay: 40
 
 玩家-发送邮件:
   - type: sound

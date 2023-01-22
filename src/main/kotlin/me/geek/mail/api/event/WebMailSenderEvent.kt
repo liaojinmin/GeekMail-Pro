@@ -1,4 +1,4 @@
-package me.geek.mail.api.mail.event
+package me.geek.mail.api.event
 
 import taboolib.platform.type.BukkitProxyEvent
 

@@ -1,13 +1,21 @@
 package me.geek.mail.api.mail
 
+import com.google.gson.annotations.Expose
 import me.geek.mail.api.hook.HookPlugin
-import me.geek.mail.api.mail.event.MailReceiveEvent
-import me.geek.mail.api.mail.event.MailSenderEvent
-import me.geek.mail.common.data.SqlManage
+import me.geek.mail.api.event.MailReceiveEvent
+import me.geek.mail.api.event.MailSenderEvent
+import me.geek.mail.api.data.SqlManage
+import me.geek.mail.api.data.SqlManage.getData
+import me.geek.mail.common.menu.sub.Icon
 import me.geek.mail.modules.settings.SetTings
+import me.geek.mail.utils.colorify
+import me.geek.mail.utils.serializeItemStacks
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.enchantments.Enchantment
+import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.BundleMeta
 import org.jetbrains.annotations.NotNull
 import taboolib.common.platform.function.adaptPlayer
 import taboolib.common.platform.function.submitAsync
@@ -18,40 +26,81 @@ import java.util.regex.Pattern
 
 /**
  * 作者: 老廖
- * 时间: 2022/8/2
- */
-abstract class MailSub(
-) : MailPlaceholder() {
-    // 序列化用
+ * 时间: 2023/1/16
+ *
+ **/
+abstract class MailSub : MailPlaceholder() {
+
+    override val name: String = javaClass.simpleName.uppercase(Locale.ROOT)
+    /*
+    标注 # 则为需要实现类重写的常量
+     */
+    override val mailID: UUID = UUID.randomUUID()
+
+    // #
+    override val mailType: String = "未知类型"
+    override val mailIcon: String = "BOOK"
+
+    override var title: String = "未知邮件标题"
+    override var text: String = "未知邮件内容"
+
+    // #
+    override val sender: UUID = SetTings.Console
+    override val target: UUID = error("未正确设置邮件接收者")
+
+    override var state: MailState = MailState.NotObtained
+    override var senderTime: Long = System.currentTimeMillis()
+    override var getTime: Long = 0L
+    override var appendixInfo: String = ""
+
+    // #
+    override val permission: String = "mail.global"
+    // #
+    override var additional: String = "0"
+
+    @Expose
+    override var itemStacks: Array<ItemStack>? = emptyArray()
+
+    override var command: List<String>? = listOf()
+
+
+
+    // 物品序列化用
     override var itemStackString: String = ""
 
 
-    val name: String = javaClass.simpleName.uppercase(Locale.ROOT)
-
-    fun getIcon(mats: String = "", data: Short = 0): ItemStack {
-        return if (SetTings.USE_BUNDLE) {
-             try {
-                if (mats.contains("IA:", ignoreCase = true) && HookPlugin.itemsAdder.isHook) {
-                    HookPlugin.itemsAdder.getItem(mats.substring(3))
-                } else {
-                    ItemStack(Material.valueOf(mats), 1, data)
+    fun getIcon(icon: Icon): ItemStack {
+        return try {
+            val item: ItemStack =
+                if (this.mailIcon.contains("IA:", ignoreCase = true) && HookPlugin.itemsAdder.isHook) {
+                    HookPlugin.itemsAdder.getItem(this.mailIcon.substring(3))
+                } else ItemStack(Material.valueOf(this.mailIcon))
+            val itemMeta = if (SetTings.USE_BUNDLE) {
+                item.type = Material.BUNDLE
+                (item.itemMeta as BundleMeta).also {
+                    it.setItems(this.itemStacks?.asList())
                 }
-            } catch (ing: java.lang.IllegalArgumentException) {
-                ItemStack(Material.BOOK, 1)
+            } else item.itemMeta
+            if (itemMeta != null) {
+                itemMeta.setDisplayName(icon.name.replace("[title]", this.title).colorify())
+                itemMeta.lore = this.parseMailInfo(icon.lore)
+                if (this.state == MailState.NotObtained) {
+                    itemMeta.addEnchant(Enchantment.DAMAGE_ALL, 1, true)
+                    itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
+                    itemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS)
+                }
+                item.itemMeta = itemMeta
             }
-        } else try {
-            if (this.mailIcon.contains("IA:", ignoreCase = true) && HookPlugin.itemsAdder.isHook) {
-                HookPlugin.itemsAdder.getItem(this.mailIcon.substring(3))
-            } else {
-                ItemStack(Material.valueOf(this.mailIcon))
-            }
+            item
         } catch (ing: IllegalArgumentException) {
             ItemStack(Material.BOOK, 1)
+            error("错误的邮件图标配置")
         }
     }
 
     override fun sendMail() {
         val send = Bukkit.getPlayer(this.sender)
+        // 玩家数据异常，锁定
         send?.let {
             if (MailManage.PlayerLock.contains(it.uniqueId)) {
                 adaptPlayer(it).sendLang("PLAYER-LOCK")
@@ -59,17 +108,22 @@ abstract class MailSub(
             }
         }
 
+        // 发送事件 start
         val event = MailSenderEvent(this)
         event.call()
         if (event.isCancelled) return
+        // 发送事件 end
 
+        // 处理发送逻辑 start
         submitAsync {
             val targets = Bukkit.getPlayer(this@MailSub.target)
             var targetName = "目标"
             if (targets != null) {
                 targetName = targets.name
-                MailManage.addPlayerMailCache(this@MailSub.target, this@MailSub)
-                val info = if (text.length >= 11) text.substring(0,10) else text
+
+                targets.getData().mailData.add(this@MailSub) // + 缓存
+
+                val info = if (text.length >= 11) text.substring(0, 10) else text
                 adaptPlayer(targets).sendLang("玩家-接收邮件", title, "$info §8...")
             }
             if (this@MailSub.sender != SetTings.Console) {
@@ -77,16 +131,20 @@ abstract class MailSub(
                     adaptPlayer(send).sendLang("玩家-发送邮件", targetName)
                 }
             }
-            SqlManage.insertMail(this@MailSub)
+            MailManage.senderWebMail(title, text, appendixInfo, target)
         }
+        // 处理发送逻辑 end
 
-        MailManage.senderWebMail(this.title, this.text, this.appendixInfo, this.target)
+        // 唤起送达事件
         MailReceiveEvent(this).call() // StarrySky
     }
 
-    fun sendGlobalMail() {
-        val player = Bukkit.getOfflinePlayers()
-        SqlManage.insertGlobalMail(this, player)
+    override fun sendCrossMail() {
+        TODO("未处理跨服邮件 - 包括离线玩家信息")
+    }
+
+    override fun sendGlobalMail() {
+        TODO("未处理全局邮件 - 包括离线玩家信息")
     }
 
     fun formatDouble(@NotNull num1: Any): String {
@@ -97,6 +155,7 @@ abstract class MailSub(
         }
         return var1
     }
+
     fun getItemInfo(@NotNull Str: StringBuilder): String {
         var index = 0
         var bs = 0
@@ -126,5 +185,4 @@ abstract class MailSub(
         }
         return Str.toString()
     }
-
 }

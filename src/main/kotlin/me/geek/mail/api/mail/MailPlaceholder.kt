@@ -48,13 +48,13 @@ abstract class MailPlaceholder : Mail {
                 it.contains(TYPE) -> list.add(it.replace(TYPE, this.mailType))
                 it.contains(SENDER) -> list.add(it.replace(SENDER, if (this.sender == SetTings.Console) "系统" else Bukkit.getOfflinePlayer(this.sender).name!!))
                 it.contains(SERDER_TIME) -> list.add(it.replace(SERDER_TIME, format.format(this.senderTime.toLong())))
-                it.contains(GET_TIME) -> list.add(it.replace(GET_TIME, if (getTime.toLong() < 1000) "未领取" else format.format(this.getTime.toLong())))
+                it.contains(GET_TIME) -> list.add(it.replace(GET_TIME, if (getTime < 1000) "未领取" else format.format(this.getTime)))
                 it.contains(TEXT) -> list.addAll(it.replace(TEXT, this.text).split(";"))
-                it.contains(STATE) -> list.add(it.replace(STATE, this.state))
+                it.contains(STATE) -> list.add(it.replace(STATE, this.state.name))
                 it.contains(ITEM) -> list.addAll(it.replace(ITEM, this.appendixInfo).split(","))
                 it.contains(EXPIRE) -> {
                     if (SetTings.UseExpiry) {
-                        list.add(it.replace(EXPIRE, Expiry.getExpiryDate(this.senderTime.toLong() + SetTings.ExpiryTime, false)))
+                        list.add(it.replace(EXPIRE, Expiry.getExpiryDate(this.senderTime + SetTings.ExpiryTime, false)))
                     } else list.add(it.replace(EXPIRE, ""))
                 }
                 else -> list.add(it)

@@ -5,6 +5,8 @@ import me.geek.mail.api.mail.MailManage
 import me.geek.mail.common.kether.sub.KetherAPI
 import me.geek.mail.modules.settings.SetTings
 import me.geek.mail.common.template.Template
+import me.geek.mail.utils.deserializeItemStack
+import me.geek.mail.utils.forFile
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.releaseResourceFile
 import taboolib.library.reflex.Reflex.Companion.invokeConstructor
@@ -23,6 +25,13 @@ import kotlin.system.measureTimeMillis
  **/
 object Event {
     private val EventPackCache = ConcurrentHashMap<String, EventPack>()
+    fun get(name: String): EventPack? {
+        return EventPackCache[name]
+    }
+    fun get(): ConcurrentHashMap<String, EventPack> {
+        return EventPackCache
+    }
+
 
     fun onloadEventPack() {
         val list = mutableListOf<File>()
@@ -30,7 +39,7 @@ object Event {
             list.addAll(forFile(saveDefaultEvent))
             list.forEach { file ->
                 val event = Configuration.loadFromFile(file).getObject<EventPack>("event", false)
-                EventPackCache[event.id] = event
+                EventPackCache[event.event] = event
             }
 
         }.also {
@@ -49,9 +58,6 @@ object Event {
         return false
     }
 
-    fun get(): ConcurrentHashMap<String, EventPack> {
-     return EventPackCache
-    }
 
     fun runAction(player: Player, action: MutableList<String>) {
         action.forEach {
@@ -59,11 +65,14 @@ object Event {
             when (a[0]) {
                 "sendTemPlate" -> {
                     Template.getAdminPack(a[1])?.let { pack ->
-                        MailManage.getMailObjData(pack.type)?.javaClass?.invokeConstructor(
-                            arrayOf(UUID.randomUUID().toString(), pack.title.replacePlaceholder(player), pack.text.replacePlaceholder(player),
-                                SetTings.Console.toString(), player.uniqueId.toString(), "未提取",
-                                pack.additional, System.currentTimeMillis().toString(), "0", pack.itemStacks, pack.command)
-                        )?.sendMail()
+                        MailManage.buildMail(pack.type,
+                            "title" to pack.title.replacePlaceholder(player),
+                            "text" to pack.text.replacePlaceholder(player),
+                            "target" to player.uniqueId,
+                            "additional" to pack.additional,
+                            "itemStacks" to pack.itemStacks?.deserializeItemStack(),
+                            "command" to pack.command
+                        ).sendMail()
                     }
                 }
                 else -> KetherAPI.instantKether(player, it)
@@ -83,18 +92,4 @@ object Event {
         }
         dir
     }
-
-    private fun forFile(file: File): List<File> {
-        return mutableListOf<File>().run {
-            if (file.isDirectory) {
-                file.listFiles()?.forEach {
-                    addAll(forFile(it))
-                }
-            } else if (file.exists() && file.absolutePath.endsWith(".yml")) {
-                add(file)
-            }
-            this
-        }
-    }
-
 }

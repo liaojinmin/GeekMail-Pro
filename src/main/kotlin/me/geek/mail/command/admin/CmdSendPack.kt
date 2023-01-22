@@ -1,12 +1,14 @@
 package me.geek.mail.command.admin
 
 import me.clip.placeholderapi.PlaceholderAPI
+import me.geek.mail.api.mail.MailBuild
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.command.CmdExp
 
 
 import me.geek.mail.common.template.Template
 import me.geek.mail.modules.settings.SetTings
+import me.geek.mail.utils.deserializeItemStacks
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -34,20 +36,13 @@ object CmdSendPack: CmdExp {
                     val target = Bukkit.getOfflinePlayer(context.args()[2])
                     val title = PlaceholderAPI.setPlaceholders(target, pack.title)
                     val text = PlaceholderAPI.setPlaceholders(target, pack.text)
-                    val mail = if (senders is Player) {
-                        arrayOf(
-                            UUID.randomUUID().toString(), title, text,
-                            senders.uniqueId.toString(), target.uniqueId.toString(), "未提取",
-                            pack.additional, System.currentTimeMillis().toString(), "0", pack.itemStacks, pack.command
-                        )
-                    } else {
-                        arrayOf(
-                            UUID.randomUUID().toString(), title, text,
-                            SetTings.Console.toString(), target.uniqueId.toString(), "未提取",
-                            pack.additional, System.currentTimeMillis().toString(), "0", pack.itemStacks, pack.command
-                        )
-                    }
-                    MailManage.getMailObjData(pack.type)?.javaClass?.invokeConstructor(mail)?.sendMail()
+                    MailBuild(pack.type, if (senders is Player) senders else null, target.uniqueId).build {
+                        this.title = title
+                        this.text = text
+                        this.additional = pack.additional ?: ""
+                        this.item = pack.itemStacks?.deserializeItemStacks()
+                        this.command = pack.command?.split(";")
+                    }.sender()
                 }
             }
         }

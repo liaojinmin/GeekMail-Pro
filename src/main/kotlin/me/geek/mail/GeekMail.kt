@@ -3,13 +3,13 @@ package me.geek.mail
 
 import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.api.mail.MailManage
-import me.geek.mail.common.data.SqlManage
+import me.geek.mail.api.data.SqlManage
 import me.geek.mail.common.customevent.Event
-import me.geek.mail.common.data.Task
+import me.geek.mail.scheduler.Task
 import me.geek.mail.common.menu.Menu
 import me.geek.mail.common.template.Template
 import me.geek.mail.modules.*
-import me.geek.mail.common.data.RedisKt
+import me.geek.mail.scheduler.RedisImpl
 import me.geek.mail.common.market.Market
 import me.geek.mail.modules.settings.SetTings
 import me.geek.mail.utils.colorify
@@ -55,13 +55,8 @@ object GeekMail : Plugin() {
 
     val instance by lazy { BukkitPlugin.getInstance() }
 
-    val dataScheduler by lazy {
-        if (SetTings.redisData.use) {
-            RedisKt(SetTings.redisData)
-        } else null
-    }
 
-    const val VERSION = 2.13
+    const val VERSION = 3.0
 
     val BukkitVersion by lazy { Bukkit.getVersion().substringAfter("MC:").filter { it.isDigit() }.toInt() }
 
@@ -83,8 +78,6 @@ object GeekMail : Plugin() {
 
         SqlManage.start() // 启动数据库
 
-        dataScheduler // 数据调度初始化
-
         Market.loadItem() // 加载市场商品
 
         Event.onloadEventPack() // 自定义事件加载
@@ -93,7 +86,7 @@ object GeekMail : Plugin() {
 
         HookPlugin.onHook() // 挂钩软依赖
 
-        if (SetTings.UseExpiry) Task()
+      //  if (SetTings.UseExpiry) Task()
     }
     override fun onActive() {
 

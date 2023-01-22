@@ -3,6 +3,7 @@ package me.geek.mail.command
 
 
 import me.geek.mail.GeekMail
+import me.geek.mail.api.data.SqlManage
 
 import me.geek.mail.command.admin.*
 import me.geek.mail.command.player.*
@@ -89,7 +90,7 @@ object CmdCore {
                                     money,
                                     item
                                 )
-                                GeekMail.dataScheduler?.let {
+                                SqlManage.RedisScheduler?.let {
                                     submitAsync {
                                         it.setMarketData(pack)
                                         it.sendMarketPublish(

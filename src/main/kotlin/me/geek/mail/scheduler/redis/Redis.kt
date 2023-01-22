@@ -1,13 +1,9 @@
 package me.geek.mail.scheduler.redis
 
+import me.geek.mail.api.data.PlayerData
 import me.geek.mail.api.mail.MailSub
-import me.geek.mail.common.data.MailPlayerData
 import me.geek.mail.common.market.Item
-import me.geek.mail.modules.Mail_Item
-import me.geek.mail.modules.Mail_Normal
-import me.geek.mail.utils.classSerializable
-import me.geek.mail.utils.classUnSerializable
-import me.geek.mail.utils.serializeItemStacks
+import me.geek.mail.scheduler.*
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Nullable
 import redis.clients.jedis.Jedis
@@ -77,15 +73,9 @@ abstract class Redis: RedisApi {
      * 发送玩家数据流
      * @param Clazz 要储存的玩家数据类
      */
-    fun setPlayerData(@NotNull Clazz: MailPlayerData) {
-        Clazz.mailData.forEach {
-            when (it) {
-                is Mail_Item -> it.itemStackString = it.itemStacks.serializeItemStacks()
-                is Mail_Normal -> it.itemStackString = it.itemStacks.serializeItemStacks()
-            }
-        }
+    fun setPlayerData(@NotNull Clazz: PlayerData) {
         getRedisConnection().use {
-            it.setex(Clazz.uuid.toString().toByteArray(),15, Clazz.classSerializable())
+            it.setex(Clazz.uuid.toString().toByteArray(),15, Clazz.toByteArray())
         }
     }
 
@@ -93,10 +83,8 @@ abstract class Redis: RedisApi {
      * 获取玩家数据流
      * @param targetUid 目标Uid
      */
-    fun getPlayerData(@NotNull targetUid: String): Any? {
-        return getRedisConnection().use {
-            it.get(targetUid.toByteArray())?.classUnSerializable(MailPlayerData::class.java, true)
-        }
+    fun getPlayerData(@NotNull targetUid: String): PlayerData? {
+        return getRedisConnection().use { it.get(targetUid.toByteArray())?.toPlayerData() }
     }
 
 
@@ -116,7 +104,7 @@ abstract class Redis: RedisApi {
      */
     fun setMailData(@NotNull Clazz: MailSub) {
         getRedisConnection().use {
-            it.setex(Clazz.mailID.toString().toByteArray(), 15, Clazz.classSerializable())
+            it.setex(Clazz.mailID.toString().toByteArray(), 15, Clazz.toByteArray())
         }
     }
 
@@ -124,9 +112,9 @@ abstract class Redis: RedisApi {
      * 获取邮件数据流
      */
     @Nullable
-    fun getMailData(@NotNull MailUid: String, @NotNull Clazz: Class<*>): Any? {
+    fun getMailData(@NotNull MailUid: String): MailSub? {
         return getRedisConnection().use {
-            it.get(MailUid.toByteArray())?.classUnSerializable(Clazz, false)
+            it.get(MailUid.toByteArray())?.toMailSub()
         }
     }
 
@@ -145,15 +133,15 @@ abstract class Redis: RedisApi {
      */
     fun setMarketData(@NotNull item: Item) {
         getRedisConnection().use {
-            it.setex(item.packUid.toString().toByteArray(), 20, item.classSerializable())
+            it.setex(item.packUid.toString().toByteArray(), 20, item.toByteArray())
         }
     }
     /**
      * 获取商品数据
      */
-    fun getMarketData(@NotNull packUid: String): Any? {
+    fun getMarketData(@NotNull packUid: String): Item? {
       return getRedisConnection().use {
-            it.get(packUid.toByteArray())?.classUnSerializable(Item::class.java)
+            it.get(packUid.toByteArray())?.toMarketData()
         }
     }
 

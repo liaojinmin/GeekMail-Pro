@@ -10,6 +10,10 @@ import java.util.*
  */
 interface Mail {
     /**
+     * 扩展邮件的名字
+     */
+    val name: String
+    /**
      * 邮件唯一UID 不可重复
      */
     val mailID: UUID
@@ -23,7 +27,6 @@ interface Mail {
      * 邮件显示图标
      */
     val mailIcon: String
-        get() = "BOOK"
 
     /**
      * 邮件标题
@@ -48,17 +51,17 @@ interface Mail {
     /**
      * 邮件状态
      */
-    var state: String
+    var state: MailState
 
     /**
      * 邮件发送时间
      */
-    val senderTime: String
+    val senderTime: Long
 
     /**
      * 附件领取时间
      */
-    var getTime: String
+    var getTime: Long
 
     /**
      * 附件展示信息
@@ -70,19 +73,16 @@ interface Mail {
      * 默认: mail.global
      */
     val permission: String
-      get() = "mail.global"
 
     /**
      * 邮件的其它附件
      */
-    val additional: String?
-      get() = "0"
+    var additional: String
 
     /**
      * 邮件物品附件
      */
     val itemStacks: Array<ItemStack>?
-      get() = emptyArray()
 
     /**
      * 序列化参数
@@ -94,22 +94,31 @@ interface Mail {
      * 邮件指令附件
      */
     val command: List<String>?
-      get() = listOf()
 
 
     /**
      * 邮件发送方法-默认即可
      */
     fun sendMail()
+    /**
+     * 发送跨服邮件
+     */
+    fun sendCrossMail()
+    /**
+     * 发送全体邮件
+     */
+    fun sendGlobalMail()
 
     /**
      * 附件给予方式，每种邮件类型必须重写
      */
-    fun giveAppendix()
+    fun giveAppendix(): Boolean
 
     /**
      * 邮件发送而外条件，玩家使用指令发送时触发
      */
     fun condition(player: Player, appendix: String): Boolean
+
+
 
 }

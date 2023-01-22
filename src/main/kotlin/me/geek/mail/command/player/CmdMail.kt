@@ -3,6 +3,7 @@ package me.geek.mail.command.player
 
 
 import me.geek.mail.GeekMail
+import me.geek.mail.api.mail.MailBuild
 import me.geek.mail.command.CmdExp
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.utils.colorify
@@ -46,20 +47,37 @@ object CmdMail: CmdExp {
                             val title = context.args()[3].colorify()
                             val args = context.args()[4].colorify().split(" ", limit = 2)
                             val target = Bukkit.getOfflinePlayer(context.args()[1])
-                            val senders = sender.uniqueId
-                            MailManage.getMailObjData(mailType)?.let {
-                               if (sender.hasPermission(it.permission)) {
-                                   try {
-                                       if (it.condition(sender, args[1])) it.javaClass.invokeConstructor(
-                                           arrayOf(UUID.randomUUID().toString(), title, args[0], senders.toString(), target.uniqueId.toString(), "未提取", args[1], System.currentTimeMillis().toString(), "0")
-                                       ).sendMail()
-                                   } catch (_: IndexOutOfBoundsException) {
-                                       return@execute
-                                   }
+                            MailManage.getMailClass(mailType)?.let {
+                                if (sender.hasPermission(it.permission)) {
+                                    try {
+                                        if (it.condition(sender, args[1])) {
+
+                                            // 构建邮件信息 start (第一种方法)
+                                            MailBuild(mailType, sender, target.uniqueId).build {
+                                                this.title = title
+                                                this.text = args[0]
+                                                this.additional = args[1]
+                                            }.sender()
+                                            // 构建邮件信息 end
+
+                                            /*
+                                            // 构建邮件信息 start (第二种方法)
+                                            MailBuild(mailType, sender, target.uniqueId)
+                                                .setTitle(title)
+                                                .setText(args[0])
+                                                .setAdditional(args[1])
+                                                .sender()
+                                            // 构建邮件信息 end
+                                             */
+
+                                        }
+                                    } catch (_: IndexOutOfBoundsException) {
+                                        return@execute
+                                    }
                                 } else {
-                                   sender.sendLang("玩家-没有权限-发送邮件")
-                                   GeekMail.say("&4玩家 &f${sender.name} &4执行命令缺少权限&f ${it.permission}")
-                               }
+                                    sender.sendLang("玩家-没有权限-发送邮件")
+                                    GeekMail.say("&4玩家 &f${sender.name} &4执行命令缺少权限&f ${it.permission}")
+                                }
                             }
                         }
                     }

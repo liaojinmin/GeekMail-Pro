@@ -1,6 +1,7 @@
-package me.geek.mail.common.data
+package me.geek.mail.scheduler
 
 import me.geek.mail.GeekMail
+import me.geek.mail.api.data.SqlManage
 import me.geek.mail.modules.settings.SetTings
 import me.geek.mail.scheduler.sql.actions
 import me.geek.mail.scheduler.sql.use
