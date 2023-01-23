@@ -25,6 +25,8 @@ class Mail_Cmd() : MailSub() {
         this.command = cmd
     }
 
+   // override var command: List<String> = emptyList()
+
     override var sender: UUID = super.sender
     override var target: UUID = super.target
     override val mailType: String = "指令邮件"
@@ -32,6 +34,9 @@ class Mail_Cmd() : MailSub() {
     override val mailIcon: String = SetTings.mailIcon.CMD_MAIL
 
 
+    override fun runAppendixInfo() {
+        this.appendixInfo = "§6${command?.size ?: 0} §7${SetTings.CMD_MAIL}"
+    }
 
 
     override fun giveAppendix(): Boolean {
@@ -42,7 +47,7 @@ class Mail_Cmd() : MailSub() {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), out)
                     } catch (_: Exception) {}
                 }
-            } ?: GeekMail.say("giveAppendix 异常&c null")
+            }
             true
         } ?: false
     }

@@ -1,16 +1,13 @@
 package me.geek.mail.common.template
 
-import com.google.common.base.Joiner
-import ink.ptms.um.Mythic
-import ink.ptms.um.impl5.Mythic5
-import me.geek.mail.GeekMail
+
 import me.geek.mail.GeekMail.instance
 import me.geek.mail.GeekMail.say
 import me.geek.mail.api.hook.HookPlugin
 
 
-import me.geek.mail.common.template.Sub.Temp
-import me.geek.mail.common.template.Sub.TempPack
+import me.geek.mail.common.template.sub.Temp
+import me.geek.mail.common.template.sub.TempPack
 import me.geek.mail.utils.colorify
 import me.geek.mail.utils.serializeItemStacks
 import org.bukkit.Material
@@ -55,7 +52,7 @@ object Template {
                     val type: String = var1.getString("Template.package.type")!!.uppercase(Locale.ROOT)
                     val additional: String = var1.getString("Template.package.appendix.additional", "0")!!
                     val items: String = buildItemsString(var1.getStringList("Template.package.appendix.items"))
-                    val command: String = Joiner.on(";").join(var1.getStringList("Template.package.appendix.command"))
+                    val command = var1.getStringList("Template.package.appendix.command")
                     if (var1.getBoolean("Template.Server")) {
                         SERVER_PACK_MAP[packID] = TempPack(packID, condition, action, deny, title, text, type, additional, items, command)
                     } else TEMP_PACK_MAP[packID] = TempPack(packID, condition, action, deny, title, text, type, additional, items, command)

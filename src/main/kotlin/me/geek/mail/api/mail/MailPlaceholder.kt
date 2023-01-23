@@ -42,6 +42,7 @@ abstract class MailPlaceholder : Mail {
     val EXPIRE = Regex("(\\{|\\[)(expire|到期时间)(}|])")
 
     fun parseMailInfo(@NotNull lore: List<String>): List<String> {
+        this.runAppendixInfo()
         val list = mutableListOf<String>()
         lore.forEach {
             when {
@@ -50,7 +51,7 @@ abstract class MailPlaceholder : Mail {
                 it.contains(SERDER_TIME) -> list.add(it.replace(SERDER_TIME, format.format(this.senderTime.toLong())))
                 it.contains(GET_TIME) -> list.add(it.replace(GET_TIME, if (getTime < 1000) "未领取" else format.format(this.getTime)))
                 it.contains(TEXT) -> list.addAll(it.replace(TEXT, this.text).split(";"))
-                it.contains(STATE) -> list.add(it.replace(STATE, this.state.name))
+                it.contains(STATE) -> list.add(it.replace(STATE, this.state.state))
                 it.contains(ITEM) -> list.addAll(it.replace(ITEM, this.appendixInfo).split(","))
                 it.contains(EXPIRE) -> {
                     if (SetTings.UseExpiry) {

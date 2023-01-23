@@ -1,4 +1,4 @@
-package me.geek.mail.common.template.Sub
+package me.geek.mail.common.template.sub
 
 
 
@@ -16,5 +16,5 @@ class TempPack(
     override val type: String,
     override val additional: String,
     override val itemStacks: String?,
-    override val command: String?
+    override val command: List<String> = emptyList()
 ) : Temp

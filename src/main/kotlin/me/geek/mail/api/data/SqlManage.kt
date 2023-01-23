@@ -1,6 +1,7 @@
 package me.geek.mail.api.data
 
 
+import me.geek.mail.GeekMail
 import me.geek.mail.api.event.PlayerDataLoadEvent
 import me.geek.mail.scheduler.sql.*
 
@@ -33,23 +34,31 @@ object SqlManage {
      * 获取玩家数据
      */
     fun Player.getData(): PlayerData {
+        GeekMail.debug("Player.getData()")
         // 先本地获取 再Redis调度获取，均为null，查库
-        val data = PlayerCache[this.uniqueId] ?: RedisScheduler?.getPlayerData(this.uniqueId.toString())
-        if (data != null) {
-            return data
-        } else this.select()
-        return data ?: error("数据异常")
+        var data = PlayerCache[this.uniqueId]
+        if (data == null) {
+            GeekMail.debug("getData == null AC-1")
+            data = RedisScheduler?.getPlayerData(this.uniqueId.toString())
+        }
+        data?.let {
+            GeekMail.debug("getData == OK")
+            return it
+        } ?: select(this).also { GeekMail.debug("getData == null AC-2") }
+        return PlayerCache[this.uniqueId] ?: error("数据异常")
     }
     /**
      * 保存玩家数据
      */
     fun Player.saveData(isAsync: Boolean = false) {
-        if (isAsync) submitAsync {
-            PlayerCache[this@saveData.uniqueId]?.let {
-                RedisScheduler?.setPlayerData(it)
-                SqlImpl.update(it)
+        if (isAsync) {
+            submitAsync {
+                PlayerCache[this@saveData.uniqueId]?.let {
+                    RedisScheduler?.setPlayerData(it)
+                    SqlImpl.update(it)
+                }
+                PlayerCache.remove(this@saveData.uniqueId)
             }
-            PlayerCache.remove(this@saveData.uniqueId)
         } else {
             PlayerCache[this.uniqueId]?.let { SqlImpl.update(it) }
             PlayerCache.remove(this.uniqueId)
@@ -59,24 +68,13 @@ object SqlManage {
     /**
      * 统一查库入口
      */
-    private fun Player.select(isAsync: Boolean = false) {
-        if (isAsync)
+    private fun select(player: Player, isAsync: Boolean = false) {
+        if (isAsync) {
             submitAsync {
-                SqlImpl.select(this@select).also {
-                    val eve = PlayerDataLoadEvent(it)
-                    eve.call()
-                   // if (!eve.isCancelled) {
-                        PlayerCache[this@select.uniqueId] = it
-                  //  }
-                }
+                PlayerCache[player.uniqueId] = SqlImpl.select(player).also { PlayerDataLoadEvent(it).call() }
             }
-        else SqlImpl.select(this).also {
-            val eve = PlayerDataLoadEvent(it)
-            eve.call()
-           // if (!eve.isCancelled) {
-                PlayerCache[this@select.uniqueId] = it
-           // }
         }
+        else PlayerCache[player.uniqueId] = SqlImpl.select(player).also { PlayerDataLoadEvent(it).call() }
     }
 
 

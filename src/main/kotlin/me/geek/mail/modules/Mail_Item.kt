@@ -38,20 +38,20 @@ class Mail_Item() : MailSub() {
         this.sender = senders
         this.target = targets
         this.itemStacks = itemStacks
-        appendixInfo = getItemInfo(StringBuilder(""))
+     //   appendixInfo = getItemInfo(StringBuilder(""))
     }
 
     override var sender: UUID = super.sender
     override var target: UUID = super.target
-
-    @Expose
-    override var itemStacks: Array<ItemStack>? = emptyArray()
 
     override val mailType: String = "物品邮件"
 
     override val mailIcon: String = SetTings.mailIcon.ITEM_MAIL
 
     override val permission: String = "mail.exp.items"
+    override fun runAppendixInfo() {
+        this.appendixInfo = getItemInfo(StringBuilder(""))
+    }
 
 
 

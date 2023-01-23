@@ -1,16 +1,15 @@
 package me.geek.mail.command.admin
 
 import me.geek.mail.api.mail.MailBuild
-import me.geek.mail.api.mail.MailManage
+
 import me.geek.mail.command.CmdExp
 import me.geek.mail.common.template.Template
 import me.geek.mail.modules.settings.SetTings
 import me.geek.mail.utils.deserializeItemStacks
 import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
+
 import taboolib.common.platform.command.subCommand
-import taboolib.library.reflex.Reflex.Companion.invokeConstructor
-import java.util.*
+
 
 /**
  * 作者: 老廖
@@ -34,7 +33,7 @@ object CmdSendGlobal: CmdExp {
                         this.text = pack.text
                         this.additional = pack.additional ?: ""
                         this.item = pack.itemStacks?.deserializeItemStacks()
-                        this.command = pack.command?.split(";")
+                        this.command = pack.command
                     }.run().sendGlobalMail()
                 }
             }

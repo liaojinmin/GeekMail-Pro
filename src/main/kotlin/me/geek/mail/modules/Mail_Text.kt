@@ -19,6 +19,8 @@ class Mail_Text() : MailSub() {
     override val permission: String = "mail.exp.text"
     override val mailIcon: String = SetTings.mailIcon.TEXT_MAIL
 
+    override fun runAppendixInfo() {
+    }
 
     override fun giveAppendix(): Boolean {
         return true

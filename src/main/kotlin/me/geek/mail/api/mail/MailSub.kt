@@ -37,36 +37,28 @@ abstract class MailSub : MailPlaceholder() {
      */
     override val mailID: UUID = UUID.randomUUID()
 
-    // #
-    override val mailType: String = "未知类型"
-    override val mailIcon: String = "BOOK"
+    //override val mailType: String = ""
+    //override val mailIcon: String = ""
 
     override var title: String = "未知邮件标题"
     override var text: String = "未知邮件内容"
-
-    // #
-    override val sender: UUID = SetTings.Console
-    override val target: UUID = error("未正确设置邮件接收者")
-
     override var state: MailState = MailState.NotObtained
     override var senderTime: Long = System.currentTimeMillis()
     override var getTime: Long = 0L
+
     override var appendixInfo: String = ""
 
-    // #
-    override val permission: String = "mail.global"
-    // #
+    //override val permission: String = "mail.global"
+
     override var additional: String = "0"
 
     @Expose
     override var itemStacks: Array<ItemStack>? = emptyArray()
 
-    override var command: List<String>? = listOf()
-
-
-
     // 物品序列化用
     override var itemStackString: String = ""
+
+    override var command: List<String>? = emptyList()
 
 
     fun getIcon(icon: Icon): ItemStack {
@@ -99,6 +91,7 @@ abstract class MailSub : MailPlaceholder() {
     }
 
     override fun sendMail() {
+        this.runAppendixInfo()
         val send = Bukkit.getPlayer(this.sender)
         // 玩家数据异常，锁定
         send?.let {

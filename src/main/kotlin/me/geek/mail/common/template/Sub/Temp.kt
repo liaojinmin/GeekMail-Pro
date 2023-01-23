@@ -1,6 +1,6 @@
-package me.geek.mail.common.template.Sub
+package me.geek.mail.common.template.sub
 
-import org.bukkit.inventory.ItemStack
+
 
 /**
  * 作者: 老廖
@@ -18,6 +18,5 @@ interface Temp {
         get() = "0"
     val itemStacks: String?
         get() = ""
-    val command: String?
-        get() = ""
+    val command: List<String>?
 }

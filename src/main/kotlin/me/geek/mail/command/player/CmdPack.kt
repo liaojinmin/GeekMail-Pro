@@ -41,7 +41,7 @@ object CmdPack: CmdExp {
                                 this.text = text
                                 this.additional = pack.additional ?: ""
                                 this.item = pack.itemStacks?.deserializeItemStacks()
-                                this.command = pack.command?.split(";")
+                                this.command = pack.command
                             }.sender()
                         } else KetherAPI.instantKether(senders, pack.deny)
                     }

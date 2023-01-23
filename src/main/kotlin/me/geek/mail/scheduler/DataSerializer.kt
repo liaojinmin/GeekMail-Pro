@@ -8,8 +8,10 @@ import me.geek.mail.api.mail.MailManage
 import me.geek.mail.api.mail.MailState
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.market.Item
+import me.geek.mail.utils.deserializeItemStacks
 import me.geek.mail.utils.serializeItemStacks
 import org.bukkit.Bukkit
+import taboolib.common.util.asList
 import taboolib.library.reflex.Reflex.Companion.invokeConstructor
 import taboolib.library.reflex.Reflex.Companion.setProperty
 import java.lang.reflect.Type
@@ -43,7 +45,7 @@ fun MailSub.toByteArray(): ByteArray {
 }
 fun ByteArray.toMailSub(): MailSub {
     val gson = GsonBuilder().setExclusionStrategies(Exclude())
-    gson.registerTypeAdapter(this::class.java, object : JsonDeserializer<MailSub> {
+    gson.registerTypeAdapter(MailSub::class.java, object : JsonDeserializer<MailSub> {
         override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext?): MailSub {
             val a = json.asJsonObject
             return MailManage.getMailClass(a.get("name").asString)?.let { mailSub ->
@@ -58,8 +60,8 @@ fun ByteArray.toMailSub(): MailSub {
                     "getTime" to (a.get("getTime")?.asString ?: "0"),
                     "appendixInfo" to a.get("appendixInfo").asString,
                     "additional" to (a.get("additional")?.asString ?: ""),
-                    "itemStacks" to (a.get("itemStackString")?.asString ?: ""),
-                    "command" to (a.get("command")?.asString ?: "")
+                    "itemStacks" to (a.get("itemStackString")?.asString ?: "").deserializeItemStacks(),
+                    "command" to (a.get("command")?.asString ?: "").split(";")
                 )
                 mailSub
             } ?: error("""
@@ -79,15 +81,15 @@ fun PlayerData.toJson(): String {
 }
 fun ByteArray.toPlayerData(): PlayerData {
     val gson = GsonBuilder().setExclusionStrategies(Exclude())
-    gson.registerTypeAdapter(this::class.java, UnSerializePlayerData())
-    return gson.create().fromJson(String(this, charset = Charsets.UTF_8), PlayerData::class.java)
+    gson.registerTypeAdapter(MailPlayerData::class.java, UnSerializePlayerData())
+    return gson.create().fromJson(String(this, charset = Charsets.UTF_8), MailPlayerData::class.java)
 }
 
 class UnSerializePlayerData: JsonDeserializer<PlayerData> {
     override fun deserialize(json: JsonElement, p1: Type, p2: JsonDeserializationContext?): PlayerData {
         val jsonObject = json.asJsonObject
         val bing = jsonObject.get("mail")?.asString ?: ""
-        val uuid = jsonObject.get("uuid")?.asString ?: ""
+        val uuid = UUID.fromString(jsonObject.get("uuid")?.asString)
         val new = jsonObject.get("newPlayer")?.asBoolean ?: true
         val mailData = mutableListOf<MailSub>().apply {
             val mail = jsonObject.get("mailData").asJsonArray
@@ -103,12 +105,12 @@ class UnSerializePlayerData: JsonDeserializer<PlayerData> {
                             "sender" to UUID.fromString(a.get("sender").asString),
                             "target" to UUID.fromString(a.get("target").asString),
                             "state" to MailState.valueOf(a.get("state").asString),
-                            "senderTime" to a.get("senderTime").asString,
-                            "getTime" to (a.get("getTime")?.asString ?: "0"),
+                            "senderTime" to a.get("senderTime").asLong,
+                            "getTime" to (a.get("getTime")?.asLong ?: "0"),
                             "appendixInfo" to a.get("appendixInfo").asString,
-                            "additional" to (a.get("additional")?.asString ?: ""),
-                            "itemStacks" to (a.get("itemStackString")?.asString ?: ""),
-                            "command" to (a.get("command")?.asString ?: "")
+                            "additional" to (a.get("additional")?.asString ?: "0"),
+                            "itemStacks" to (a.get("itemStackString")?.asString ?: "").deserializeItemStacks(),
+                            "command" to (a.get("command")?.asList())
                             )
                         add(mailSub)
                     }
@@ -133,6 +135,7 @@ class UnSerializePlayerData: JsonDeserializer<PlayerData> {
         val player = Bukkit.getPlayer(uuid) ?: error("""
             未找到该玩家，请联系开发者报告此错误
                定位 -> UnSerializePlayerData()
+               UUID = "$uuid"
             """.trimIndent())
         return MailPlayerData(
             player,

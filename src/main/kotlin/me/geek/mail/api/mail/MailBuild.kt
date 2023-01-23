@@ -18,8 +18,8 @@ class MailBuild(
     var title: String = ""
     var text: String = ""
     var additional: String = "0"
-    var item: Array<ItemStack>? = null
-    var command: List<String>? = null
+    var item: Array<ItemStack>? = emptyArray()
+    var command: List<String>? = emptyList()
 
 
     private val mail: MailSub = MailManage.getMailClass(mailType) ?: error("MailBuild() 提供了错误的类型参数，请联系相应开发者。。。")
@@ -34,8 +34,8 @@ class MailBuild(
         if (player != null) mail.setProperty("sender", player.uniqueId)
         mail.setProperty("target", this.target)
         mail.additional = this.additional
-        if (this.item != null) mail.itemStacks = this.item
-        if (this.command != null) mail.command = this.command
+        mail.setProperty("itemStacks", this.item)
+        mail.setProperty("command", this.command)
         return mail
     }
     fun sender() {

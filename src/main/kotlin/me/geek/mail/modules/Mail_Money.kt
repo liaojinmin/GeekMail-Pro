@@ -22,7 +22,7 @@ class Mail_Money() : MailSub() {
         this.sender = senders
         this.target = targets
         this.additional = formatDouble(money)
-        this.appendixInfo = "$additional ${SetTings.MONEY_MAIL}"
+    //    this.appendixInfo = "$additional ${SetTings.MONEY_MAIL}"
     }
 
     override var sender: UUID = super.sender
@@ -30,6 +30,9 @@ class Mail_Money() : MailSub() {
     override val mailType: String = "金币邮件"
     override val permission: String = "mail.exp.money"
     override val mailIcon: String = SetTings.mailIcon.MONEY_MAIL
+    override fun runAppendixInfo() {
+        this.appendixInfo = "$additional ${SetTings.MONEY_MAIL}"
+    }
 
     override fun giveAppendix(): Boolean {
         HookPlugin.money.giveMoney(Bukkit.getOfflinePlayer(target), this.additional.toDouble())

@@ -30,7 +30,6 @@ class Mail_Normal() : MailSub() {
         this.additional = additional
         this.itemStacks = itemStacks
         this.command = cmd
-        run(additional)
     }
 
 
@@ -49,9 +48,10 @@ class Mail_Normal() : MailSub() {
     private var exp: Int = 0
 
     // 筛选数据类型
-    private fun run(appendix: String) {
+
+    override fun runAppendixInfo() {
         val texts = StringBuilder("")
-        appendix.split("@").forEach {
+        additional.split("@").forEach {
             val data = it.split(":")
             if (data[0] != "0") {
                 val a = data[0].uppercase(Locale.ROOT)

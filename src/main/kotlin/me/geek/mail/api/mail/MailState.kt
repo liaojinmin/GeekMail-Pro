@@ -5,7 +5,7 @@ package me.geek.mail.api.mail
  * 时间: 2023/1/16
  *
  **/
-enum class MailState(state: String) {
+enum class MailState(var state: String) {
     /**
      * 已领取
      */

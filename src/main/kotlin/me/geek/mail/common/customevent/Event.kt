@@ -3,18 +3,18 @@ package me.geek.mail.common.customevent
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.common.kether.sub.KetherAPI
-import me.geek.mail.modules.settings.SetTings
+
 import me.geek.mail.common.template.Template
-import me.geek.mail.utils.deserializeItemStack
+
+import me.geek.mail.utils.deserializeItemStacks
 import me.geek.mail.utils.forFile
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.releaseResourceFile
-import taboolib.library.reflex.Reflex.Companion.invokeConstructor
+
 import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.Configuration.Companion.getObject
 import taboolib.platform.compat.replacePlaceholder
 import java.io.File
-import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.system.measureTimeMillis
 
@@ -70,7 +70,7 @@ object Event {
                             "text" to pack.text.replacePlaceholder(player),
                             "target" to player.uniqueId,
                             "additional" to pack.additional,
-                            "itemStacks" to pack.itemStacks?.deserializeItemStack(),
+                            "itemStacks" to pack.itemStacks?.deserializeItemStacks(),
                             "command" to pack.command
                         ).sendMail()
                     }

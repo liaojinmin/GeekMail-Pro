@@ -21,7 +21,7 @@ class Mail_Exp() : MailSub() {
         this.sender = senders
         this.target = targets
         this.additional = exp.toString()
-        this.appendixInfo = "$additional ${SetTings.EXP_MAIL}"
+      //  this.appendixInfo = "$additional ${SetTings.EXP_MAIL}"
     }
 
     override var sender: UUID = super.sender
@@ -29,6 +29,10 @@ class Mail_Exp() : MailSub() {
     override val mailType: String = "经验邮件"
     override val permission: String = "mail.exp.exp"
     override val mailIcon: String = SetTings.mailIcon.EXP_MAIL
+
+    override fun runAppendixInfo() {
+        this.appendixInfo = "$additional ${SetTings.EXP_MAIL}"
+    }
 
     override fun giveAppendix(): Boolean {
         Bukkit.getPlayer(this.target)?.giveExp(this.additional.toInt())

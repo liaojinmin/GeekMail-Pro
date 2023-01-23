@@ -1,5 +1,6 @@
 package me.geek.mail.api.mail
 
+import me.geek.mail.modules.settings.SetTings
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.*
@@ -22,11 +23,13 @@ interface Mail {
      * 邮件种类
      */
     val mailType: String
+    get() = "未知类型"
 
     /**
      * 邮件显示图标
      */
     val mailIcon: String
+    get() = "BOOK"
 
     /**
      * 邮件标题
@@ -42,11 +45,13 @@ interface Mail {
      * 邮件发送者
      */
     val sender: UUID
+    get() = SetTings.Console
 
     /**
      * 邮件接收目标
      */
     val target: UUID
+        get() = SetTings.Console
 
     /**
      * 邮件状态
@@ -73,6 +78,7 @@ interface Mail {
      * 默认: mail.global
      */
     val permission: String
+    get() = "mail.global"
 
     /**
      * 邮件的其它附件
@@ -118,6 +124,10 @@ interface Mail {
      * 邮件发送而外条件，玩家使用指令发送时触发
      */
     fun condition(player: Player, appendix: String): Boolean
+    /**
+     * 解析附件信息
+     */
+    fun runAppendixInfo()
 
 
 

@@ -8,7 +8,7 @@ package me.geek.mail.common.menu.sub
 enum class IconType {
     TEXT,
 
-    DELETE_ALL,
+    DELETE,
 
     BIND,
 

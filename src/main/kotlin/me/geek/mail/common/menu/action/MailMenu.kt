@@ -1,7 +1,6 @@
 package me.geek.mail.common.menu.action
 
 import me.geek.mail.api.data.SqlManage.getData
-import me.geek.mail.api.data.SqlManage.saveData
 import me.geek.mail.api.mail.MailState
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.menu.MenuBase
@@ -117,7 +116,7 @@ class MailMenu(
                         return
                     }
 
-                    DELETE_ALL -> {
+                    DELETE -> {
                         if (player.getData().mailData.size >= 1) {
                             player.closeInventory()
                             player.getData().mailData.removeIf { mail -> mail.state == MailState.Acquired }
@@ -172,6 +171,6 @@ class MailMenu(
     }
 
     override fun onClose(event: InventoryCloseEvent) {
-        player.saveData(false)
+
     }
 }

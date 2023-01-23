@@ -32,6 +32,9 @@ class Mail_Points() : MailSub() {
     override val mailIcon: String = SetTings.mailIcon.POINTS_MAIL
 
 
+    override fun runAppendixInfo() {
+        this.appendixInfo = "$additional ${SetTings.POINTS_MAIL}"
+    }
     override fun giveAppendix(): Boolean {
         HookPlugin.points.givePoints(target, additional.toInt())
         return true

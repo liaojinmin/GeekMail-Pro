@@ -92,10 +92,11 @@ object Menu {
                 val menuTag: String = file.name.substring(0, file.name.indexOf("."))
                 val title: String = menu.getString("TITLE")!!.colorify()
                 val bindings: String = menu.getString("Bindings.Commands") ?: ""
+                MenuCmd[bindings] = menuTag
                 val type: MenuType = MenuType.valueOf(menu.getString("TYPE")!!.also {
                     if (it.contains("main", ignoreCase = true)) mainMenu = bindings
                 }.uppercase(Locale.ROOT))
-                val size: Int = menu.getStringList("layout").size * 9
+                val size: Int = menu.getStringList("Layout").size * 9
                 val layout: MutableList<Char> = mutableListOf<Char>().apply {
                     menu.getStringList("Layout").forEach {
                         it.indices.forEach { index -> add(it[index]) }
