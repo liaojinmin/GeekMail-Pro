@@ -1,9 +1,7 @@
 package me.geek.mail.modules
 
-import com.google.gson.annotations.Expose
-import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailSub
-import me.geek.mail.modules.settings.SetTings
+import me.geek.mail.common.settings.SetTings
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import taboolib.platform.compat.replacePlaceholder

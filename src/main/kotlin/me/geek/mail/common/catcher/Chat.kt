@@ -1,12 +1,8 @@
-package me.geek.mail.modules.catcher
+package me.geek.mail.common.catcher
 
 
-import me.geek.mail.api.mail.MailManage
-import me.geek.mail.api.data.SqlManage
 import me.geek.mail.api.data.SqlManage.getData
-
 import org.bukkit.entity.Player
-
 import taboolib.platform.util.sendLang
 
 /**

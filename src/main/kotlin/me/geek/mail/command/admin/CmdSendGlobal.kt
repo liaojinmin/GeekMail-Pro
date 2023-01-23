@@ -1,13 +1,11 @@
 package me.geek.mail.command.admin
 
 import me.geek.mail.api.mail.MailBuild
-
 import me.geek.mail.command.CmdExp
+import me.geek.mail.common.settings.SetTings
 import me.geek.mail.common.template.Template
-import me.geek.mail.modules.settings.SetTings
 import me.geek.mail.utils.deserializeItemStacks
 import org.bukkit.command.CommandSender
-
 import taboolib.common.platform.command.subCommand
 
 

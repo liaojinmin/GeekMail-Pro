@@ -1,4 +1,4 @@
-package me.geek.mail.modules.settings.market
+package me.geek.mail.common.settings.market
 
 /**
  * 作者: 老廖

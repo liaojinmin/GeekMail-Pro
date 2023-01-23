@@ -1,12 +1,11 @@
 package me.geek.mail.modules
 
-import com.google.gson.annotations.Expose
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.kether.sub.KetherAPI
-import me.geek.mail.modules.settings.SetTings
-import java.util.UUID
+import me.geek.mail.common.settings.SetTings
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import java.util.*
 
 /**
  * 作者: 老廖

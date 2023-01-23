@@ -3,18 +3,19 @@ package me.geek.mail.api.data
 
 import me.geek.mail.GeekMail
 import me.geek.mail.api.event.PlayerDataLoadEvent
-import me.geek.mail.scheduler.sql.*
-
-import me.geek.mail.modules.settings.SetTings
+import me.geek.mail.common.settings.SetTings
 import me.geek.mail.scheduler.RedisImpl
 import me.geek.mail.scheduler.SQLImpl
-
-
+import me.geek.mail.scheduler.sql.Mysql
+import me.geek.mail.scheduler.sql.Sqlite
+import me.geek.mail.scheduler.sql.action
+import me.geek.mail.scheduler.sql.use
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.submitAsync
 import java.sql.Connection
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.collections.set
 
 /**
  * 作者: 老廖

@@ -3,10 +3,10 @@ package me.geek.mail.common.menu.action
 import me.geek.mail.api.data.SqlManage.getData
 import me.geek.mail.api.mail.MailState
 import me.geek.mail.api.mail.MailSub
+import me.geek.mail.common.catcher.Chat
 import me.geek.mail.common.menu.MenuBase
-import me.geek.mail.common.menu.sub.MenuData
 import me.geek.mail.common.menu.sub.IconType.*
-import me.geek.mail.modules.catcher.Chat
+import me.geek.mail.common.menu.sub.MenuData
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player

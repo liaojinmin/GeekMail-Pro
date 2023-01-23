@@ -1,4 +1,4 @@
-package me.geek.mail.modules.catcher
+package me.geek.mail.common.catcher
 
 import me.geek.mail.GeekMail
 import org.bukkit.entity.Player

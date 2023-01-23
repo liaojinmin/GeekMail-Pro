@@ -1,28 +1,15 @@
 package me.geek.mail.modules
 
-import com.google.gson.annotations.Expose
-import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailSub
-
-import me.geek.mail.common.menu.Menu
-import me.geek.mail.common.menu.MenuBase
 import me.geek.mail.common.menu.action.ItemMail
-import me.geek.mail.modules.settings.SetTings
+import me.geek.mail.common.settings.SetTings
 import me.geek.mail.utils.getEmptySlot
-
-import java.util.UUID
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
-import org.bukkit.event.HandlerList
-import org.bukkit.event.Listener
-import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.ItemStack
-import taboolib.common.platform.function.adaptPlayer
-import taboolib.module.lang.sendLang
 import taboolib.platform.util.giveItem
 import taboolib.platform.util.sendLang
+import java.util.*
 
 /**
  * 作者: 老廖

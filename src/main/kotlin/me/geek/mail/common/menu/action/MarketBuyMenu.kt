@@ -7,8 +7,8 @@ import me.geek.mail.common.menu.Menu.openMenu
 import me.geek.mail.common.menu.MenuBase
 import me.geek.mail.common.menu.sub.IconType
 import me.geek.mail.common.menu.sub.MenuData
+import me.geek.mail.common.settings.SetTings
 import me.geek.mail.common.template.Template
-import me.geek.mail.modules.settings.SetTings
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent

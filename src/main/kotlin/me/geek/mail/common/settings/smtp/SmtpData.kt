@@ -1,4 +1,4 @@
-package me.geek.mail.modules.settings.smtp
+package me.geek.mail.common.settings.smtp
 
 /**
  * 作者: 老廖

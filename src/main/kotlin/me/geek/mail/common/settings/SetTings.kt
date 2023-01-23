@@ -1,11 +1,11 @@
-package me.geek.mail.modules.settings
+package me.geek.mail.common.settings
 
 import me.geek.mail.GeekMail
-import me.geek.mail.modules.settings.market.MarketData
-import me.geek.mail.modules.settings.config.ItemFilter
-import me.geek.mail.modules.settings.mail.MailIcon
-import me.geek.mail.modules.settings.redis.RedisData
-import me.geek.mail.modules.settings.smtp.SmtpData
+import me.geek.mail.common.settings.config.ItemFilter
+import me.geek.mail.common.settings.mail.MailIcon
+import me.geek.mail.common.settings.market.MarketData
+import me.geek.mail.common.settings.redis.RedisData
+import me.geek.mail.common.settings.smtp.SmtpData
 import me.geek.mail.scheduler.sql.SqlConfig
 import me.geek.mail.utils.colorify
 import org.bukkit.Bukkit

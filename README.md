@@ -81,6 +81,8 @@ fun Player.sender(type: String = "MAIL_POINTS", target: UUID) {
 
 
 # 🔆更多图片展示
+### 与外部邮箱互动
+<img src="libs/img/webmail.png" width="50%">
 
 ### 内置的全球市场
 <img src="libs/img/20221030122102.png" width="50%"><img src="libs/img/20221030122125.png" width="50%">

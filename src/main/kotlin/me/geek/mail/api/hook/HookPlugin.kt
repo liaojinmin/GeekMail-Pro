@@ -4,15 +4,12 @@ package me.geek.mail.api.hook
 import me.arasple.mc.trhologram.api.base.ClickHandler
 import me.arasple.mc.trhologram.api.hologram.HologramBuilder
 import me.arasple.mc.trhologram.module.display.Hologram
-import me.geek.mail.GeekMail
 import me.geek.mail.GeekMail.say
 import me.geek.mail.api.hook.impl.ItemsAdder
 import me.geek.mail.api.hook.impl.Money
 import me.geek.mail.api.hook.impl.MythicMobs
 import me.geek.mail.api.hook.impl.Points
-
-import me.geek.mail.modules.settings.SetTings
-
+import me.geek.mail.common.settings.SetTings
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import java.util.*

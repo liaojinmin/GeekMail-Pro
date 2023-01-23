@@ -2,9 +2,8 @@ package me.geek.mail.scheduler
 
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailSub
-import me.geek.mail.common.market.Item
 import me.geek.mail.common.market.Market
-import me.geek.mail.modules.settings.redis.RedisData
+import me.geek.mail.common.settings.redis.RedisData
 import me.geek.mail.scheduler.redis.Redis
 import me.geek.mail.scheduler.redis.RedisMessageType.*
 import org.bukkit.Bukkit

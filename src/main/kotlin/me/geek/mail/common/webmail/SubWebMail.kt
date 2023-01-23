@@ -1,7 +1,7 @@
 package me.geek.mail.common.webmail
 
 
-import me.geek.mail.modules.settings.SetTings
+import me.geek.mail.common.settings.SetTings
 import java.io.*
 import java.util.*
 import javax.mail.Authenticator

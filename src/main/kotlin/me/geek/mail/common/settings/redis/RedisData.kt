@@ -1,4 +1,4 @@
-package me.geek.mail.modules.settings.redis
+package me.geek.mail.common.settings.redis
 
 /**
  * 作者: 老廖

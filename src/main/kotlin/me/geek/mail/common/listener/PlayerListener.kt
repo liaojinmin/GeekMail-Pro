@@ -1,18 +1,18 @@
-package me.geek.mail.modules.listener
+package me.geek.mail.common.listener
 
 
 
 import me.geek.mail.GeekMail
-import me.geek.mail.api.mail.MailManage
-import me.geek.mail.api.event.NewPlayerJoinEvent
-import me.geek.mail.common.customevent.Event
 import me.geek.mail.api.data.SqlManage.getData
 import me.geek.mail.api.data.SqlManage.saveData
+import me.geek.mail.api.event.NewPlayerJoinEvent
+import me.geek.mail.api.mail.MailManage
 import me.geek.mail.api.mail.MailState
+import me.geek.mail.common.customevent.Event
 import me.geek.mail.common.kether.sub.KetherAPI
 import me.geek.mail.common.menu.Menu
 import me.geek.mail.common.menu.Menu.openMenu
-import me.geek.mail.modules.settings.SetTings
+import me.geek.mail.common.settings.SetTings
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent

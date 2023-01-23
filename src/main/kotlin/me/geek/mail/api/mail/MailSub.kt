@@ -1,15 +1,13 @@
 package me.geek.mail.api.mail
 
 import com.google.gson.annotations.Expose
-import me.geek.mail.api.hook.HookPlugin
+import me.geek.mail.api.data.SqlManage.getData
 import me.geek.mail.api.event.MailReceiveEvent
 import me.geek.mail.api.event.MailSenderEvent
-import me.geek.mail.api.data.SqlManage
-import me.geek.mail.api.data.SqlManage.getData
+import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.common.menu.sub.Icon
-import me.geek.mail.modules.settings.SetTings
+import me.geek.mail.common.settings.SetTings
 import me.geek.mail.utils.colorify
-import me.geek.mail.utils.serializeItemStacks
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment

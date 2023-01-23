@@ -1,6 +1,6 @@
 package me.geek.mail.api.mail
 
-import me.geek.mail.modules.settings.SetTings
+import me.geek.mail.common.settings.SetTings
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.*

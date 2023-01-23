@@ -1,17 +1,15 @@
 package me.geek.mail
 
 
+import me.geek.mail.api.data.SqlManage
 import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.api.mail.MailManage
-import me.geek.mail.api.data.SqlManage
 import me.geek.mail.common.customevent.Event
-
+import me.geek.mail.common.market.Market
 import me.geek.mail.common.menu.Menu
+import me.geek.mail.common.settings.SetTings
 import me.geek.mail.common.template.Template
 import me.geek.mail.modules.*
-
-import me.geek.mail.common.market.Market
-import me.geek.mail.modules.settings.SetTings
 import me.geek.mail.utils.colorify
 import org.bukkit.Bukkit
 import taboolib.common.env.DependencyScope

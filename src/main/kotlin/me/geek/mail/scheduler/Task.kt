@@ -2,7 +2,7 @@ package me.geek.mail.scheduler
 
 import me.geek.mail.GeekMail
 import me.geek.mail.api.data.SqlManage
-import me.geek.mail.modules.settings.SetTings
+import me.geek.mail.common.settings.SetTings
 import me.geek.mail.scheduler.sql.actions
 import me.geek.mail.scheduler.sql.use
 import taboolib.common.platform.function.submitAsync

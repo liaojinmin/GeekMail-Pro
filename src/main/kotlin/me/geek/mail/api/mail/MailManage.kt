@@ -2,19 +2,13 @@ package me.geek.mail.api.mail
 
 
 import me.geek.mail.GeekMail
-import me.geek.mail.GeekMail.say
-import me.geek.mail.scheduler.MailPlayerData
-
+import me.geek.mail.common.settings.SetTings
 import me.geek.mail.common.webmail.WebManager
-import me.geek.mail.modules.settings.SetTings
 import org.bukkit.entity.Player
 import org.jetbrains.annotations.NotNull
 import taboolib.library.reflex.Reflex.Companion.invokeConstructor
 import taboolib.library.reflex.Reflex.Companion.setProperty
-
 import java.util.*
-
-import kotlin.collections.HashMap
 
 /**
  * 作者: 老廖
