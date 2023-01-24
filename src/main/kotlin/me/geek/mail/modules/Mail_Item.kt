@@ -44,12 +44,14 @@ class Mail_Item() : MailSub() {
 
 
     override fun sendMail() {
-        if (itemStacks == null) {
-            Bukkit.getPlayer(this.sender)?.let {
-                ItemMail(false, it, this).build()
+        itemStacks?.let {
+            if (it.isNotEmpty()) {
+                super.sendMail()
+            } else {
+                Bukkit.getPlayer(this.sender)?.let {
+                    ItemMail(false, it, this).build()
+                }
             }
-        } else {
-            super.sendMail()
         }
     }
 

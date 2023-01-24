@@ -4,6 +4,7 @@ package me.geek.mail.api.mail
 import me.geek.mail.GeekMail
 import me.geek.mail.common.settings.SetTings
 import me.geek.mail.common.webmail.WebManager
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.jetbrains.annotations.NotNull
 import taboolib.library.reflex.Reflex.Companion.invokeConstructor
@@ -19,7 +20,6 @@ object MailManage {
     private val MailData: MutableMap<String, MailSub> = HashMap()
 
     private val WebMail by lazy { if (SetTings.SMTP_SET) { WebManager() } else null }
-
 
     val PlayerLock: MutableList<UUID> = mutableListOf()
 
@@ -59,6 +59,23 @@ object MailManage {
             }
         }
         return data
+    }
+
+    @Synchronized
+    fun buildGlobalMail(mail: MailSub): Array<MailSub> {
+        val data = mutableListOf<MailSub>().apply {
+            Bukkit.getOfflinePlayers().forEach {
+                val a = MailBuild(mail.name, null, it.uniqueId).build {
+                    this.title = mail.title
+                    this.text = mail.text
+                    this.additional = mail.additional
+                    this.item = mail.itemStacks
+                    this.command = mail.command
+                }.run().also { m -> m.setProperty("mailID", UUID.randomUUID()) }
+                if (!it.isOnline) add(a) else a.sendMail()
+            }
+        }
+        return data.toTypedArray()
     }
 
 

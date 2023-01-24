@@ -3,7 +3,6 @@ package me.geek.mail.scheduler
 import com.google.gson.*
 import com.google.gson.annotations.Expose
 import me.geek.mail.api.data.PlayerData
-import me.geek.mail.api.mail.Mail
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.api.mail.MailState
 import me.geek.mail.api.mail.MailSub
@@ -12,7 +11,6 @@ import me.geek.mail.utils.deserializeItemStacks
 import me.geek.mail.utils.serializeItemStacks
 import org.bukkit.Bukkit
 import taboolib.common.util.asList
-import taboolib.library.reflex.Reflex.Companion.invokeConstructor
 import taboolib.library.reflex.Reflex.Companion.setProperty
 import java.lang.reflect.Type
 import java.util.*
@@ -58,7 +56,7 @@ fun ByteArray.toMailSub(): MailSub {
                     "state" to MailState.valueOf(a.get("state").asString),
                     "senderTime" to a.get("senderTime").asString,
                     "getTime" to (a.get("getTime")?.asString ?: "0"),
-                    "appendixInfo" to a.get("appendixInfo").asString,
+                    //"appendixInfo" to a.get("appendixInfo").asString,
                     "additional" to (a.get("additional")?.asString ?: ""),
                     "itemStacks" to (a.get("itemStackString")?.asString ?: "").deserializeItemStacks(),
                     "command" to (a.get("command")?.asString ?: "").split(";")
@@ -107,7 +105,7 @@ class UnSerializePlayerData: JsonDeserializer<PlayerData> {
                             "state" to MailState.valueOf(a.get("state").asString),
                             "senderTime" to a.get("senderTime").asLong,
                             "getTime" to (a.get("getTime")?.asLong ?: "0"),
-                            "appendixInfo" to a.get("appendixInfo").asString,
+                            //"appendixInfo" to a.get("appendixInfo").asString,
                             "additional" to (a.get("additional")?.asString ?: "0"),
                             "itemStacks" to (a.get("itemStackString")?.asString ?: "").deserializeItemStacks(),
                             "command" to (a.get("command")?.asList())

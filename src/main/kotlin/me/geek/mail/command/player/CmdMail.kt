@@ -4,18 +4,14 @@ package me.geek.mail.command.player
 
 import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailBuild
-import me.geek.mail.command.CmdExp
 import me.geek.mail.api.mail.MailManage
+import me.geek.mail.command.CmdExp
 import me.geek.mail.utils.colorify
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.subCommand
-import taboolib.library.reflex.Reflex.Companion.invokeConstructor
 import taboolib.platform.util.sendLang
-import java.util.*
-
-
 
 
 /**
@@ -56,7 +52,7 @@ object CmdMail: CmdExp {
                                             MailBuild(mailType, sender, target.uniqueId).build {
                                                 this.title = title
                                                 this.text = args[0]
-                                                this.additional = args[1]
+                                                if (args.size >= 2) this.additional = args[1]
                                             }.sender()
                                             // 构建邮件信息 end
 

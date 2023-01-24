@@ -7,7 +7,7 @@ data_storage:
   mysql:
     host: '192.168.0.102'
     port: 3306
-    database: 'server_Mail'
+    database: 'server_mail'
     username: 'root'
     password: '123456'
     params: '?autoReconnect=true&useSSL=false'
@@ -45,8 +45,6 @@ config:
     use: true
     # 邮件默认到期时间
     time: 2d
-    # 数据维护任务时间 单位 秒
-    auto: 600
 
 Market:
   use: true

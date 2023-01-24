@@ -7,7 +7,6 @@ import me.geek.mail.common.settings.redis.RedisData
 import me.geek.mail.scheduler.redis.Redis
 import me.geek.mail.scheduler.redis.RedisMessageType.*
 import org.bukkit.Bukkit
-import taboolib.common.platform.function.submitAsync
 import java.util.*
 
 /**
@@ -30,7 +29,7 @@ class RedisImpl(data: RedisData) : Redis() {
     // m[0] = server  m[1] = type  m[2] = targetUid  m[3] = MailUid
     // 主要用于接收跨服邮件
     override fun redisMessage(msg: String) {
-        submitAsync {
+        //submitAsync {
             val m = msg.split(division)
             if (m.size >= 3 && m[0] != server) { // 防止本服发送本服处理
                 when (valueOf(m[1])) {
@@ -38,6 +37,8 @@ class RedisImpl(data: RedisData) : Redis() {
                     CROSS_SERVER_MAIL -> crossServerMail(m[3], m[2])
                     MARKET_ADD -> crossAddMarket(m[2])
                     MARKET_REM -> crossRemMarket(m[2])
+                    PLAYER_QUERY -> TODO()
+                    PLAYER_INLINE -> TODO()
                 }
                 GeekMail.debug("Redis message ${m[0]}")
                 GeekMail.debug("------[Debug]------")
@@ -45,7 +46,7 @@ class RedisImpl(data: RedisData) : Redis() {
                 GeekMail.debug("消息种类: ${m[1]}")
                 GeekMail.debug("-------------------")
             }
-        }
+       // }
     }
 
 

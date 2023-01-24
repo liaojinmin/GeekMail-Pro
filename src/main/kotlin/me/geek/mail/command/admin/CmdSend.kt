@@ -43,7 +43,7 @@ object CmdSend: CmdExp {
                             MailBuild(mailType, if (sender is Player) sender else null, target.uniqueId).build {
                                 this.title = title
                                 this.text = args[0]
-                                this.additional = args[1]
+                                if (args.size >= 2) this.additional = args[1]
                             }.sender()
                         }
                     }

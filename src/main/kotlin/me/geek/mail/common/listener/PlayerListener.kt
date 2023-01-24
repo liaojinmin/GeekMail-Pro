@@ -56,7 +56,7 @@ object PlayerListener {
 
     @SubscribeEvent(priority = EventPriority.LOW, ignoreCancelled = true )
     fun onQuit(e: PlayerQuitEvent) {
-        e.player.saveData(true)
+        e.player.saveData(isAsync = true, true)
     }
 
 

@@ -3,7 +3,11 @@ package me.geek.mail.scheduler.redis
 import me.geek.mail.api.data.PlayerData
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.market.Item
-import me.geek.mail.scheduler.*
+import me.geek.mail.scheduler.toByteArray
+import me.geek.mail.scheduler.toMailSub
+import me.geek.mail.scheduler.toMarketData
+import me.geek.mail.scheduler.toPlayerData
+import org.bukkit.Bukkit
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Nullable
 import redis.clients.jedis.Jedis
@@ -69,6 +73,12 @@ abstract class Redis: RedisApi {
 
 
 
+    /**********************  玩家  *************************/
+    fun sendOnPlayer(server: String = Bukkit.getPort().toString(), @NotNull targetUid: String) {
+        //getRedisConnection().use {
+            //it.sadd()
+        //}
+    }
     /**
      * 发送玩家数据流
      * @param Clazz 要储存的玩家数据类
@@ -90,7 +100,7 @@ abstract class Redis: RedisApi {
 
 
 
-
+    /**********************  邮件  *************************/
     /**
      * 发布订阅消息 通知集群 (用于跨服邮件)
      */
@@ -118,8 +128,8 @@ abstract class Redis: RedisApi {
         }
     }
 
-/**********************  市场  *************************/
 
+    /**********************  市场  *************************/
     /**
      * 发送跨服商品上架消息
      */

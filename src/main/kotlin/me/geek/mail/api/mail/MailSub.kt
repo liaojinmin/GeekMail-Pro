@@ -1,12 +1,16 @@
 package me.geek.mail.api.mail
 
 import com.google.gson.annotations.Expose
+import me.geek.mail.GeekMail
+import me.geek.mail.api.data.SqlManage.RedisScheduler
+import me.geek.mail.api.data.SqlManage.addOffMail
 import me.geek.mail.api.data.SqlManage.getData
 import me.geek.mail.api.event.MailReceiveEvent
 import me.geek.mail.api.event.MailSenderEvent
 import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.common.menu.sub.Icon
 import me.geek.mail.common.settings.SetTings
+import me.geek.mail.scheduler.redis.RedisMessageType
 import me.geek.mail.utils.colorify
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -44,6 +48,7 @@ abstract class MailSub : MailPlaceholder() {
     override var senderTime: Long = System.currentTimeMillis()
     override var getTime: Long = 0L
 
+    @Expose
     override var appendixInfo: String = ""
 
     //override val permission: String = "mail.global"
@@ -116,6 +121,9 @@ abstract class MailSub : MailPlaceholder() {
 
                 val info = if (text.length >= 11) text.substring(0, 10) else text
                 adaptPlayer(targets).sendLang("玩家-接收邮件", title, "$info §8...")
+            } else {
+                // 未处理 Redis 跨服问题
+                sendCrossMail()
             }
             if (this@MailSub.sender != SetTings.Console) {
                 if (send != null) {
@@ -130,12 +138,22 @@ abstract class MailSub : MailPlaceholder() {
         MailReceiveEvent(this).call() // StarrySky
     }
 
+
     override fun sendCrossMail() {
-        TODO("未处理跨服邮件 - 包括离线玩家信息")
+        RedisScheduler?.let {
+            it.sendCrossMailPublish(
+                Bukkit.getPort().toString(),
+                RedisMessageType.CROSS_SERVER_MAIL,
+                this.target.toString(),
+                this.mailID.toString()
+            )
+            it.setMailData(this)
+            GeekMail.say("&e未解决集群在线玩家收集问题,如果玩家不在任何集群，该邮件将失效。。。")
+        } ?: addOffMail(this)
     }
 
     override fun sendGlobalMail() {
-        TODO("未处理全局邮件 - 包括离线玩家信息")
+        addOffMail(*MailManage.buildGlobalMail(this))
     }
 
     fun formatDouble(@NotNull num1: Any): String {

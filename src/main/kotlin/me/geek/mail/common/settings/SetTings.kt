@@ -109,8 +109,6 @@ object SetTings {
 
     var UseExpiry: Boolean = false
 
-    var ExpiryAuto: Int = 0
-
 
     val ExpiryTime by lazy { Expiry.getExpiryMillis(config.getString("config.Expiry.time") ?: "2d", false) * 1000 }
 
@@ -121,7 +119,6 @@ object SetTings {
         SMTP_SET = SmtpData.start
         USE_BUNDLE = if (GeekMail.BukkitVersion >= 1170) config.getBoolean("config.use_bundle") else false
         UseExpiry = config.getBoolean("config.Expiry.use")
-        ExpiryAuto = config.getInt("config.Expiry.auto", 600)
     }
 
 

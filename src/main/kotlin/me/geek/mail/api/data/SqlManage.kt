@@ -3,6 +3,7 @@ package me.geek.mail.api.data
 
 import me.geek.mail.GeekMail
 import me.geek.mail.api.event.PlayerDataLoadEvent
+import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.settings.SetTings
 import me.geek.mail.scheduler.RedisImpl
 import me.geek.mail.scheduler.SQLImpl
@@ -10,8 +11,10 @@ import me.geek.mail.scheduler.sql.Mysql
 import me.geek.mail.scheduler.sql.Sqlite
 import me.geek.mail.scheduler.sql.action
 import me.geek.mail.scheduler.sql.use
+import me.geek.mail.utils.removeE
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.submitAsync
+import taboolib.platform.util.sendLang
 import java.sql.Connection
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -32,6 +35,30 @@ object SqlManage {
     fun getPlayerDataList() = PlayerCache.map { it.value }
 
     /**
+     * 离线邮件调度 - 存
+     */
+    fun addOffMail(vararg mail: MailSub) {
+        SqlImpl.insertOff(*mail)
+    }
+
+    /**
+     * 离线邮件调度 - 取
+     */
+    fun PlayerData.getOffMail() {
+        submitAsync {
+            val list = mutableListOf<MailSub>()
+            val map = mutableListOf<Pair<UUID, UUID>>().apply {
+                list.forEach {
+                    add(it.target to it.mailID)
+                }
+            }
+            SqlImpl.selectOff(this@getOffMail.uuid, list)
+            SqlImpl.deleteOff(*map.toTypedArray())
+            this@getOffMail.mailData.addAll(list)
+        }
+    }
+
+    /**
      * 获取玩家数据
      */
     fun Player.getData(): PlayerData {
@@ -43,26 +70,42 @@ object SqlManage {
             data = RedisScheduler?.getPlayerData(this.uniqueId.toString())
         }
         data?.let {
+
+            if (SetTings.UseExpiry) it.mailData.removeE() { mail -> mail.senderTime <= (System.currentTimeMillis() - SetTings.ExpiryTime)
+            }.also { amt ->
+                this.sendLang("玩家-邮件到期-删除", amt)
+            }
+
             GeekMail.debug("getData == OK")
             return it
         } ?: select(this).also { GeekMail.debug("getData == null AC-2") }
         return PlayerCache[this.uniqueId] ?: error("数据异常")
     }
+
     /**
      * 保存玩家数据
      */
-    fun Player.saveData(isAsync: Boolean = false) {
+    fun Player.saveData(isAsync: Boolean = false, DeleteCache: Boolean = false) {
         if (isAsync) {
             submitAsync {
                 PlayerCache[this@saveData.uniqueId]?.let {
+                    if (SetTings.UseExpiry) {
+                        it.mailData.removeE { mail -> mail.senderTime <= (System.currentTimeMillis() - SetTings.ExpiryTime) }
+                    }
                     RedisScheduler?.setPlayerData(it)
                     SqlImpl.update(it)
                 }
-                PlayerCache.remove(this@saveData.uniqueId)
+                if (DeleteCache) PlayerCache.remove(this@saveData.uniqueId)
             }
         } else {
-            PlayerCache[this.uniqueId]?.let { SqlImpl.update(it) }
-            PlayerCache.remove(this.uniqueId)
+            PlayerCache[this.uniqueId]?.let {
+                if (SetTings.UseExpiry) {
+                    it.mailData.removeE { mail -> mail.senderTime <= (System.currentTimeMillis() - SetTings.ExpiryTime) }
+                }
+                //  if(SetTings.UseExpiry) it.mailData.removeIf { mail -> mail.senderTime <= (System.currentTimeMillis() - SetTings.ExpiryTime) }
+                SqlImpl.update(it)
+            }
+            if (DeleteCache) PlayerCache.remove(this.uniqueId)
         }
     }
 
@@ -74,8 +117,7 @@ object SqlManage {
             submitAsync {
                 PlayerCache[player.uniqueId] = SqlImpl.select(player).also { PlayerDataLoadEvent(it).call() }
             }
-        }
-        else PlayerCache[player.uniqueId] = SqlImpl.select(player).also { PlayerDataLoadEvent(it).call() }
+        } else PlayerCache[player.uniqueId] = SqlImpl.select(player).also { PlayerDataLoadEvent(it).call() }
     }
 
 
@@ -86,7 +128,7 @@ object SqlManage {
     }
 
     private val dataSub by lazy {
-        if (SetTings.StorageDate.use_type.equals("mysql", ignoreCase = true)){
+        if (SetTings.StorageDate.use_type.equals("mysql", ignoreCase = true)) {
             return@lazy Mysql(SetTings.StorageDate)
         } else return@lazy Sqlite(SetTings.StorageDate)
     }
@@ -112,6 +154,7 @@ object SqlManage {
                         if (dataSub is Mysql) {
                             statement.addBatch(SqlTab.MYSQL_1.tab)
                             statement.addBatch(SqlTab.MYSQL_2.tab)
+                            statement.addBatch(SqlTab.OffMail.tab)
                         } else {
                             statement.addBatch("PRAGMA foreign_keys = ON;")
                             statement.addBatch("PRAGMA encoding = 'UTF-8';")
@@ -128,39 +171,64 @@ object SqlManage {
 
     enum class SqlTab(val tab: String) {
 
-        SQLITE_1("CREATE TABLE IF NOT EXISTS `player_data` (" +
-                " `uuid` CHAR(36) NOT NULL UNIQUE PRIMARY KEY, " +
-                " `user` varchar(16) NOT NULL UNIQUE," +
-                " `data` longblob NOT NULL," +
-                " `time` BIGINT(20) NOT NULL" +
-                ");"),
-        SQLITE_2("CREATE TABLE IF NOT EXISTS `market_data` (" +
-                " `id` integer PRIMARY KEY, " +
-                " `uid` CHAR(36) NOT NULL UNIQUE," +
-                " `user` CHAR(36) NOT NULL," +
-                " `time` BIGINT(20) NOT NULL," +
-                " `points` BIGINT(20) NOT NULL," +
-                " `money` BIGINT(20) NOT NULL," +
-                " `item` longtext NOT NULL" +
-                ");"),
+        SQLITE_1(
+            "CREATE TABLE IF NOT EXISTS `player_data` (" +
+                    " `uuid` CHAR(36) NOT NULL UNIQUE PRIMARY KEY, " +
+                    " `user` varchar(16) NOT NULL UNIQUE," +
+                    " `data` longblob NOT NULL," +
+                    " `time` BIGINT(20) NOT NULL" +
+                    ");"
+        ),
+        SQLITE_2(
+            "CREATE TABLE IF NOT EXISTS `market_data` (" +
+                    " `id` integer PRIMARY KEY, " +
+                    " `uid` CHAR(36) NOT NULL UNIQUE," +
+                    " `user` CHAR(36) NOT NULL," +
+                    " `time` BIGINT(20) NOT NULL," +
+                    " `points` BIGINT(20) NOT NULL," +
+                    " `money` BIGINT(20) NOT NULL," +
+                    " `item` longtext NOT NULL" +
+                    ");"
+        ),
+        OffSmail(
+            "CREATE TABLE IF NOT EXISTS `off_data` (" +
+                    " `uid` CHAR(36) NOT NULL UNIQUE PRIMARY KEY," +
+                    " `target` CHAR(36) NOT NULL," +
+                    " `data` longblob NOT NULL," +
+                    " `time` BIGINT(20) NOT NULL" +
+                    ");"
+        ),
 
-        MYSQL_1("CREATE TABLE IF NOT EXISTS `player_data` (" +
-                " `uuid` CHAR(36) NOT NULL UNIQUE," +
-                " `user` varchar(16) NOT NULL UNIQUE," +
-                " `data` longblob NOT NULL," +
-                " `time` BIGINT(20) NOT NULL," +
-                "PRIMARY KEY (`uuid`, `user`)" +
-                ");"),
+        MYSQL_1(
+            "CREATE TABLE IF NOT EXISTS `player_data` (" +
+                    " `uuid` CHAR(36) NOT NULL UNIQUE," +
+                    " `user` varchar(16) NOT NULL UNIQUE," +
+                    " `data` longblob NOT NULL," +
+                    " `time` BIGINT(20) NOT NULL," +
+                    "PRIMARY KEY (`uuid`, `user`)" +
+                    ");"
+        ),
 
-        MYSQL_2("CREATE TABLE IF NOT EXISTS `market_data` (" +
-                " `id` integer NOT NULL AUTO_INCREMENT, " +
-                " `uid` CHAR(36) NOT NULL UNIQUE," +
-                " `user` CHAR(36) NOT NULL," +
-                " `time` BIGINT(20) NOT NULL," +
-                " `points` BIGINT(20) NOT NULL," +
-                " `money` BIGINT(20) NOT NULL," +
-                " `item` longtext NOT NULL," +
-                "PRIMARY KEY (`id`)" +
-                ");"),
+        MYSQL_2(
+            "CREATE TABLE IF NOT EXISTS `market_data` (" +
+                    " `id` integer NOT NULL AUTO_INCREMENT, " +
+                    " `uid` CHAR(36) NOT NULL UNIQUE," +
+                    " `user` CHAR(36) NOT NULL," +
+                    " `time` BIGINT(20) NOT NULL," +
+                    " `points` BIGINT(20) NOT NULL," +
+                    " `money` BIGINT(20) NOT NULL," +
+                    " `item` longtext NOT NULL," +
+                    "PRIMARY KEY (`id`)" +
+                    ");"
+        ),
+        OffMail(
+            "CREATE TABLE IF NOT EXISTS `off_data` (" +
+                    " `uid` CHAR(36) NOT NULL UNIQUE," +
+                    " `target` CHAR(36) NOT NULL," +
+                    " `data` longblob NOT NULL," +
+                    " `time` BIGINT(20) NOT NULL," +
+                    "PRIMARY KEY (`uid`, `target`)" +
+                    ");"
+        ),
     }
 }

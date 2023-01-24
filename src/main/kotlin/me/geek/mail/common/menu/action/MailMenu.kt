@@ -26,6 +26,7 @@ class MailMenu(
     override val player: Player,
     override val menuData: MenuData
 ): MenuBase() {
+    private val playerData = player.getData()
 
     private val ioc: MutableMap<Int, MailSub> = mutableMapOf()
     override fun build(): MenuBase {
@@ -78,7 +79,8 @@ class MailMenu(
                                 val itemStacks = this.contents[page]
                                 itemStacks[event.rawSlot] = ItemStack(Material.AIR)
 
-                                ioc.remove(event.rawSlot) // 未成功删除标记， 可能无法正常删除
+                                playerData.mailData.removeIf { m -> m.mailID == mail.mailID }
+                                ioc.remove(event.rawSlot)
 
                                 this.inventory.contents = itemStacks
                                 this.contents[page] = itemStacks
@@ -117,7 +119,7 @@ class MailMenu(
                     }
 
                     DELETE -> {
-                        if (player.getData().mailData.size >= 1) {
+                        if (playerData.mailData.size >= 1) {
                             player.closeInventory()
                             player.getData().mailData.removeIf { mail -> mail.state == MailState.Acquired }
                             sound("BLOCK_SOUL_SAND_STEP",0.7f, 1f)
@@ -125,9 +127,9 @@ class MailMenu(
                         return
                     }
                     GET_ALL -> {
-                        if (player.getData().mailData.size >= 1) {
+                        if (playerData.mailData.size >= 1) {
                             player.closeInventory()
-                            player.getData().mailData.forEach { mail ->
+                            playerData.mailData.forEach { mail ->
                                 if (mail.state == MailState.NotObtained) {
                                     if (mail.giveAppendix()) {
                                         mail.state = MailState.Acquired
@@ -139,7 +141,7 @@ class MailMenu(
                     }
 
                     BIND -> {
-                        if (player.getData().mail.isEmpty()) {
+                        if (playerData.mail.isEmpty()) {
                             Chat(player).start()
                             player.closeInventory()
                         }
