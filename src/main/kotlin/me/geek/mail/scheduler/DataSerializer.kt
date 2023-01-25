@@ -112,21 +112,6 @@ class UnSerializePlayerData: JsonDeserializer<PlayerData> {
                             )
                         add(mailSub)
                     }
-                    //val mailID = UUID.fromString(a.get("mailID")!!.asString)
-                    //# val mailType = a.get("mailType").asString
-                    //# val mailIcon
-                    //val title = a.get("title")?.asString ?: ""
-                    //val text = a.get("text")?.asString ?: ""
-                    //val sender = UUID.fromString(a.get("sender").asString)
-                    //val target = UUID.fromString(a.get("target").asString)
-                    //val state = MailState.valueOf(a.get("state").asString)
-                    //val senderTime = a.get("senderTime").asString
-                    //val getTime = a.get("getTime")?.asString ?: "0"
-                    //val appendixInfo = a.get("appendixInfo").asString
-                    //# val permission = a.get("permission").asString
-                    //val additional = a.get("additional")?.asString ?: ""
-                    //val itemStacks = a.get("itemStackString")?.asString ?: ""
-                    //val command = a.get("command")?.asString ?: ""
                 }
             }
         }

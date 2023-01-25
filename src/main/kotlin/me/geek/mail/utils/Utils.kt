@@ -16,5 +16,5 @@ fun <T> MutableList<T>.removeE(filter: Predicate<in T>): Int {
             amt++
         }
     }
-    return 0
+    return amt
 }

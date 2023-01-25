@@ -2,7 +2,7 @@ package me.geek.mail.api.data
 
 import me.geek.mail.api.mail.MailSub
 import org.bukkit.entity.Player
-import java.util.UUID
+import java.util.*
 
 /**
  * 作者: 老廖
@@ -13,7 +13,7 @@ interface PlayerData {
     /**
      * 玩家对象
      */
-    val player: Player
+    val player: Player?
 
     /**
      * 玩家名称

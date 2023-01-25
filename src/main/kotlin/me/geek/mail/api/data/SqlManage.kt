@@ -7,10 +7,8 @@ import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.settings.SetTings
 import me.geek.mail.scheduler.RedisImpl
 import me.geek.mail.scheduler.SQLImpl
-import me.geek.mail.scheduler.sql.Mysql
-import me.geek.mail.scheduler.sql.Sqlite
-import me.geek.mail.scheduler.sql.action
-import me.geek.mail.scheduler.sql.use
+import me.geek.mail.scheduler.migrator.PData
+import me.geek.mail.scheduler.sql.*
 import me.geek.mail.utils.removeE
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.submitAsync
@@ -32,7 +30,11 @@ object SqlManage {
     private val PlayerCache: MutableMap<UUID, PlayerData> = ConcurrentHashMap()
     private val SqlImpl: SQLImpl = SQLImpl()
 
-    fun getPlayerDataList() = PlayerCache.map { it.value }
+    fun saveAllData() {
+        SqlImpl.updateGlobal(PlayerCache.map { it.value })
+    }
+
+
 
     /**
      * 离线邮件调度 - 存
@@ -45,7 +47,7 @@ object SqlManage {
      * 离线邮件调度 - 取
      */
     fun PlayerData.getOffMail() {
-        submitAsync {
+        //submitAsync {
             val list = mutableListOf<MailSub>()
             val map = mutableListOf<Pair<UUID, UUID>>().apply {
                 list.forEach {
@@ -55,7 +57,7 @@ object SqlManage {
             SqlImpl.selectOff(this@getOffMail.uuid, list)
             SqlImpl.deleteOff(*map.toTypedArray())
             this@getOffMail.mailData.addAll(list)
-        }
+       // }
     }
 
     /**
@@ -71,7 +73,7 @@ object SqlManage {
         }
         data?.let {
 
-            if (SetTings.UseExpiry) it.mailData.removeE() { mail -> mail.senderTime <= (System.currentTimeMillis() - SetTings.ExpiryTime)
+            if (SetTings.UseExpiry) it.mailData.removeE { mail -> mail.senderTime <= (System.currentTimeMillis() - SetTings.ExpiryTime)
             }.also { amt ->
                 this.sendLang("玩家-邮件到期-删除", amt)
             }
@@ -106,6 +108,27 @@ object SqlManage {
                 SqlImpl.update(it)
             }
             if (DeleteCache) PlayerCache.remove(this.uniqueId)
+        }
+    }
+    /**
+     * 迁移器数据储存入口
+     */
+    fun migratorSave(data: MutableMap<UUID, PData>) {
+        if (isActive()) {
+            getConnection().use {
+                this.prepareStatement(
+                    "UPDATE `player_data` SET `user`=?,`data`=?,`time`=? WHERE `uuid`=?;"
+                ).actions { p ->
+                    data.forEach { (_, value) ->
+                        p.setString(1, value.user)
+                        p.setBytes(2, value.toByteArray())
+                        p.setString(3, System.currentTimeMillis().toString())
+                        p.setString(4, value.uuid.toString())
+                        p.addBatch()
+                    }
+                    p.executeBatch()
+                }
+            }
         }
     }
 
@@ -160,6 +183,7 @@ object SqlManage {
                             statement.addBatch("PRAGMA encoding = 'UTF-8';")
                             statement.addBatch(SqlTab.SQLITE_1.tab)
                             statement.addBatch(SqlTab.SQLITE_2.tab)
+                            statement.addBatch(SqlTab.OffSmail.tab)
                         }
                         statement.executeBatch()
                     }

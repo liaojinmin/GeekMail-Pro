@@ -40,11 +40,13 @@ object CmdSend: CmdExp {
                             val title = context.args()[3].colorify()
                             val args = context.args()[4].colorify().split(" ", limit = 2)
                             val target = Bukkit.getOfflinePlayer(context.args()[1])
+
                             MailBuild(mailType, if (sender is Player) sender else null, target.uniqueId).build {
                                 this.title = title
                                 this.text = args[0]
                                 if (args.size >= 2) this.additional = args[1]
                             }.sender()
+
                         }
                     }
                 }

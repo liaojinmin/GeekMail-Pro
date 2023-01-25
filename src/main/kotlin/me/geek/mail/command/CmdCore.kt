@@ -4,29 +4,24 @@ package me.geek.mail.command
 
 import me.geek.mail.GeekMail
 import me.geek.mail.api.data.SqlManage
-
 import me.geek.mail.command.admin.*
-import me.geek.mail.command.player.*
+import me.geek.mail.command.player.CmdMail
+import me.geek.mail.command.player.CmdPack
 import me.geek.mail.common.market.Item
+import me.geek.mail.scheduler.migrator.Migrator
 import me.geek.mail.scheduler.redis.RedisMessageType
 import org.bukkit.Bukkit
 import org.bukkit.Material
-
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-
 import taboolib.common.platform.command.*
 import taboolib.common.platform.function.adaptCommandSender
 import taboolib.common.platform.function.submitAsync
-
 import taboolib.module.chat.TellrawJson
 import taboolib.module.kether.isInt
 import taboolib.module.lang.sendLang
-import taboolib.module.nms.getI18nName
 import taboolib.module.nms.getName
-import taboolib.platform.util.hasName
 import taboolib.platform.util.sendLang
-import taboolib.platform.util.takeItem
 import java.util.*
 
 @CommandHeader(name = "GeekMail", aliases = ["gkm"], permissionDefault = PermissionDefault.TRUE )
@@ -60,6 +55,14 @@ object CmdCore {
     val main = mainCommand {
         execute { sender, _, _ ->
             createHelp(sender)
+        }
+    }
+
+    @CommandBody(permission = "mail.command.migrator")
+    val migrator = subCommand {
+        execute<CommandSender> { sender, _, _ ->
+            sender.sendMessage("迁移器准备中...")
+            Migrator("Migrator").start()
         }
     }
 

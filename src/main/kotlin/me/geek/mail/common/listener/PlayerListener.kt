@@ -4,6 +4,7 @@ package me.geek.mail.common.listener
 
 import me.geek.mail.GeekMail
 import me.geek.mail.api.data.SqlManage.getData
+import me.geek.mail.api.data.SqlManage.getOffMail
 import me.geek.mail.api.data.SqlManage.saveData
 import me.geek.mail.api.event.NewPlayerJoinEvent
 import me.geek.mail.api.mail.MailManage
@@ -34,9 +35,9 @@ object PlayerListener {
         submitAsync {
             val player = e.player
             MailManage.PlayerLock.add(player.uniqueId)
-            val data = player.getData()
+            val data = player.getData().also { it.getOffMail() }
             GeekMail.debug("添加玩家数据..." )
-            if (data.player == player) {
+            if (data.uuid == player.uniqueId) {
                 MailManage.PlayerLock.remove(player.uniqueId)
                 var amt = 0
                 data.mailData.forEach { mail ->

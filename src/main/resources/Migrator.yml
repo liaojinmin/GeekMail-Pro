@@ -1,0 +1,10 @@
+migrator:
+  # 需要迁移的数据类型 sqlite | mysql
+  use_type: sqlite
+  mysql:
+    host: '192.168.0.102'
+    port: 3306
+    database: 'server_mail'
+    username: 'root'
+    password: '123456'
+    params: '?autoReconnect=true&useSSL=false'

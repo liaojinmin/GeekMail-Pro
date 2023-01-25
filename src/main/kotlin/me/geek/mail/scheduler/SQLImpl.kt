@@ -1,5 +1,6 @@
 package me.geek.mail.scheduler
 
+import me.geek.mail.GeekMail
 import me.geek.mail.api.data.PlayerData
 import me.geek.mail.api.data.SqlManage
 import me.geek.mail.api.mail.MailSub
@@ -122,6 +123,24 @@ class SQLImpl {
             }
             return data!!
         } else error("数据库发生异常，请检查sql服务器状态，并报告此问题。。。")
+    }
+    fun updateGlobal(data: List<PlayerData>) {
+        if (manager.isActive()) {
+            manager.getConnection().use {
+                this.prepareStatement(
+                    "UPDATE `player_data` SET `user`=?,`data`=?,`time`=? WHERE `uuid`=?;"
+                ).actions { p ->
+                    data.forEach {
+                        p.setString(1, it.user)
+                        p.setBytes(2, it.toByteArray())
+                        p.setString(3, System.currentTimeMillis().toString())
+                        p.setString(4, it.uuid.toString())
+                        p.addBatch()
+                    }
+                    GeekMail.debug("update ${p.executeBatch()} 条数据")
+                }
+            }
+        }
     }
 
 

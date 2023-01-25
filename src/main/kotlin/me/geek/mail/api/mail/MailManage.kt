@@ -46,11 +46,12 @@ object MailManage {
         return MailBuild(mailType, player, target)
     }
 
-
+    @JvmStatic
     fun getMailClass(name: String): MailSub? {
         return MailData[name]?.javaClass?.invokeConstructor()
     }
 
+    @Deprecated("此方法随时可能删除，如对项目不了解不建议使用")
     fun buildMail(name: String, vararg fields: Pair<String, Any?>): MailSub {
         val data = getMailClass(name) ?: error("错误的邮件种类，请检查你的代码，或联系相关开发者。。。")
         fields.forEach { (key, value) ->
@@ -88,23 +89,4 @@ object MailManage {
         return MailData.keys.filter { it != "MAIL_NORMAL" }
     }
 
-
-
-    /*
-    fun getPlayerMailCache(@NotNull uuid: UUID): MutableList<MailSub> {
-        return ArrayList(MailPlayerCache[uuid]?.let {
-            it.mailData.also { value ->
-                val s = value.size
-                value.removeIf { mail ->
-                   mail.sender == SetTings.Console && mail.senderTime.toLong() <= (System.currentTimeMillis() - SetTings.ExpiryTime)
-                }
-                val b = s - value.size
-                if (b != 0) {
-                    getProxyPlayer(uuid)?.sendLang("玩家-邮件到期-删除", b)
-                }
-            }
-        } ?: mutableListOf())
-    }
-
-     */
 }
