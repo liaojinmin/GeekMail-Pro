@@ -44,10 +44,14 @@ import kotlin.system.measureTimeMillis
         test = "redis.clients.jedis.exceptions.JedisException",
         transitive = false, ignoreOptional = true, scopes = [DependencyScope.PROVIDED]
     ),
-    RuntimeDependency(value = "com.google.code.gson:gson:2.9.0",
-        relocate = ["!com.google.gson", "!com.google.gson.2_9_0"],
+    RuntimeDependency(value = "!com.google.code.gson:gson:2.9.1",
+        relocate = ["!com.google.gson", "!com.google.gson2_9_1"],
     transitive = false, ignoreOptional = true, scopes = [DependencyScope.PROVIDED]
-    )
+    ),
+    RuntimeDependency(value = "org.xerial.snappy:snappy-java:1.1.8.4",
+        transitive = true, ignoreOptional = false
+       // repository = "https://repo1.maven.org/maven2",
+    ),
 )
 object GeekMail : Plugin() {
 

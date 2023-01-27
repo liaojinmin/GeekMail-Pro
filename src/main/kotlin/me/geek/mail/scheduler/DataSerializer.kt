@@ -10,6 +10,7 @@ import me.geek.mail.common.market.Item
 import me.geek.mail.utils.deserializeItemStacks
 import me.geek.mail.utils.serializeItemStacks
 import org.bukkit.Bukkit
+import org.xerial.snappy.Snappy
 import taboolib.common.util.asList
 import taboolib.library.reflex.Reflex.Companion.setProperty
 import java.lang.reflect.Type
@@ -72,15 +73,11 @@ fun ByteArray.toMailSub(): MailSub {
 
 
 /**  玩家数据序列化 与 反序列化 **/
-fun PlayerData.toJson(): String {
-    return GsonBuilder()
-        .setExclusionStrategies(Exclude())
-        .create().toJson(this)
-}
+
 fun ByteArray.toPlayerData(): PlayerData {
     val gson = GsonBuilder().setExclusionStrategies(Exclude())
     gson.registerTypeAdapter(MailPlayerData::class.java, UnSerializePlayerData())
-    return gson.create().fromJson(String(this, charset = Charsets.UTF_8), MailPlayerData::class.java)
+    return gson.create().fromJson(String(Snappy.uncompress(this), charset = Charsets.UTF_8), MailPlayerData::class.java)
 }
 
 class UnSerializePlayerData: JsonDeserializer<PlayerData> {

@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: run
+name: [修复更新] +增加对低版本的数据迁移功能，修复部分问题
 
 # Controls when the workflow will run
 on:

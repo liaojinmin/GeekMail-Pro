@@ -38,7 +38,7 @@ taboolib {
     relocate("me.geek.mail", group.toString())
     relocate("com.zaxxer.hikari", "com.zaxxer.hikari_4_0_3_mail")
     relocate("javax.mail", "javax.mail_1_5_0_mail")
-    relocate("com.google.gson", "com.google.gson.2_9_0")
+    relocate("com.google.gson", "com.google.gson2_9_1")
     classifier = null
     version = taboolibVersion
 }
@@ -68,12 +68,12 @@ dependencies {
     compileOnly(kotlin("stdlib"))
     // Libraries
     compileOnly(fileTree("libs"))
-    // Server Core
     compileOnly("com.zaxxer:HikariCP:4.0.3")
     compileOnly("redis.clients:jedis:4.2.2")
     compileOnly("javax.mail:javax.mail-api:1.6.2") { isTransitive = false }
     compileOnly("javax.activation:activation:1.1.1") { isTransitive = false }
     compileOnly("com.google.code.gson:gson:2.9.1")
+    compileOnly("org.xerial.snappy:snappy-java:1.1.8.4")
 
 
     compileOnly("ink.ptms.core:v11701:11701-minimize:mapped")

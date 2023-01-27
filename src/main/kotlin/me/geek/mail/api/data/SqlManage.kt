@@ -11,7 +11,6 @@ import me.geek.mail.scheduler.migrator.PData
 import me.geek.mail.scheduler.sql.*
 import me.geek.mail.utils.removeE
 import org.bukkit.entity.Player
-import taboolib.common.platform.function.submitAsync
 import taboolib.platform.util.sendLang
 import java.sql.Connection
 import java.util.*
@@ -47,17 +46,15 @@ object SqlManage {
      * 离线邮件调度 - 取
      */
     fun PlayerData.getOffMail() {
-        //submitAsync {
-            val list = mutableListOf<MailSub>()
-            val map = mutableListOf<Pair<UUID, UUID>>().apply {
-                list.forEach {
-                    add(it.target to it.mailID)
-                }
+        val list = mutableListOf<MailSub>()
+        val map = mutableListOf<Pair<UUID, UUID>>().apply {
+            list.forEach {
+                add(it.target to it.mailID)
             }
-            SqlImpl.selectOff(this@getOffMail.uuid, list)
-            SqlImpl.deleteOff(*map.toTypedArray())
-            this@getOffMail.mailData.addAll(list)
-       // }
+        }
+        SqlImpl.selectOff(this.uuid, list)
+        SqlImpl.deleteOff(*map.toTypedArray())
+        this.mailData.addAll(list)
     }
 
     /**
@@ -75,7 +72,7 @@ object SqlManage {
 
             if (SetTings.UseExpiry) it.mailData.removeE { mail -> mail.senderTime <= (System.currentTimeMillis() - SetTings.ExpiryTime)
             }.also { amt ->
-                this.sendLang("玩家-邮件到期-删除", amt)
+                if (amt != 0) this.sendLang("玩家-邮件到期-删除", amt)
             }
 
             GeekMail.debug("getData == OK")
@@ -87,28 +84,15 @@ object SqlManage {
     /**
      * 保存玩家数据
      */
-    fun Player.saveData(isAsync: Boolean = false, DeleteCache: Boolean = false) {
-        if (isAsync) {
-            submitAsync {
-                PlayerCache[this@saveData.uniqueId]?.let {
-                    if (SetTings.UseExpiry) {
-                        it.mailData.removeE { mail -> mail.senderTime <= (System.currentTimeMillis() - SetTings.ExpiryTime) }
-                    }
-                    RedisScheduler?.setPlayerData(it)
-                    SqlImpl.update(it)
-                }
-                if (DeleteCache) PlayerCache.remove(this@saveData.uniqueId)
+    fun Player.saveData(DeleteCache: Boolean = false) {
+        PlayerCache[this.uniqueId]?.let {
+            if (SetTings.UseExpiry) {
+                it.mailData.removeE { mail -> mail.senderTime <= (System.currentTimeMillis() - SetTings.ExpiryTime) }
             }
-        } else {
-            PlayerCache[this.uniqueId]?.let {
-                if (SetTings.UseExpiry) {
-                    it.mailData.removeE { mail -> mail.senderTime <= (System.currentTimeMillis() - SetTings.ExpiryTime) }
-                }
-                //  if(SetTings.UseExpiry) it.mailData.removeIf { mail -> mail.senderTime <= (System.currentTimeMillis() - SetTings.ExpiryTime) }
-                SqlImpl.update(it)
-            }
-            if (DeleteCache) PlayerCache.remove(this.uniqueId)
+            RedisScheduler?.setPlayerData(it)
+            SqlImpl.update(it)
         }
+        if (DeleteCache) PlayerCache.remove(this.uniqueId)
     }
     /**
      * 迁移器数据储存入口
@@ -135,12 +119,8 @@ object SqlManage {
     /**
      * 统一查库入口
      */
-    private fun select(player: Player, isAsync: Boolean = false) {
-        if (isAsync) {
-            submitAsync {
-                PlayerCache[player.uniqueId] = SqlImpl.select(player).also { PlayerDataLoadEvent(it).call() }
-            }
-        } else PlayerCache[player.uniqueId] = SqlImpl.select(player).also { PlayerDataLoadEvent(it).call() }
+    private fun select(player: Player) {
+        PlayerCache[player.uniqueId] = SqlImpl.select(player).also { PlayerDataLoadEvent(it).call() }
     }
 
 
