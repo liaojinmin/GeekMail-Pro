@@ -88,7 +88,7 @@ class UnSerializePlayerData: JsonDeserializer<PlayerData> {
         val new = jsonObject.get("newPlayer")?.asBoolean ?: true
         val mailData = mutableListOf<MailSub>().apply {
             val mail = jsonObject.get("mailData").asJsonArray
-            if (!mail.isEmpty) {
+            if (mail.size() != 0) {
                 // 循环每一个邮件
                 mail.forEach {
                     val a = it.asJsonObject

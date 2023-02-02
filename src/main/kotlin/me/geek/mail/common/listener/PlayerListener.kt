@@ -34,10 +34,12 @@ object PlayerListener {
     fun onJoin(e: PlayerJoinEvent) {
         submitAsync {
             val player = e.player
+            GeekMail.debug("开始调度玩家数据..." )
             MailManage.PlayerLock.add(player.uniqueId)
             val data = player.getData().also { it.getOffMail() }
             GeekMail.debug("添加玩家数据..." )
             if (data.uuid == player.uniqueId) {
+                GeekMail.debug("玩家状态解锁..." )
                 MailManage.PlayerLock.remove(player.uniqueId)
                 var amt = 0
                 data.mailData.forEach { mail ->

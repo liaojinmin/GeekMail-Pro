@@ -3,14 +3,15 @@ package me.geek.mail.common.menu
 
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.common.menu.Menu.openMenu
-import org.bukkit.event.inventory.*
+import org.bukkit.event.inventory.ClickType
+import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.event.inventory.InventoryOpenEvent
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import taboolib.common.platform.event.EventPriority
-
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.adaptPlayer
 import taboolib.module.lang.sendLang
-import taboolib.platform.util.sendLang
 
 /**
  * 作者: 老廖
@@ -27,7 +28,6 @@ object MenuListener {
             menu.player.closeInventory()
             menu.player.sendLang("player-bag-look")
         }
-
          */
     }
 
