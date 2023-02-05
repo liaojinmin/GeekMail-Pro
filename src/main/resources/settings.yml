@@ -33,7 +33,6 @@ SmtpSet:
   port: '25' # 端口
 
 config:
-  # 期限设置，如果使用，邮件到期将自动删除
   use_bundle: false # 物品邮件 物品预览使用 lore 展示 (只限 1.17+)
   item_filter: # 针对 物品邮件 发送的物品进行筛选
     use: true

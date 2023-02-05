@@ -20,7 +20,7 @@ class Mail_Item() : MailSub() {
     constructor(
         senders: UUID,
         targets: UUID,
-        itemStacks: Array<ItemStack>? = emptyArray()
+        itemStacks: Array<ItemStack> = emptyArray()
     ) : this() {
         this.sender = senders
         this.target = targets
@@ -57,15 +57,13 @@ class Mail_Item() : MailSub() {
 
     override fun giveAppendix(): Boolean {
         Bukkit.getPlayer(this.target)?.let {
-            this.itemStacks?.let { item ->
-                val air = it.getEmptySlot()
-                if (air >= item.size) {
-                    it.giveItem(item.asList())
-                    return true
-                } else {
-                    it.sendLang("玩家-没有足够背包格子", item.size-air)
-                    return false
-                }
+            val air = it.getEmptySlot()
+            if (air >= this.itemStacks.size) {
+                it.giveItem(this.itemStacks.asList())
+                return true
+            } else {
+                it.sendLang("玩家-没有足够背包格子", this.itemStacks.size-air)
+                return false
             }
         }
         return false

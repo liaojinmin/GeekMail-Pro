@@ -56,12 +56,12 @@ abstract class MailSub : MailPlaceholder() {
     override var additional: String = "0"
 
     @Expose
-    override var itemStacks: Array<ItemStack>? = emptyArray()
+    override var itemStacks: Array<ItemStack> = emptyArray()
 
     // 物品序列化用
     override var itemStackString: String = ""
 
-    override var command: List<String>? = emptyList()
+    override var command: List<String> = emptyList()
 
 
     fun getIcon(icon: Icon): ItemStack {
@@ -165,7 +165,7 @@ abstract class MailSub : MailPlaceholder() {
         return var1
     }
 
-    fun getItemInfo(@NotNull Str: StringBuilder): String {
+    fun getItemInfo(@NotNull str: StringBuilder): String {
         var index = 0
         var bs = 0
         this.itemStacks?.let {
@@ -174,11 +174,11 @@ abstract class MailSub : MailPlaceholder() {
                 val meta = Stack.itemMeta
                 if (meta != null && bs < 6) {
                     if (meta.hasDisplayName()) {
-                        Str.append(meta.displayName + " §7* §f" + Stack.amount + ", §f")
+                        str.append(meta.displayName + " §7* §f" + Stack.amount + ", §f")
                     } else {
                         val manes = Stack.getI18nName(player)
                         if (manes != "[ERROR LOCALE]") {
-                            Str.append(manes + " §7* §f" + Stack.amount + ", §f")
+                            str.append(manes + " §7* §f" + Stack.amount + ", §f")
                         } else {
                             index++
                         }
@@ -189,9 +189,9 @@ abstract class MailSub : MailPlaceholder() {
         }
         if (index > 0 || bs >= 6) {
             if ((bs - 6) > 0) {
-                Str.append("§7剩余 §6${index + (bs - 6)} §7项未显示...")
+                str.append("§7剩余 §6${index + (bs - 6)} §7项未显示...")
             }
         }
-        return Str.toString()
+        return str.toString()
     }
 }

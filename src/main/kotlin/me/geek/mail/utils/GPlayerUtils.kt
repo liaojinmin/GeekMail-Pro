@@ -10,7 +10,7 @@ import org.bukkit.entity.Player
  *
  **/
 
-fun Player.getEmptySlot(hasEquipment: Boolean = false, isItemAmount: Boolean = false): Int {
+fun Player.getEmptySlot(hasEquipment: Boolean = true, isItemAmount: Boolean = false): Int {
     var air = 0
     for (itemStack in inventory.contents) {
         if (itemStack == null || itemStack.type == Material.AIR) { air++ }

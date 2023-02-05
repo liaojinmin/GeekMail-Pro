@@ -61,7 +61,7 @@ object GeekMail : Plugin() {
     val instance by lazy { BukkitPlugin.getInstance() }
 
 
-    const val VERSION = 3.0
+    const val VERSION = 3.1
 
     val BukkitVersion by lazy { Bukkit.getVersion().substringAfter("MC:").filter { it.isDigit() }.toInt() }
 

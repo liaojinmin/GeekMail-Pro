@@ -90,6 +90,12 @@ class MailMenu(
                         // 领取邮件附件
                         if (event.isLeftClick && !event.isShiftClick) {
                             if (mail.state == MailState.NotObtained) {
+                                if (mail.itemStacks.isNotEmpty()) {
+                                    if (!mail.giveAppendix()) {
+                                        player.closeInventory()
+                                        return
+                                    }
+                                } else mail.giveAppendix()
                                 mail.state = MailState.Acquired
                                 mail.getTime = System.currentTimeMillis()
                                 val item = event.currentItem!!
@@ -99,12 +105,9 @@ class MailMenu(
                                     itemMeta.removeEnchant(Enchantment.DAMAGE_ALL)
                                     itemMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS)
                                 }
-                                event.currentItem = item
-                                this.contents[page] = event.inventory.contents
-
-                                if (mail.itemStacks != null && mail.itemStacks!!.isNotEmpty()) {
-                                    if (!mail.giveAppendix()) return
-                                } else mail.giveAppendix()
+                                event.inventory.setItem(event.rawSlot, item)
+                                //event.currentItem = item
+                               // this.contents[page] = event.inventory.contents
 
                                 player.sendLang("玩家-领取附件-成功", mail.appendixInfo)
                             } else if (mail.state == MailState.Acquired) player.sendLang("玩家-领取附件-失败")

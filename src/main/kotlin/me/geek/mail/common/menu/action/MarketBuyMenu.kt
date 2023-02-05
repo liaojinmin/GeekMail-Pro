@@ -34,7 +34,9 @@ class MarketBuyMenu(
             if (c != ' ') {
                 menuData.icon[c]?.let {
                     if (it.iconType == IconType.MARKET_ITEM) {
-                        this.inventory.contents[index] = InfoItem
+                        this.inventory.setItem(index, InfoItem)
+                     //   this.inventory.contents[index] = InfoItem
+                        GeekMail.debug("InfoItem -ac ${InfoItem.type}")
                     }
                 }
             }
@@ -79,9 +81,13 @@ class MarketBuyMenu(
                                 player.closeInventory()
                             } else player.sendLang("玩家-市场购买-货币不足", i2.money, i2.points)
                         } else player.sendLang("玩家-市场购买-商品不存在")
+                        return
                     }
-                    IconType.CANCEL -> player.openMenu(ca)
-                    else -> TODO()
+                    IconType.CANCEL -> {
+                        player.openMenu(ca)
+                        return
+                    }
+                    else -> {}
                 }
             }
         }

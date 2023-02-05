@@ -100,7 +100,8 @@ class MarketMenu(
                         val item = ioc[event.rawSlot] ?: error("商品索引错误")
                         val data = Menu.getMenuData(MenuType.MARKETBUY)
                         player.closeInventory()
-                        MarketBuyMenu(player, data, this.menuData, item.item, item.packUid).build()
+                        MarketBuyMenu(player, data, this.menuData, event.currentItem!!, item.packUid).build()
+                        return
                     }
                     else -> return
 

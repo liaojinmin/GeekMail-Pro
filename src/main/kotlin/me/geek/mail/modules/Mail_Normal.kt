@@ -4,11 +4,13 @@ import com.google.gson.annotations.Expose
 import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.settings.SetTings
+import me.geek.mail.utils.getEmptySlot
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.platform.compat.replacePlaceholder
 import taboolib.platform.util.giveItem
+import taboolib.platform.util.sendLang
 import java.util.*
 
 /**
@@ -21,8 +23,8 @@ class Mail_Normal() : MailSub() {
         senders: UUID,
         targets: UUID,
         additional: String,
-        itemStacks: Array<ItemStack>? = emptyArray(),
-        cmd: List<String>? = emptyList()
+        itemStacks: Array<ItemStack> = emptyArray(),
+        cmd: List<String> = emptyList()
     ) : this() {
         this.sender = senders
         this.target = targets
@@ -57,26 +59,36 @@ class Mail_Normal() : MailSub() {
                 when (a) {
                     "MONEY" -> {
                         money = formatDouble(data[1]).toDouble()
-                        texts.append("§f$money ${SetTings.MONEY_MAIL}§7, §f")
+                        if (money > 0.0) texts.append("§f$money ${SetTings.MONEY_MAIL}§7, §f")
                     }
                     "POINTS" -> {
                         points = data[1].filter { v -> v.isDigit() }.toInt()
-                        texts.append("§f$points ${SetTings.POINTS_MAIL}§7, §f")
+                        if (points > 0) texts.append("§f$points ${SetTings.POINTS_MAIL}§7, §f")
                     }
                     "EXP" -> {
                         exp = data[1].filter { v -> v.isDigit() }.toInt()
-                        texts.append("§f$exp ${SetTings.EXP_MAIL}§7, §f")
+                        if (exp > 0) texts.append("§f$exp ${SetTings.EXP_MAIL}§7, §f")
                     }
                 }
             }
         }
-        if (command != null)  texts.append("${SetTings.CMD_MAIL} §7* §f${command?.size}§7, §f")
-        if (itemStacks != null) getItemInfo(texts)
+        if (command.isNotEmpty()) texts.append("${SetTings.CMD_MAIL} §7* §f${command?.size}§7, §f")
+        if (itemStacks.isNotEmpty()) getItemInfo(texts)
         appendixInfo = texts.toString()
     }
 
 
     override fun giveAppendix(): Boolean {
+        Bukkit.getPlayer(this.target)?.let {
+            val air = it.getEmptySlot()
+            if (air >= this.itemStacks.size) {
+                it.giveItem(this.itemStacks.asList())
+            } else {
+                it.sendLang("玩家-没有足够背包格子", this.itemStacks.size-air)
+                return false
+            }
+        } ?: return false
+
         if (this.money > 0) {
             HookPlugin.money.giveMoney(Bukkit.getOfflinePlayer(this.target), this.money)
         }
@@ -86,12 +98,10 @@ class Mail_Normal() : MailSub() {
         if (this.exp > 0) {
             Bukkit.getPlayer(this.target)?.giveExp(this.exp)
         }
-        this.itemStacks?.asList()?.let {
-            Bukkit.getPlayer(this.target)?.giveItem(it)
-        }
-        this.command?.let { cmd ->
+
+        if (this.command.isNotEmpty()) {
             Bukkit.getPlayer(this.target)?.let {
-                cmd.replacePlaceholder(it).forEach { out ->
+                this.command.replacePlaceholder(it).forEach { out ->
                     try {
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), out)
                     } catch (_: Exception) {}

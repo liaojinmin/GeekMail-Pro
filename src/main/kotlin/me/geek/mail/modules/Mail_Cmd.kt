@@ -33,7 +33,7 @@ class Mail_Cmd() : MailSub() {
 
 
     override fun runAppendixInfo() {
-        this.appendixInfo = "§6${command?.size ?: 0} §7${SetTings.CMD_MAIL}"
+        this.appendixInfo = "§6${command.size} §7${SetTings.CMD_MAIL}"
     }
 
 
