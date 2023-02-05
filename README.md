@@ -1,4 +1,4 @@
-![alt](https://web-1301331373.cos.ap-guangzhou.myqcloud.com/mail/mail-b-gq.png)
+![alt](https://web-1301331373.cos.ap-guangzhou.myqcloud.com/mail/a.png)
 # 📬GeekMail-Pro  高级邮件系统 3.0
 ### ‼‼ 此版本大幅度修改，可能存在问题，请勿在生产环境使用，如有问题及时反馈。
 - **地表超强邮件系统**，**多模块**，**高端实用**，**支持邮件模板**，覆盖你能想到的所有邮箱功能 💯
