@@ -54,8 +54,8 @@ class MailMenu(
             }
             sound("BLOCK_NOTE_BLOCK_HARP",1f, 1f)
         }
-        return this
         this.openMenu()
+        return this
     }
     private var view: Boolean = false
     private var cd: Long = 0
