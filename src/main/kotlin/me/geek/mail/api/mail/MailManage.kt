@@ -32,6 +32,8 @@ object MailManage {
       MailData[mail.name] = mail
     }
 
+
+
     /**
      * 发送web邮件提醒
      */

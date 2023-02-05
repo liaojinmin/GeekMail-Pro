@@ -22,7 +22,9 @@ object MenuListener {
 
     @SubscribeEvent
     fun onOpen(e: InventoryOpenEvent) {
-        val menu = Menu.SessionCache[e.view.player] ?: return
+        if (Menu.SessionCache[e.view.player] != null) {
+            e.isCancelled = true
+        }
         /*
         if (menu.player.getData().isLook) {
             menu.player.closeInventory()

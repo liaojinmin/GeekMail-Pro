@@ -1,13 +1,10 @@
 package me.geek.mail.common.menu
 
 import me.geek.mail.GeekMail
-
 import org.bukkit.Bukkit
-
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import taboolib.library.xseries.XSound
-import java.util.ArrayList
 
 /**
  * 作者: 老廖
@@ -38,12 +35,12 @@ abstract class MenuBase: MenuHeader {
      * 打开菜单
      */
     override fun openMenu() {
+        this.player.openInventory(this.inventory)
         Menu.SessionCache[this.player] = this
         Menu.isOpen.add(this.player)
         if (contents.size != 0) {
             this.inventory.contents = this.contents[0]
         }
-        this.player.openInventory(this.inventory)
     }
 
 

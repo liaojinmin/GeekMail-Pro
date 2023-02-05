@@ -4,8 +4,8 @@ import me.geek.mail.common.market.Item
 import me.geek.mail.common.market.Market
 import me.geek.mail.common.menu.Menu
 import me.geek.mail.common.menu.MenuBase
-import me.geek.mail.common.menu.sub.MenuData
 import me.geek.mail.common.menu.sub.IconType
+import me.geek.mail.common.menu.sub.MenuData
 import me.geek.mail.common.menu.sub.MenuType
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -65,6 +65,8 @@ class MarketMenu(
                 item = this.inventory.contents
             }
         }
+        sound("BLOCK_NOTE_BLOCK_HARP",1f, 1f)
+        this.openMenu()
         return this
 
     }
