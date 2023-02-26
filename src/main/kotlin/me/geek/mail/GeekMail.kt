@@ -20,7 +20,6 @@ import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
 import taboolib.module.metrics.Metrics
 import taboolib.platform.BukkitPlugin
-import test
 import kotlin.system.measureTimeMillis
 
 
@@ -70,7 +69,6 @@ object GeekMail : Plugin() {
 
 
     override fun onLoad() {
-        test.main(emptyArray())
         Metrics(16437, VERSION.toString(), Platform.BUKKIT)
         console().sendMessage("")
         console().sendMessage("正在加载 §3§lGeekMail  §f...  §8" + Bukkit.getVersion())
