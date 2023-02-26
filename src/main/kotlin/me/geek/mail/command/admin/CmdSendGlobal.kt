@@ -7,6 +7,7 @@ import me.geek.mail.common.template.Template
 import me.geek.mail.utils.deserializeItemStacks
 import org.bukkit.command.CommandSender
 import taboolib.common.platform.command.subCommand
+import taboolib.common.platform.function.submitAsync
 
 
 /**
@@ -26,13 +27,15 @@ object CmdSendGlobal: CmdExp {
                 }
                 execute<CommandSender> { _, context, _ ->
                     val pack = Template.getAdminPack(context.args()[1])!!
-                    MailBuild(pack.type, null, SetTings.Console).build {
-                        this.title = pack.title
-                        this.text = pack.text
-                        this.additional = pack.additional ?: ""
-                        this.item = pack.itemStacks?.deserializeItemStacks()
-                        this.command = pack.command
-                    }.run().sendGlobalMail()
+                    submitAsync {
+                        MailBuild(pack.type, null, SetTings.Console).build {
+                            this.title = pack.title
+                            this.text = pack.text
+                            this.additional = pack.additional ?: ""
+                            this.item = pack.itemStacks?.deserializeItemStacks()
+                            this.command = pack.command
+                        }.run().sendGlobalMail()
+                    }
                 }
             }
         }

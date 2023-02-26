@@ -1,7 +1,7 @@
 package me.geek.mail.common.menu.action
 
 import me.geek.mail.GeekMail
-import me.geek.mail.common.menu.MenuBase
+import me.geek.mail.common.menu.MenuBasic
 import me.geek.mail.common.settings.SetTings
 import me.geek.mail.modules.Mail_Item
 import org.bukkit.entity.Player
@@ -20,8 +20,8 @@ class ItemMail(
     private val isCross: Boolean = false,
     override val player: Player,
     private val mail: Mail_Item
-): MenuBase() {
-        override fun build(): MenuBase {
+): MenuBasic() {
+        override fun build(): MenuBasic {
             this.title = "§0放入物品 §7| §0关闭菜单"
             this.size = 27
             this.sound("BLOCK_NOTE_BLOCK_HARP", 1f, 1f)

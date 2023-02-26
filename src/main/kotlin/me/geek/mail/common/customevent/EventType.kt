@@ -8,7 +8,8 @@ package me.geek.mail.common.customevent
 enum class EventType {
     NewPlayerJoinEvent, // 新玩家加入游戏
     PlayerJoinEvent, // 玩家加入游戏
-    AsyncPlayerChatEvent // 玩家异步聊天
+    MailBindEvent,
+    AsyncPlayerChatEvent, // 玩家异步聊天
 
 
 }

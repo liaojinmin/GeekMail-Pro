@@ -42,7 +42,7 @@ data class MailPlayerData(
                     it.itemStackString = it.itemStacks.serializeItemStacks()
                 }
                 is Mail_Normal -> {
-                    it.itemStacks?.let { i ->
+                    it.itemStacks.let { i ->
                         if (i.isNotEmpty()) {
                             it.itemStackString = i.serializeItemStacks()
                         }

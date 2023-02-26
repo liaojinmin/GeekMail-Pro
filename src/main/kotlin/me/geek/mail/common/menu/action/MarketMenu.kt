@@ -3,7 +3,7 @@ package me.geek.mail.common.menu.action
 import me.geek.mail.common.market.Item
 import me.geek.mail.common.market.Market
 import me.geek.mail.common.menu.Menu
-import me.geek.mail.common.menu.MenuBase
+import me.geek.mail.common.menu.MenuBasic
 import me.geek.mail.common.menu.sub.IconType
 import me.geek.mail.common.menu.sub.MenuData
 import me.geek.mail.common.menu.sub.MenuType
@@ -20,13 +20,13 @@ import taboolib.module.nms.i18n.I18n
 class MarketMenu(
     override val player: Player,
     override val menuData: MenuData
-): MenuBase() {
+): MenuBasic() {
     private val ioc: MutableMap<Int, Item> = mutableMapOf()
 
     private val itemPack = Market.getMarketListCache()
 
 
-    override fun build(): MenuBase {
+    override fun build(): MenuBasic {
         var item = this.inventory.contents
         // 如果商品为空 截停
         if (itemPack.isNotEmpty()) {

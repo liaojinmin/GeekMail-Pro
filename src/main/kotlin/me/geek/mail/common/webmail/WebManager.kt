@@ -2,14 +2,13 @@ package me.geek.mail.common.webmail
 
 import me.geek.mail.GeekMail
 import me.geek.mail.api.data.SqlManage.getData
-
 import me.geek.mail.api.event.WebMailSenderEvent
 import org.bukkit.Bukkit
 import taboolib.common.platform.function.releaseResourceFile
-
-import java.io.*
+import java.io.File
 import java.util.*
-import javax.mail.*
+import javax.mail.Message
+import javax.mail.Transport
 import javax.mail.internet.InternetAddress
 
 
@@ -24,6 +23,20 @@ class WebManager : SubWebMail() {
         File(GeekMail.instance.dataFolder, "web.html").also {
             if (!it.exists()) releaseResourceFile("web.html", true)
         }.toHtmlString()
+    }
+    private val bind by lazy {
+        File(GeekMail.instance.dataFolder, "bind.html").also {
+            if (!it.exists()) releaseResourceFile("bind.html", true)
+        }.toHtmlString()
+    }
+    fun onSender(user: String, code: String, toMail: String) {
+        val out = bind
+            .replace("{player}", user)
+            .replace("{code}", code)
+        htmlMessage.setRecipient(Message.RecipientType.TO, InternetAddress(toMail))
+        htmlMessage.setContent(out, "text/html;charset=gb2312")
+        GeekMail.debug("发送邮箱绑定验证码,目标玩家: $user")
+        Transport.send(htmlMessage)
     }
 
     override fun onSender(title: String, text: String, app: String, targetID: UUID){

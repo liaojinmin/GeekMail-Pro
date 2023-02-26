@@ -1,5 +1,6 @@
 package me.geek.mail.api.mail
 
+import com.google.gson.GsonBuilder
 import com.google.gson.annotations.Expose
 import me.geek.mail.GeekMail
 import me.geek.mail.api.data.SqlManage.RedisScheduler
@@ -10,8 +11,12 @@ import me.geek.mail.api.event.MailSenderEvent
 import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.common.menu.sub.Icon
 import me.geek.mail.common.settings.SetTings
+import me.geek.mail.scheduler.Exclude
 import me.geek.mail.scheduler.redis.RedisMessageType
+
 import me.geek.mail.utils.colorify
+import me.geek.mail.utils.deserializeItemStacks
+import me.geek.mail.utils.serializeItemStacks
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -32,6 +37,7 @@ import java.util.regex.Pattern
  *
  **/
 abstract class MailSub : MailPlaceholder() {
+
 
     override val name: String = javaClass.simpleName.uppercase(Locale.ROOT)
     /*
@@ -73,7 +79,7 @@ abstract class MailSub : MailPlaceholder() {
             val itemMeta = if (SetTings.USE_BUNDLE) {
                 item.type = Material.BUNDLE
                 (item.itemMeta as BundleMeta).also {
-                    it.setItems(this.itemStacks?.asList())
+                    it.setItems(this.itemStacks.asList())
                 }
             } else item.itemMeta
             if (itemMeta != null) {
@@ -193,5 +199,17 @@ abstract class MailSub : MailPlaceholder() {
             }
         }
         return str.toString()
+    }
+
+    fun toByteArray(): ByteArray {
+        this.itemStackString = this.itemStacks.serializeItemStacks()
+        val gson = GsonBuilder().setExclusionStrategies(Exclude())
+        return gson.create().toJson(this).toByteArray(charset = Charsets.UTF_8)
+    }
+    fun intsItems(): MailSub {
+        if (this.itemStackString.isNotEmpty()) {
+            this.itemStacks = this.itemStackString.deserializeItemStacks()
+        }
+        return this
     }
 }

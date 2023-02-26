@@ -1,10 +1,11 @@
 package me.geek.mail.common.menu.action
 
 import me.geek.mail.api.data.SqlManage.getData
+import me.geek.mail.api.mail.MailManage
 import me.geek.mail.api.mail.MailState
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.catcher.Chat
-import me.geek.mail.common.menu.MenuBase
+import me.geek.mail.common.menu.MenuBasic
 import me.geek.mail.common.menu.sub.IconType.*
 import me.geek.mail.common.menu.sub.MenuData
 import org.bukkit.Material
@@ -25,11 +26,11 @@ import taboolib.platform.util.sendLang
 class MailMenu(
     override val player: Player,
     override val menuData: MenuData
-): MenuBase() {
+): MenuBasic() {
     private val playerData = player.getData()
 
     private val ioc: MutableMap<Int, MailSub> = mutableMapOf()
-    override fun build(): MenuBase {
+    override fun build(): MenuBasic {
         val data = player.getData()
         var item = this.inventory.contents
         if (data.mailData.isNotEmpty()) {
@@ -45,6 +46,8 @@ class MailMenu(
                                     item[index] = i
                                     mailSize--
                                 }
+                            } else if (icon.iconType == BIND){
+                                item[index] = buildItem(icon)
                             }
                         }
                     }
@@ -73,7 +76,7 @@ class MailMenu(
             menuData.icon[it]?.let { icon ->
                 when (icon.iconType) {
                     TEXT -> {
-                        val mail = ioc[event.rawSlot] ?: error(" 邮件索引错误")
+                        val mail = ioc[event.rawSlot] ?: return
                         if (event.isRightClick) {
                             if (mail.state == MailState.Acquired) {
                                 val itemStacks = this.contents[page]
@@ -98,16 +101,16 @@ class MailMenu(
                                 } else mail.giveAppendix()
                                 mail.state = MailState.Acquired
                                 mail.getTime = System.currentTimeMillis()
-                                val item = event.currentItem!!
+                                val item = mail.getIcon(icon)
                                 val itemMeta = item.itemMeta
                                 if (itemMeta != null && itemMeta.lore != null) {
                                     itemMeta.lore = mail.parseMailInfo(itemMeta.lore!!)
                                     itemMeta.removeEnchant(Enchantment.DAMAGE_ALL)
                                     itemMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS)
                                 }
-                                event.inventory.setItem(event.rawSlot, item)
-                                //event.currentItem = item
-                               // this.contents[page] = event.inventory.contents
+                                item.itemMeta = itemMeta
+                                this.inventory.setItem(event.rawSlot, item)
+
 
                                 player.sendLang("玩家-领取附件-成功", mail.appendixInfo)
                             } else if (mail.state == MailState.Acquired) player.sendLang("玩家-领取附件-失败")
@@ -115,7 +118,7 @@ class MailMenu(
                         }
                         if (event.click == ClickType.MIDDLE && mail.mailType.contains("物品")) {
                             view = true
-                            this.inventory.contents = mail.itemStacks!!
+                            this.inventory.contents = mail.itemStacks
                             return
                         }
                         return
@@ -144,9 +147,13 @@ class MailMenu(
                     }
 
                     BIND -> {
-                        if (playerData.mail.isEmpty()) {
-                            Chat(player).start()
-                            player.closeInventory()
+                        if (MailManage.webIsActive()) {
+                          //  if (playerData.mail.isEmpty()) {
+                                Chat(player).start()
+                                player.closeInventory()
+                          //  }
+                        } else {
+                            player.sendMessage("功能未配置，请联系管理员...")
                         }
                         return
                     }

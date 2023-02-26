@@ -1,50 +1,40 @@
-import java.util.Random;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 /**
  * 作者: 老廖
  * 时间: 2023/1/25
  **/
 public class test {
-    /**
-     * 打印进度条
-     *
-     * @param progress 当前进度
-     */
-    public static void printProgressBar(int progress) {
-        if (progress < 0 || progress > 100) {
-            throw new IllegalArgumentException("invalid progress = " + progress);
-        }
-        // 要想获得更好的通用性，在控制台打印的内容最好不要使用ASCII以外的字符，这些字符在不同环境下的长度不一样，导致效果不尽如人意，下同。
-        String prefix = String.format("Current Progress%3d%%:", progress);
-        StringBuilder refreshBar = new StringBuilder();
-        int cnt = 100 + prefix.length();
-        while (cnt-- > 0) {
-            refreshBar.append("\b");
-        }
-        refreshBar.append(prefix);
-        int remaining = 100 - progress;
-        while (progress-- > 0) {
-            refreshBar.append("_");
-        }
-        while (remaining-- > 0) {
-            refreshBar.append("*");
-        }
-        System.out.print(refreshBar);
+
+    public static long getTodayStartTime() {
+        //设置时区
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
+        calendar.set(Calendar.HOUR_OF_DAY, 24);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        return calendar.getTimeInMillis();
     }
 
+
     public static void main(String[] args) throws InterruptedException {
-        // 测试进度条
-        Random random = new Random();
-        int remaining = 0;
-        while (remaining < 100) {
-            Thread.sleep(500);
-            printProgressBar(remaining);
-            remaining += random.nextInt(5);
-            if (remaining > 100) {
-                remaining = 100;
-            }
-        }
-        Thread.sleep(500);
-        printProgressBar(remaining);
+        String ac = "Location{world=CraftWorld{name=ad},x=a}";
+        String a = ac.substring(ac.indexOf("{"), ac.lastIndexOf("}"));
+        String[] text = a.split(",");
+        String w = text[0].substring(text[0].indexOf("name=")+5, text[0].lastIndexOf("}"));
+        String x = text[1].substring(text[1].indexOf("=")+1);
+        System.out.println("world= "+w+" x= "+x);
+
+
+        System.out.println("---------------");
+        System.out.println((int)((Math.random()*9+1)*100000));
+        /*
+        System.out.println("当前: "+System.currentTimeMillis());
+        System.out.println("十二: "+getTodayStartTime());
+        SimpleDateFormat format = new SimpleDateFormat("yyyy年 MM月 dd日 HH:mm:ss");
+        System.out.println("格式化当前: "+format.format(System.currentTimeMillis()));
+        System.out.println("格式化十二: "+format.format(getTodayStartTime()));
+
+         */
     }
 }

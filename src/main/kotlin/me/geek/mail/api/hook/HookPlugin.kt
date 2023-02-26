@@ -5,10 +5,7 @@ import me.arasple.mc.trhologram.api.base.ClickHandler
 import me.arasple.mc.trhologram.api.hologram.HologramBuilder
 import me.arasple.mc.trhologram.module.display.Hologram
 import me.geek.mail.GeekMail.say
-import me.geek.mail.api.hook.impl.ItemsAdder
-import me.geek.mail.api.hook.impl.Money
-import me.geek.mail.api.hook.impl.MythicMobs
-import me.geek.mail.api.hook.impl.Points
+import me.geek.mail.api.hook.impl.*
 import me.geek.mail.common.settings.SetTings
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -36,6 +33,14 @@ object HookPlugin {
         itemsAdder
         mythicMobs
         display()
+        hookPapi()
+    }
+
+    private fun hookPapi() {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            say("&7软依赖 &fPlaceholderAPI &7已兼容.")
+            Placeholder().register()
+        }
     }
 
 

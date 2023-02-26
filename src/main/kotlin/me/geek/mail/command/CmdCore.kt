@@ -5,6 +5,7 @@ package me.geek.mail.command
 import me.geek.mail.GeekMail
 import me.geek.mail.api.data.SqlManage
 import me.geek.mail.command.admin.*
+import me.geek.mail.command.player.CmdBind
 import me.geek.mail.command.player.CmdMail
 import me.geek.mail.command.player.CmdPack
 import me.geek.mail.common.market.Item
@@ -49,6 +50,8 @@ object CmdCore {
 
     @CommandBody(permissionDefault = PermissionDefault.TRUE)
     val mail = CmdMail.command
+    @CommandBody(permissionDefault = PermissionDefault.TRUE)
+    val bind = CmdBind.command
 
 
     @CommandBody

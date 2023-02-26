@@ -1,7 +1,9 @@
 package me.geek.mail.common.market
 
+import com.google.gson.GsonBuilder
 import com.google.gson.annotations.Expose
 import me.geek.mail.api.hook.HookPlugin
+import me.geek.mail.scheduler.Exclude
 import me.geek.mail.utils.serializeItemStacks
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -35,6 +37,11 @@ data class Item (
     fun runCondition(player: Player) {
         HookPlugin.money.takeMoney(player, money)
         HookPlugin.points.takePoints(player.uniqueId, points)
+    }
+    fun toByteArray(): ByteArray {
+        return GsonBuilder()
+            .setExclusionStrategies(Exclude())
+            .create().toJson(this).toByteArray(charset = Charsets.UTF_8)
     }
 
 

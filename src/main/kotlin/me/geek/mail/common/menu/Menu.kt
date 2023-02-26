@@ -1,11 +1,11 @@
 package me.geek.mail.common.menu
 
-import me.geek.mail.common.menu.sub.MenuData
-import me.geek.mail.common.menu.sub.Icon
 import me.geek.mail.GeekMail
 import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.common.menu.action.MailMenu
+import me.geek.mail.common.menu.sub.Icon
 import me.geek.mail.common.menu.sub.IconType
+import me.geek.mail.common.menu.sub.MenuData
 import me.geek.mail.common.menu.sub.MenuType
 import me.geek.mail.utils.colorify
 import me.geek.mail.utils.forFile
@@ -13,14 +13,12 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.entity.Player
-
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.releaseResourceFile
 import taboolib.library.configuration.ConfigurationSection
 import taboolib.module.configuration.SecuredFile
 import taboolib.module.configuration.util.getMap
 import java.io.File
-import java.lang.IllegalArgumentException
 import java.util.*
 import kotlin.system.measureTimeMillis
 
@@ -33,7 +31,7 @@ object Menu {
 
     // start 已打开的会话界面缓存
     val isOpen: MutableList<Player> = mutableListOf()
-    val SessionCache: MutableMap<Player, MenuBase> = mutableMapOf()
+    val SessionCache: MutableMap<Player, MenuBasic> = mutableMapOf()
     // end
 
     /**

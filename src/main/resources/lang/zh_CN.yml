@@ -82,6 +82,37 @@
   - '§A   ♻&7请输入要绑定的邮箱账号并以 &f回车键 &7结束'
   - '§A   ♻&7取消输入 &fCancel &7结束'
   - '&l'
+玩家-邮箱绑定-确认:
+  - type: title
+    title: '&a邮箱验证码已发送'
+    subtitle: '&c请登录你的邮箱查看验证码'
+    fadein: 20
+    fadeout: 20
+    stay: 40
+  - type: sound
+    sound: 'BLOCK_NOTE_BLOCK_HARP'
+    volume: 1
+    pitch: 1
+玩家-邮箱绑定-成功:
+  - type: title
+    title: '&a邮箱绑定成功'
+    subtitle: '&a你现在可以正常使用了'
+    fadein: 20
+    fadeout: 20
+    stay: 40
+  - type: sound
+    sound: 'BLOCK_NOTE_BLOCK_HARP'
+    volume: 1
+    pitch: 1
+玩家-邮箱绑定-错误:
+  - '&1'
+  - '&7  Geek&fMail &8>&7>&f>'
+  - '&l'
+  - '§c   你输入的错误的邮箱格式'
+  - '§A   请重新进行绑定流程...'
+  - '&l'
+
+
 
 玩家-发送邮件-阻止: |-
   &l

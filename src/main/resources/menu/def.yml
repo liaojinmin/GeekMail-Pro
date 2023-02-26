@@ -41,7 +41,7 @@ Icons:
       mats: SPECTRAL_ARROW
       name: '&3# &b绑定邮箱'
       lore:
-        - ' &7你的绑定: &f[mail_Info]'
+        - ' &7你的绑定: &f%gkm_mail%'
         - ''
         - ' &7支持的邮箱:'
         - ' &fQQ邮箱: &7xxxxx@qq.com'

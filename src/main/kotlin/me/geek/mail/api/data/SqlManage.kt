@@ -14,7 +14,6 @@ import org.bukkit.entity.Player
 import taboolib.platform.util.sendLang
 import java.sql.Connection
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.set
 
 /**
@@ -26,8 +25,10 @@ object SqlManage {
     /**
      * 玩家在线缓存
      */
-    private val PlayerCache: MutableMap<UUID, PlayerData> = ConcurrentHashMap()
+    private val PlayerCache: MutableMap<UUID, PlayerData> = mutableMapOf()
     private val SqlImpl: SQLImpl = SQLImpl()
+
+    val bindCode = mutableMapOf<UUID, String>()
 
     fun saveAllData() {
         SqlImpl.updateGlobal(PlayerCache.map { it.value })
@@ -84,7 +85,7 @@ object SqlManage {
     /**
      * 保存玩家数据
      */
-    fun Player.saveData(DeleteCache: Boolean = false) {
+    fun Player.saveData(deleteCache: Boolean = false) {
         PlayerCache[this.uniqueId]?.let {
             if (SetTings.UseExpiry) {
                 it.mailData.removeE { mail -> mail.senderTime <= (System.currentTimeMillis() - SetTings.ExpiryTime) }
@@ -92,7 +93,7 @@ object SqlManage {
             RedisScheduler?.setPlayerData(it)
             SqlImpl.update(it)
         }
-        if (DeleteCache) PlayerCache.remove(this.uniqueId)
+        if (deleteCache) PlayerCache.remove(this.uniqueId)
     }
     /**
      * 迁移器数据储存入口

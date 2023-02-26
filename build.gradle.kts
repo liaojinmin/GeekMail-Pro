@@ -2,7 +2,7 @@ val taboolibVersion: String by project
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.7.20"
-    id("io.izzel.taboolib") version "1.50"
+    id("io.izzel.taboolib") version "1.56"
     id("org.jetbrains.dokka") version "1.7.20"
 }
 

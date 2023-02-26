@@ -1,7 +1,8 @@
 package me.geek.mail.common.catcher
 
 
-import me.geek.mail.api.data.SqlManage.getData
+import me.geek.mail.api.data.SqlManage
+import me.geek.mail.api.mail.MailManage
 import org.bukkit.entity.Player
 import taboolib.platform.util.sendLang
 
@@ -20,10 +21,14 @@ class Chat(
     }
     override fun action(msg: String) {
         if (reg.matches(msg)) {
-            player.getData().mail = msg
-            player.sendMessage("§a绑定成功.")
-            } else player.sendMessage("§c错误的邮箱格式.")
-        }
+           // player.getData().mail = msg
+            val text = ((Math.random()*9+1)*100000).toInt()
+            SqlManage.bindCode[player.uniqueId] = "$text;$msg"
+
+            MailManage.senderBindMail(player.name, text.toString(), msg)
+            player.sendLang("玩家-邮箱绑定-确认")
+            } else player.sendLang("玩家-邮箱绑定-错误")
+    }
 
     override fun start() {
         super.start()

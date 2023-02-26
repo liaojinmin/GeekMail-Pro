@@ -3,7 +3,7 @@ package me.geek.mail.scheduler.redis
 import me.geek.mail.api.data.PlayerData
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.market.Item
-import me.geek.mail.scheduler.toByteArray
+
 import me.geek.mail.scheduler.toMailSub
 import me.geek.mail.scheduler.toMarketData
 import me.geek.mail.scheduler.toPlayerData

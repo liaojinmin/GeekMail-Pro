@@ -8,7 +8,6 @@ import me.geek.mail.api.mail.MailState
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.market.Item
 import me.geek.mail.utils.deserializeItemStacks
-import me.geek.mail.utils.serializeItemStacks
 import org.bukkit.Bukkit
 import org.xerial.snappy.Snappy
 import taboolib.common.util.asList
@@ -28,22 +27,12 @@ fun ByteArray.toMarketData(): Item {
     return GsonBuilder().setExclusionStrategies(Exclude())
         .create().fromJson(String(this, charset = Charsets.UTF_8), Item::class.java)
 }
-fun Item.toByteArray(): ByteArray {
-    return GsonBuilder()
-        .setExclusionStrategies(Exclude())
-        .create().toJson(this).toByteArray(charset = Charsets.UTF_8)
-}
 
-/**  单类邮件序列化 与 反序列化 **/
-fun MailSub.toByteArray(): ByteArray {
-    if (this.itemStacks != null) {
-        this.itemStackString = this.itemStacks.serializeItemStacks()
-    }
-    val gson = GsonBuilder().setExclusionStrategies(Exclude())
-    return gson.create().toJson(this).toByteArray(charset = Charsets.UTF_8)
-}
+/** 反序列化 **/
+
 fun ByteArray.toMailSub(): MailSub {
     val gson = GsonBuilder().setExclusionStrategies(Exclude())
+
     gson.registerTypeAdapter(MailSub::class.java, object : JsonDeserializer<MailSub> {
         override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext?): MailSub {
             val a = json.asJsonObject
@@ -55,12 +44,11 @@ fun ByteArray.toMailSub(): MailSub {
                     "sender" to UUID.fromString(a.get("sender").asString),
                     "target" to UUID.fromString(a.get("target").asString),
                     "state" to MailState.valueOf(a.get("state").asString),
-                    "senderTime" to a.get("senderTime").asString,
-                    "getTime" to (a.get("getTime")?.asString ?: "0"),
-                    //"appendixInfo" to a.get("appendixInfo").asString,
-                    "additional" to (a.get("additional")?.asString ?: ""),
+                    "senderTime" to a.get("senderTime").asLong,
+                    "getTime" to (a.get("getTime")?.asLong ?: "0"),
+                    "additional" to (a.get("additional")?.asString ?: "0"),
                     "itemStacks" to (a.get("itemStackString")?.asString ?: "").deserializeItemStacks(),
-                    "command" to (a.get("command")?.asString ?: "").split(";")
+                    "command" to (a.get("command")?.asList())
                 )
                 mailSub
             } ?: error("""
@@ -68,7 +56,9 @@ fun ByteArray.toMailSub(): MailSub {
             """.trimIndent())
         }
     })
-    return gson.create().fromJson(String(this, charset = Charsets.UTF_8), MailSub::class.java)
+
+
+    return gson.create().fromJson(String(this, charset = Charsets.UTF_8), MailSub::class.java).intsItems()
 }
 
 
@@ -102,7 +92,6 @@ class UnSerializePlayerData: JsonDeserializer<PlayerData> {
                             "state" to MailState.valueOf(a.get("state").asString),
                             "senderTime" to a.get("senderTime").asLong,
                             "getTime" to (a.get("getTime")?.asLong ?: "0"),
-                            //"appendixInfo" to a.get("appendixInfo").asString,
                             "additional" to (a.get("additional")?.asString ?: "0"),
                             "itemStacks" to (a.get("itemStackString")?.asString ?: "").deserializeItemStacks(),
                             "command" to (a.get("command")?.asList())

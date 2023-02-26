@@ -1,7 +1,6 @@
 package me.geek.mail.api.mail
 
 
-import me.geek.mail.GeekMail
 import me.geek.mail.common.settings.SetTings
 import me.geek.mail.common.webmail.WebManager
 import org.bukkit.Bukkit
@@ -21,6 +20,7 @@ object MailManage {
 
     private val WebMail by lazy { if (SetTings.SMTP_SET) { WebManager() } else null }
 
+
     val PlayerLock: MutableList<UUID> = mutableListOf()
 
 
@@ -39,8 +39,13 @@ object MailManage {
      */
     @JvmStatic
     fun senderWebMail(title: String, text: String, additional: String, targetUuid: UUID) {
-        GeekMail.debug("&8准备发送Smtp邮件")
         WebMail?.onSender(title, text, additional, targetUuid)
+    }
+    fun webIsActive():Boolean {
+        return WebMail != null
+    }
+    fun senderBindMail(user: String, code: String, toMail: String) {
+        WebMail?.onSender(user, code, toMail)
     }
     @JvmStatic
     fun getMailBuild(@NotNull mailType: String, player: Player?, target: UUID): MailBuild {
@@ -51,17 +56,6 @@ object MailManage {
     @JvmStatic
     fun getMailClass(name: String): MailSub? {
         return MailData[name]?.javaClass?.invokeConstructor()
-    }
-
-    @Deprecated("此方法随时可能删除，如对项目不了解不建议使用")
-    fun buildMail(name: String, vararg fields: Pair<String, Any?>): MailSub {
-        val data = getMailClass(name) ?: error("错误的邮件种类，请检查你的代码，或联系相关开发者。。。")
-        fields.forEach { (key, value) ->
-            if (value != null) {
-                data.setProperty(key, value)
-            }
-        }
-        return data
     }
 
     @Synchronized

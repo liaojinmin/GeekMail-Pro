@@ -1,16 +1,13 @@
 package me.geek.mail.common.customevent
 
 import me.geek.mail.GeekMail
-import me.geek.mail.api.mail.MailManage
+import me.geek.mail.api.mail.MailBuild
 import me.geek.mail.common.kether.sub.KetherAPI
-
 import me.geek.mail.common.template.Template
-
 import me.geek.mail.utils.deserializeItemStacks
 import me.geek.mail.utils.forFile
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.releaseResourceFile
-
 import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.Configuration.Companion.getObject
 import taboolib.platform.compat.replacePlaceholder
@@ -65,14 +62,13 @@ object Event {
             when (a[0]) {
                 "sendTemPlate" -> {
                     Template.getAdminPack(a[1])?.let { pack ->
-                        MailManage.buildMail(pack.type,
-                            "title" to pack.title.replacePlaceholder(player),
-                            "text" to pack.text.replacePlaceholder(player),
-                            "target" to player.uniqueId,
-                            "additional" to pack.additional,
-                            "itemStacks" to pack.itemStacks?.deserializeItemStacks(),
-                            "command" to pack.command
-                        ).sendMail()
+                        MailBuild(pack.type, null, player.uniqueId).build {
+                            this.title = pack.title.replacePlaceholder(player)
+                            this.text =  pack.text.replacePlaceholder(player)
+                            this.additional = pack.additional ?: ""
+                            this.item = pack.itemStacks?.deserializeItemStacks()
+                            this.command = pack.command
+                        }.sender()
                     }
                 }
                 else -> KetherAPI.instantKether(player, it)

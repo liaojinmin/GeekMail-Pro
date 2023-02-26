@@ -37,6 +37,7 @@ class SQLImpl {
     }
     // (key = target, value = mailID)
     fun deleteOff(vararg target: Pair<UUID, UUID>) {
+
         if (manager.isActive()) {
             manager.getConnection().use {
                 this.prepareStatement("DELETE FROM `off_data` WHERE `target`=? AND `uid`=?;"
