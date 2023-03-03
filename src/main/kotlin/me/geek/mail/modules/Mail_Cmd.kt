@@ -1,7 +1,7 @@
 package me.geek.mail.modules
 
 import me.geek.mail.api.mail.MailSub
-import me.geek.mail.common.settings.SetTings
+import me.geek.mail.settings.SetTings
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import taboolib.platform.compat.replacePlaceholder

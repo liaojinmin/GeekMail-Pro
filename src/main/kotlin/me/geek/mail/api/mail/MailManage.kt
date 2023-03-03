@@ -1,8 +1,8 @@
 package me.geek.mail.api.mail
 
 
-import me.geek.mail.common.settings.SetTings
 import me.geek.mail.common.webmail.WebManager
+import me.geek.mail.settings.SetTings
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.jetbrains.annotations.NotNull

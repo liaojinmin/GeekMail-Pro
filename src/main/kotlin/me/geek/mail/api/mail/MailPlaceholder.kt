@@ -1,7 +1,7 @@
 package me.geek.mail.api.mail
 
 import com.google.gson.annotations.Expose
-import me.geek.mail.common.settings.SetTings
+import me.geek.mail.settings.SetTings
 import org.bukkit.Bukkit
 import org.jetbrains.annotations.NotNull
 import taboolib.expansion.geek.Expiry

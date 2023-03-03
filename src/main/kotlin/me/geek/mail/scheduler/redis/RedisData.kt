@@ -1,4 +1,4 @@
-package me.geek.mail.common.settings.redis
+package me.geek.mail.scheduler.redis
 
 /**
  * 作者: 老廖

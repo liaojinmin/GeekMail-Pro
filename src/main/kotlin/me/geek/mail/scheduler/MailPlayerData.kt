@@ -2,6 +2,7 @@ package me.geek.mail.scheduler
 
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.Expose
+import me.geek.mail.GeekMail
 import me.geek.mail.api.data.PlayerData
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.modules.Mail_Item
@@ -32,7 +33,9 @@ data class MailPlayerData(
 
 
     override fun toByteArray(): ByteArray {
-        return Snappy.compress(this.toJsonText().toByteArray(charset = Charsets.UTF_8))
+        val data = this.toJsonText()
+        GeekMail.debug(data)
+        return Snappy.compress(data.toByteArray(charset = Charsets.UTF_8))
     }
 
     override fun toJsonText(): String {
@@ -48,10 +51,14 @@ data class MailPlayerData(
                         }
                     }
                 }
+                else -> {
+
+                }
             }
         }
         return GsonBuilder()
             .setExclusionStrategies(Exclude())
+            .setPrettyPrinting()
             .create().toJson(this)
     }
 }

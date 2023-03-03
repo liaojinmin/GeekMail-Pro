@@ -1,4 +1,4 @@
-package me.geek.mail.common.settings.config
+package me.geek.mail.settings.config
 
 /**
  * 作者: 老廖

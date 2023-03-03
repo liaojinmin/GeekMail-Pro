@@ -7,8 +7,8 @@ import me.geek.mail.common.menu.Menu.openMenu
 import me.geek.mail.common.menu.MenuBasic
 import me.geek.mail.common.menu.sub.IconType
 import me.geek.mail.common.menu.sub.MenuData
-import me.geek.mail.common.settings.SetTings
 import me.geek.mail.common.template.Template
+import me.geek.mail.settings.SetTings
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
@@ -52,6 +52,9 @@ class MarketBuyMenu(
 
         menuData.layout[event.rawSlot].let {
             menuData.icon[it]?.let { icon ->
+                if (icon.command.isNotEmpty()) {
+                    icon.executeCmd(player)
+                }
                 when (icon.iconType) {
                     IconType.CONFIRM -> {
                         val i2 = Market.getMarketItem(MarketItemUid) //获取商品

@@ -1,6 +1,7 @@
 package me.geek.mail.common.menu.action
 
 import me.geek.mail.api.data.SqlManage.getData
+import me.geek.mail.api.data.SqlManage.saveData
 import me.geek.mail.api.mail.MailManage
 import me.geek.mail.api.mail.MailState
 import me.geek.mail.api.mail.MailSub
@@ -16,6 +17,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import taboolib.common.platform.function.submitAsync
 import taboolib.platform.util.sendLang
 
 /**
@@ -74,6 +76,9 @@ class MailMenu(
 
         menuData.layout[event.rawSlot].let {
             menuData.icon[it]?.let { icon ->
+                if (icon.command.isNotEmpty()) {
+                    icon.executeCmd(player)
+                }
                 when (icon.iconType) {
                     TEXT -> {
                         val mail = ioc[event.rawSlot] ?: return
@@ -116,7 +121,11 @@ class MailMenu(
                             } else if (mail.state == MailState.Acquired) player.sendLang("玩家-领取附件-失败")
                             return
                         }
+                        // 预览
                         if (event.click == ClickType.MIDDLE && mail.mailType.contains("物品")) {
+
+                        // Q 键 定制
+                      //  if (event.click == ClickType.DROP && mail.mailType.contains("物品")) {
                             view = true
                             this.inventory.contents = mail.itemStacks
                             return
@@ -183,6 +192,6 @@ class MailMenu(
     }
 
     override fun onClose(event: InventoryCloseEvent) {
-
+        submitAsync { player.saveData(false) }
     }
 }

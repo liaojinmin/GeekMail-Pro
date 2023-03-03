@@ -76,6 +76,9 @@ class MarketMenu(
         if (cd < System.currentTimeMillis()) cd = System.currentTimeMillis() + 200 else return
         menuData.layout[event.rawSlot].let { char ->
             menuData.icon[char]?.let { icon ->
+                if (icon.command.isNotEmpty()) {
+                    icon.executeCmd(player)
+                }
                 when (icon.iconType) {
                     IconType.LAST_PAGE -> {
                         if (this.page != 0) {

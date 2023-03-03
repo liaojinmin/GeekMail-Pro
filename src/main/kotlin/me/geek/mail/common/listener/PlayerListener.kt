@@ -13,7 +13,7 @@ import me.geek.mail.common.customevent.Event
 import me.geek.mail.common.kether.sub.KetherAPI
 import me.geek.mail.common.menu.Menu
 import me.geek.mail.common.menu.Menu.openMenu
-import me.geek.mail.common.settings.SetTings
+import me.geek.mail.settings.SetTings
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent

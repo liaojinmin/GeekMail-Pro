@@ -2,7 +2,6 @@ package me.geek.mail.api.mail
 
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.Expose
-import me.geek.mail.GeekMail
 import me.geek.mail.api.data.SqlManage.RedisScheduler
 import me.geek.mail.api.data.SqlManage.addOffMail
 import me.geek.mail.api.data.SqlManage.getData
@@ -10,10 +9,9 @@ import me.geek.mail.api.event.MailReceiveEvent
 import me.geek.mail.api.event.MailSenderEvent
 import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.common.menu.sub.Icon
-import me.geek.mail.common.settings.SetTings
 import me.geek.mail.scheduler.Exclude
 import me.geek.mail.scheduler.redis.RedisMessageType
-
+import me.geek.mail.settings.SetTings
 import me.geek.mail.utils.colorify
 import me.geek.mail.utils.deserializeItemStacks
 import me.geek.mail.utils.serializeItemStacks
@@ -26,6 +24,7 @@ import org.bukkit.inventory.meta.BundleMeta
 import org.jetbrains.annotations.NotNull
 import taboolib.common.platform.function.adaptPlayer
 import taboolib.common.platform.function.submitAsync
+import taboolib.common.platform.function.warning
 import taboolib.module.lang.sendLang
 import taboolib.module.nms.getI18nName
 import java.util.*
@@ -130,12 +129,16 @@ abstract class MailSub : MailPlaceholder() {
             } else {
                 // 未处理 Redis 跨服问题
                 sendCrossMail()
+                warning("跨服邮件任然有未处理的问题，这个消息只是警告，再未完全找到解决方案前，因减少该功能使用。")
             }
             if (this@MailSub.sender != SetTings.Console) {
                 if (send != null) {
                     adaptPlayer(send).sendLang("玩家-发送邮件", targetName)
                 }
             }
+            // 控制是否发送smtp邮件
+            if (SetTings.smtpFilter == "系统" && sender == SetTings.Console) return@submitAsync
+            if (SetTings.smtpFilter == "玩家" && sender != SetTings.Console) return@submitAsync
             MailManage.senderWebMail(title, text, appendixInfo, target)
         }
         // 处理发送逻辑 end
@@ -154,7 +157,7 @@ abstract class MailSub : MailPlaceholder() {
                 this.mailID.toString()
             )
             it.setMailData(this)
-            GeekMail.say("&e未解决集群在线玩家收集问题,如果玩家不在任何集群，该邮件将失效。。。")
+            warning("&e未解决集群在线玩家收集问题,如果玩家不在任何集群，该邮件将失效。。。")
         } ?: addOffMail(this)
     }
 
@@ -205,6 +208,10 @@ abstract class MailSub : MailPlaceholder() {
         this.itemStackString = this.itemStacks.serializeItemStacks()
         val gson = GsonBuilder().setExclusionStrategies(Exclude())
         return gson.create().toJson(this).toByteArray(charset = Charsets.UTF_8)
+    }
+
+    fun register() {
+        MailManage.register(this)
     }
     fun intsItems(): MailSub {
         if (this.itemStackString.isNotEmpty()) {

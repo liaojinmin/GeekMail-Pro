@@ -1,5 +1,7 @@
 package me.geek.mail.utils
 
+import org.bukkit.configuration.InvalidConfigurationException
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.io.BukkitObjectInputStream
 import org.bukkit.util.io.BukkitObjectOutputStream
@@ -15,7 +17,26 @@ import java.io.IOException
 
 
 /**
- * 序列化 ItemStack 数组 为字符串
+ * 序列化 ItemStack 为字符串 YML 实现
+ */
+fun itemStackSerialize(itemStack: ItemStack): String {
+    val yml = YamlConfiguration()
+    yml["GeekStore"] = itemStack
+    return yml.saveToString()
+}
+fun itemStackDeserialize(str: String): ItemStack? {
+    val yml = YamlConfiguration()
+    val item: ItemStack? = try {
+        yml.loadFromString(str)
+        yml.getItemStack("GeekStore")
+    } catch (ex: InvalidConfigurationException) {
+        error("物品库获取错误...")
+    }
+    return item
+}
+
+/**
+ * 序列化 ItemStack 为字符串
  */
 fun ItemStack.serializeItemStacks(): String {
     val byteOutputStream = ByteArrayOutputStream()

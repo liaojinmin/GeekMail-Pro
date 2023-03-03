@@ -1,12 +1,12 @@
-package me.geek.mail.common.settings
+package me.geek.mail.settings
 
 import me.geek.mail.GeekMail
-import me.geek.mail.common.settings.config.ItemFilter
-import me.geek.mail.common.settings.mail.MailIcon
-import me.geek.mail.common.settings.market.MarketData
-import me.geek.mail.common.settings.redis.RedisData
-import me.geek.mail.common.settings.smtp.SmtpData
+import me.geek.mail.scheduler.redis.RedisData
 import me.geek.mail.scheduler.sql.SqlConfig
+import me.geek.mail.settings.config.ItemFilter
+import me.geek.mail.settings.mail.MailIcon
+import me.geek.mail.settings.market.MarketData
+import me.geek.mail.settings.smtp.SmtpData
 import me.geek.mail.utils.colorify
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -108,6 +108,8 @@ object SetTings {
     var USE_BUNDLE: Boolean = false
 
     var UseExpiry: Boolean = false
+    var smtpFilter: String = ""
+        private set
 
 
     val ExpiryTime by lazy { Expiry.getExpiryMillis(config.getString("config.Expiry.time") ?: "2d", false) * 1000 }
@@ -115,6 +117,7 @@ object SetTings {
     val Console: UUID = UUID.fromString("00000000-0000-0000-0000-000000000001")
 
     private fun onLoadConf() {
+        smtpFilter = config.getString("SmtpSet.filter") ?: ""
         DeBug = config.getBoolean("debug", false)
         SMTP_SET = SmtpData.start
         USE_BUNDLE = if (GeekMail.BukkitVersion >= 1170) config.getBoolean("config.use_bundle") else false

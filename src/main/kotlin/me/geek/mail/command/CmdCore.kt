@@ -44,14 +44,20 @@ object CmdCore {
     @CommandBody(permission = "mail.command.admin")
     val global = CmdSendGlobal.command
 
+    @CommandBody(permission = "mail.command.admin")
+    val store = CmdStore.command
+
+
 
     @CommandBody(permission = "mail.command.pack")
     val pack = CmdPack.command
 
     @CommandBody(permissionDefault = PermissionDefault.TRUE)
     val mail = CmdMail.command
+
     @CommandBody(permissionDefault = PermissionDefault.TRUE)
     val bind = CmdBind.command
+
 
 
     @CommandBody

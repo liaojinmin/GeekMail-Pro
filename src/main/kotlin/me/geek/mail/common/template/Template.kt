@@ -4,13 +4,9 @@ package me.geek.mail.common.template
 import me.geek.mail.GeekMail.instance
 import me.geek.mail.GeekMail.say
 import me.geek.mail.api.hook.HookPlugin
-
-
-import me.geek.mail.common.template.sub.Temp
-import me.geek.mail.common.template.sub.TempPack
-import me.geek.mail.utils.colorify
-import me.geek.mail.utils.serializeItemStacks
+import me.geek.mail.utils.*
 import org.bukkit.Material
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.releaseResourceFile
 import taboolib.library.xseries.XMaterial
@@ -18,7 +14,6 @@ import taboolib.module.configuration.SecuredFile
 import taboolib.platform.util.buildItem
 import java.io.File
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.system.measureTimeMillis
 
 /**
@@ -26,40 +21,50 @@ import kotlin.system.measureTimeMillis
  * 时间: 2022/8/7
  */
 object Template {
+    private val IA = Regex("(IA|ia|ItemsAdder):")
+    private val MM = Regex("(MM|mm|MythicMobs):")
+    private val STORE = Regex("(Store|Stores):")
+    private val mats = Regex("(material|mats):")
+    private val Name = Regex("name:")
+    private val Lore = Regex("lore:")
+    private val data = Regex("data:")
+    private val amt = Regex("(amount|amt):")
+    private val mode = Regex("ModelData:")
 
     private val TEMP_PACK_MAP: MutableMap<String, Temp> = HashMap()
     private val SERVER_PACK_MAP: MutableMap<String, Temp> = HashMap()
 
     fun onLoad() {
-            val list = mutableListOf<File>()
-            measureTimeMillis {
-                TEMP_PACK_MAP.clear()
-                SERVER_PACK_MAP.clear()
-                list.also {
-                    it.addAll(forFile(saveDefaultTemp))
-                }
-                list.forEach { file ->
-                    val var1 = SecuredFile.loadConfiguration(file)
-                    val packID: String = var1.getString("Template.ID")!!
-
-                    val condition: String = var1.getString("Template.Require.condition", "false") ?: ""
-                    val action: String = var1.getString("Template.Require.action", "null")?.replace("&", "§") ?: ""
-                    val deny: String = var1.getString("Template.Require.deny", "null")?.replace("&", "§") ?: ""
-
-                    val title: String = var1.getString("Template.package.title")!!.colorify()
-                    val text: String = var1.getString("Template.package.text")!!.colorify().replace("\n", "")
-
-                    val type: String = var1.getString("Template.package.type")!!.uppercase(Locale.ROOT)
-                    val additional: String = var1.getString("Template.package.appendix.additional", "0")!!
-                    val items: String = buildItemsString(var1.getStringList("Template.package.appendix.items"))
-                    val command = var1.getStringList("Template.package.appendix.command")
-                    if (var1.getBoolean("Template.Server")) {
-                        SERVER_PACK_MAP[packID] = TempPack(packID, condition, action, deny, title, text, type, additional, items, command)
-                    } else TEMP_PACK_MAP[packID] = TempPack(packID, condition, action, deny, title, text, type, additional, items, command)
-                }
-            }.also {
-                say("§7已加载 &f${list.size} &7个邮件模板... §8(耗时 $it Ms)")
+        loadStore()
+        val list = mutableListOf<File>()
+        measureTimeMillis {
+            TEMP_PACK_MAP.clear()
+            SERVER_PACK_MAP.clear()
+            list.also {
+                it.addAll(forFile(saveDefaultTemp))
             }
+            list.forEach { file ->
+                val var1 = SecuredFile.loadConfiguration(file)
+                val packID: String = var1.getString("Template.ID")!!
+
+                val condition: String = var1.getString("Template.Require.condition", "false") ?: ""
+                val action: String = var1.getString("Template.Require.action", "null")?.replace("&", "§") ?: ""
+                val deny: String = var1.getString("Template.Require.deny", "null")?.replace("&", "§") ?: ""
+
+                val title: String = var1.getString("Template.package.title")!!.colorify()
+                val text: String = var1.getString("Template.package.text")!!.colorify().replace("\n", "")
+
+                val type: String = var1.getString("Template.package.type")!!.uppercase(Locale.ROOT)
+                val additional: String = var1.getString("Template.package.appendix.additional", "0")!!
+                val items: String = buildItemsString(var1.getStringList("Template.package.appendix.items"))
+                val command = var1.getStringList("Template.package.appendix.command")
+                if (var1.getBoolean("Template.Server")) {
+                    SERVER_PACK_MAP[packID] = TempPack(packID, condition, action, deny, title, text, type, additional, items, command)
+                } else TEMP_PACK_MAP[packID] = TempPack(packID, condition, action, deny, title, text, type, additional, items, command)
+            }
+        }.also {
+            say("§7已加载 &f${list.size} &7个邮件模板... §8(耗时 $it Ms)")
+        }
     }
 
 
@@ -85,34 +90,34 @@ object Template {
         return SERVER_PACK_MAP[key] ?: TEMP_PACK_MAP[key]
     }
 
-    private fun forFile(file: File): List<File> {
-        return mutableListOf<File>().run {
-            if (file.isDirectory) {
-                file.listFiles()?.forEach {
-                    addAll(forFile(it))
-                }
-            } else if (file.exists() && file.absolutePath.endsWith(".yml")) {
-                add(file)
-            }
-            this
+    /*
+    物品储存
+     */
+    private fun loadStore() {
+        if (!internalDir.exists()) {
+            internalDir.createNewFile()
         }
-    }
-    private val saveDefaultTemp by lazy {
-        val dir = File(instance.dataFolder, "template")
-        if (!dir.exists()) {
-            arrayOf(
-                "template/def.yml",
-                "template/def2.yml",
-                "template/def3.yml",
-                "template/items.yml",
-                "template/mail_cmd.yml",
-                "template/mail_Normal.yml",
-                "template/market/buy.yml",
-                "template/market/sell.yml",
-            ).forEach { releaseResourceFile(it, true) }
+        val yml = YamlConfiguration.loadConfiguration(internalDir)
+        val a = yml.getConfigurationSection("Store")?.getKeys(false) ?: return
+        for (b in a) {
+            STORE_ITEMS[b] = itemStackDeserialize(yml.getString("Store.$b")!!)!!
         }
-        dir
+        say("§7已加载 &f${STORE_ITEMS.size} &7个物品库...")
     }
+    fun getStoreItem(key: String): ItemStack? {
+        return STORE_ITEMS[key]
+    }
+    fun getStoreKeys(): List<String> {
+        return STORE_ITEMS.map { it.key }
+    }
+    private val internalDir: File = File(instance.dataFolder, "internal.yml")
+    private val STORE_ITEMS: MutableMap<String, ItemStack> = HashMap()
+    fun setStoreItem(key: String, item: ItemStack) {
+        val c = YamlConfiguration.loadConfiguration(internalDir)
+        c.set("Store.$key", itemStackSerialize(item))
+        c.save(internalDir)
+    }
+
 
     private fun buildItemsString(items: List<String>): String {
         if (items.isNotEmpty()) {
@@ -147,6 +152,13 @@ object Template {
                                     }
                                 } else ItemStack(Material.STONE)
                             }
+                            it.contains(STORE) -> {
+                                STORE_ITEMS[args[0].replace(STORE,"")]?.clone().also { stack ->
+                                    if (stack != null) {
+                                        stack.amount = args[1].replace(amt,"").toIntOrNull() ?: 1
+                                    }
+                                } ?: ItemStack(Material.STONE)
+                            }
                             else -> { ItemStack(Material.STONE) }
                         }
                     )
@@ -156,12 +168,25 @@ object Template {
         }
         return "null"
     }
-    private val IA = Regex("(IA|ia|ItemsAdder):")
-    private val MM = Regex("(MM|mm|MythicMobs):")
-    private val mats = Regex("(material|mats):")
-    private val Name = Regex("name:")
-    private val Lore = Regex("lore:")
-    private val data = Regex("data:")
-    private val amt = Regex("(amount|amt):")
-    private val mode = Regex("ModelData:")
+
+
+    private val saveDefaultTemp by lazy {
+        val dir = File(instance.dataFolder, "template")
+        if (!dir.exists()) {
+            arrayOf(
+                "template/def.yml",
+                "template/def2.yml",
+                "template/def3.yml",
+                "template/items.yml",
+                "template/mail_cmd.yml",
+                "template/mail_Normal.yml",
+                "template/market/buy.yml",
+                "template/market/sell.yml",
+            ).forEach { releaseResourceFile(it, true) }
+        }
+        dir
+    }
+
+
+
 }

@@ -10,7 +10,6 @@ import me.geek.mail.common.market.Item
 import me.geek.mail.utils.deserializeItemStacks
 import org.bukkit.Bukkit
 import org.xerial.snappy.Snappy
-import taboolib.common.util.asList
 import taboolib.library.reflex.Reflex.Companion.setProperty
 import java.lang.reflect.Type
 import java.util.*
@@ -48,7 +47,9 @@ fun ByteArray.toMailSub(): MailSub {
                     "getTime" to (a.get("getTime")?.asLong ?: "0"),
                     "additional" to (a.get("additional")?.asString ?: "0"),
                     "itemStacks" to (a.get("itemStackString")?.asString ?: "").deserializeItemStacks(),
-                    "command" to (a.get("command")?.asList())
+                    "command" to (a.get("command")?.let {  elem ->
+                        Gson().fromJson(elem, ArrayList<String>()::class.java)
+                    } ?: emptyList())
                 )
                 mailSub
             } ?: error("""
@@ -58,7 +59,7 @@ fun ByteArray.toMailSub(): MailSub {
     })
 
 
-    return gson.create().fromJson(String(this, charset = Charsets.UTF_8), MailSub::class.java).intsItems()
+    return gson.create().fromJson(String(this, charset = Charsets.UTF_8), MailSub::class.java)
 }
 
 
@@ -94,8 +95,10 @@ class UnSerializePlayerData: JsonDeserializer<PlayerData> {
                             "getTime" to (a.get("getTime")?.asLong ?: "0"),
                             "additional" to (a.get("additional")?.asString ?: "0"),
                             "itemStacks" to (a.get("itemStackString")?.asString ?: "").deserializeItemStacks(),
-                            "command" to (a.get("command")?.asList())
-                            )
+                            "command" to (a.get("command")?.let {  elem ->
+                                Gson().fromJson(elem, ArrayList<String>()::class.java)
+                            } ?: emptyList())
+                        )
                         add(mailSub)
                     }
                 }

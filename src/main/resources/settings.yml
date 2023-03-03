@@ -31,6 +31,8 @@ SmtpSet:
   subjects: 'GeekMail-收件提醒' # 邮件标题
   host: 'smtp.163.com' # smtp服务器
   port: '25' # 端口
+  # 需要拦截的邮件类型 (系统、玩家)
+  filter: '系统' # 如果为空则全部同步
 
 config:
   use_bundle: false # 物品邮件 物品预览使用 lore 展示 (只限 1.17+)

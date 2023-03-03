@@ -6,7 +6,7 @@ import me.arasple.mc.trhologram.api.hologram.HologramBuilder
 import me.arasple.mc.trhologram.module.display.Hologram
 import me.geek.mail.GeekMail.say
 import me.geek.mail.api.hook.impl.*
-import me.geek.mail.common.settings.SetTings
+import me.geek.mail.settings.SetTings
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import java.util.*

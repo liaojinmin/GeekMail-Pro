@@ -4,8 +4,8 @@ import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.command.CmdExp
 import me.geek.mail.common.customevent.Event
 import me.geek.mail.common.menu.Menu
-import me.geek.mail.common.settings.SetTings
 import me.geek.mail.common.template.Template
+import me.geek.mail.settings.SetTings
 import org.bukkit.command.CommandSender
 import taboolib.common.platform.command.subCommand
 

@@ -1,4 +1,4 @@
-package me.geek.mail.common.template.sub
+package me.geek.mail.common.template
 
 
 

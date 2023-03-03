@@ -3,7 +3,7 @@ package me.geek.mail.command.admin
 
 import me.geek.mail.GeekMail
 import me.geek.mail.command.CmdExp
-import me.geek.mail.common.settings.SetTings
+import me.geek.mail.settings.SetTings
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.FileConfiguration

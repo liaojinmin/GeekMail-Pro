@@ -4,11 +4,11 @@ package me.geek.mail.api.data
 import me.geek.mail.GeekMail
 import me.geek.mail.api.event.PlayerDataLoadEvent
 import me.geek.mail.api.mail.MailSub
-import me.geek.mail.common.settings.SetTings
 import me.geek.mail.scheduler.RedisImpl
 import me.geek.mail.scheduler.SQLImpl
 import me.geek.mail.scheduler.migrator.PData
 import me.geek.mail.scheduler.sql.*
+import me.geek.mail.settings.SetTings
 import me.geek.mail.utils.removeE
 import org.bukkit.entity.Player
 import taboolib.platform.util.sendLang
@@ -48,12 +48,13 @@ object SqlManage {
      */
     fun PlayerData.getOffMail() {
         val list = mutableListOf<MailSub>()
+        SqlImpl.selectOff(this.uuid, list)
+        // 筛选需要删除的邮件
         val map = mutableListOf<Pair<UUID, UUID>>().apply {
             list.forEach {
                 add(it.target to it.mailID)
             }
         }
-        SqlImpl.selectOff(this.uuid, list)
         SqlImpl.deleteOff(*map.toTypedArray())
         this.mailData.addAll(list)
     }

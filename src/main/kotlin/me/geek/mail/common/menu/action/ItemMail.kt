@@ -2,8 +2,8 @@ package me.geek.mail.common.menu.action
 
 import me.geek.mail.GeekMail
 import me.geek.mail.common.menu.MenuBasic
-import me.geek.mail.common.settings.SetTings
 import me.geek.mail.modules.Mail_Item
+import me.geek.mail.settings.SetTings
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent

@@ -1,8 +1,11 @@
 package me.geek.mail.common.webmail
 
 
-import me.geek.mail.common.settings.SetTings
-import java.io.*
+import me.geek.mail.settings.SetTings
+import java.io.BufferedReader
+import java.io.File
+import java.io.FileInputStream
+import java.io.InputStreamReader
 import java.util.*
 import javax.mail.Authenticator
 import javax.mail.PasswordAuthentication
@@ -50,23 +53,14 @@ abstract class SubWebMail {
     fun File.toHtmlString(): String {
         // 获取HTML文件流
         val htmlSb = StringBuffer()
-        var br: BufferedReader? = null
-        try {
-            br = BufferedReader(
-                InputStreamReader(
-                    FileInputStream(this), "UTF-8"
-                )
+        BufferedReader(
+            InputStreamReader(
+                FileInputStream(this), "UTF-8"
             )
-            while (br.ready()) {
-                htmlSb.append(br.readLine())
+        ).use {
+            while (it.ready()) {
+                htmlSb.append(it.readLine())
             }
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        finally {
-            br?.close()
         }
         return htmlSb.toString()
     }
