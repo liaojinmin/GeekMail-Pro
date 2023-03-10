@@ -1,8 +1,8 @@
 package me.geek.mail.api.mail
 
-import taboolib.library.reflex.Reflex.Companion.setProperty
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import taboolib.library.reflex.Reflex.Companion.setProperty
 import java.util.*
 
 /**
@@ -42,11 +42,11 @@ class MailBuild(
         run().sendMail()
     }
 
-    fun setTitle(title: String): MailBuild {
+    fun setTitles(title: String): MailBuild {
         this.title = title
         return this
     }
-    fun setText(text: String): MailBuild {
+    fun setTexts(text: String): MailBuild {
         this.text = text
         return this
     }
@@ -58,7 +58,7 @@ class MailBuild(
         this.item = item
         return this
     }
-    fun setCommand(cmd: List<String>): MailBuild {
+    fun setCommands(cmd: List<String>): MailBuild {
         this.command = cmd
         return this
     }

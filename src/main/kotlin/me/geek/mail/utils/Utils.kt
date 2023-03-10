@@ -11,9 +11,12 @@ fun <T> MutableList<T>.removeE(filter: Predicate<in T>): Int {
     var amt = 0
     val each = iterator()
     while (each.hasNext()) {
-        if (filter.test(each.next())) {
-            each.remove()
-            amt++
+        val a = each.next()
+        if (a != null) {
+            if (filter.test(a)) {
+                each.remove()
+                amt++
+            }
         }
     }
     return amt
