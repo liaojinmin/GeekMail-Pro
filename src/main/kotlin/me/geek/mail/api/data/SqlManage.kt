@@ -71,7 +71,6 @@ object SqlManage {
             data = RedisScheduler?.getPlayerData(this.uniqueId.toString())
         }
         data?.let {
-
             if (SetTings.UseExpiry) it.mailData.removeE { mail -> mail.senderTime <= (System.currentTimeMillis() - SetTings.ExpiryTime)
             }.also { amt ->
                 if (amt != 0) this.sendLang("玩家-邮件到期-删除", amt)

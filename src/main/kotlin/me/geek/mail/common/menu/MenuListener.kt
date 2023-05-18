@@ -37,7 +37,13 @@ object MenuListener {
     fun onClick(e: InventoryClickEvent) {
         val menu = Menu.SessionCache[e.view.player] ?: return
 
-        if (e.rawSlot < 0 || e.rawSlot >= menu.inventory.size) return
+        if (e.rawSlot < 0 || e.rawSlot >= menu.inventory.size) {
+            // 锁定界面
+            if (menu.isLock) {
+                e.isCancelled = true
+            }
+            return
+        }
 
         // 锁定主手
         if (e.rawSlot - e.inventory.size - 27 == e.whoClicked.inventory.heldItemSlot

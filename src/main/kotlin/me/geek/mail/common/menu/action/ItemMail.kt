@@ -22,6 +22,7 @@ class ItemMail(
     private val mail: Mail_Item
 ): MenuBasic() {
         override fun build(): MenuBasic {
+            this.isLock = false
             this.title = "§0放入物品 §7| §0关闭菜单"
             this.size = 27
             this.sound("BLOCK_NOTE_BLOCK_HARP", 1f, 1f)

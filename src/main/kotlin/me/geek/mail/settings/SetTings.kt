@@ -52,6 +52,7 @@ object SetTings {
             onLoadType()
         }
     }
+
     private fun getConfig(): SetManager {
         return SetTingsCache["config"]!!
     }
@@ -75,7 +76,6 @@ object SetTings {
         getConfig().mailIcon
     }
 
-
     private fun onloadFilter(): ItemFilter {
         val use = config.getBoolean("config.item_filter.use")
         val type = config.getString("config.item_filter.type") ?: "黑名单"
@@ -87,7 +87,9 @@ object SetTings {
         val use = config.getBoolean("Market.use")
         val buy = config.getString("Market.player_buy_sendPack") ?: ""
         val sell = config.getString("Market.player_sell_sendPack") ?: ""
-        return MarketData(use, buy, sell)
+        return MarketData(use, buy, sell).also {
+            it.permGroup.sortByDescending { size -> size.priority }
+        }
     }
     private fun onloadMailIcon(): MailIcon {
         val m = config.getString("MailIcon.MONEY_MAIL") ?: "GOLD_INGOT"

@@ -78,30 +78,32 @@ class UnSerializePlayerData: JsonDeserializer<PlayerData> {
         val uuid = UUID.fromString(jsonObject.get("uuid")?.asString)
         val new = jsonObject.get("newPlayer")?.asBoolean ?: true
         val mailData = mutableListOf<MailSub>().apply {
-            val mail = jsonObject.get("mailData").asJsonArray
-            if (mail.size() != 0) {
-                // 循环每一个邮件
-                mail.forEach {
-                    val a = it.asJsonObject
-                    MailManage.getMailClass(a.get("name").asString)?.let { mailSub ->
-                        setFields(mailSub,
-                            "mailID" to UUID.fromString(a.get("mailID")!!.asString),
-                            "title" to (a.get("title")?.asString ?: ""),
-                            "text" to (a.get("text")?.asString ?: ""),
-                            "sender" to UUID.fromString(a.get("sender").asString),
-                            "target" to UUID.fromString(a.get("target").asString),
-                            "state" to MailState.valueOf(a.get("state").asString),
-                            "senderTime" to a.get("senderTime").asLong,
-                            "getTime" to (a.get("getTime")?.asLong ?: "0"),
-                            "additional" to (a.get("additional")?.asString ?: "0"),
-                            "itemStacks" to (a.get("itemStackString")?.asString ?: "").deserializeItemStacks(),
-                            "command" to (a.get("command")?.let {  elem ->
-                                Gson().fromJson(elem, ArrayList<String>()::class.java)
-                            } ?: emptyList())
-                        )
-                        add(mailSub)
+            jsonObject.get("mailData")?.asJsonArray?.let { mail ->
+                if (mail.size() != 0) {
+                    // 循环每一个邮件
+                    mail.forEach {
+                        val a = it.asJsonObject
+                        MailManage.getMailClass(a.get("name").asString)?.let { mailSub ->
+                            setFields(mailSub,
+                                "mailID" to UUID.fromString(a.get("mailID")!!.asString),
+                                "title" to (a.get("title")?.asString ?: ""),
+                                "text" to (a.get("text")?.asString ?: ""),
+                                "sender" to UUID.fromString(a.get("sender").asString),
+                                "target" to UUID.fromString(a.get("target").asString),
+                                "state" to MailState.valueOf(a.get("state").asString),
+                                "senderTime" to a.get("senderTime").asLong,
+                                "getTime" to (a.get("getTime")?.asLong ?: "0"),
+                                "additional" to (a.get("additional")?.asString ?: "0"),
+                                "itemStacks" to (a.get("itemStackString")?.asString ?: "").deserializeItemStacks(),
+                                "command" to (a.get("command")?.let {  elem ->
+                                    Gson().fromJson(elem, ArrayList<String>()::class.java)
+                                } ?: emptyList())
+                            )
+                            add(mailSub)
+                        }
                     }
                 }
+
             }
         }
         val player = Bukkit.getPlayer(uuid) ?: error("""

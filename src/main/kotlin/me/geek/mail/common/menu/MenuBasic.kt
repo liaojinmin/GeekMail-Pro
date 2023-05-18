@@ -25,6 +25,7 @@ abstract class MenuBasic: MenuHeader {
 
     val contents: MutableList<Array<ItemStack>> = ArrayList()
 
+    var isLock: Boolean = true
 
     open val inventory: Inventory by lazy {
         this.menuData?.let {

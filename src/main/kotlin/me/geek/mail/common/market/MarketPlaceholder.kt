@@ -1,7 +1,6 @@
 package me.geek.mail.common.market
 
 import com.google.gson.annotations.Expose
-import me.geek.mail.settings.SetTings
 import org.bukkit.Bukkit
 import org.jetbrains.annotations.NotNull
 import taboolib.expansion.geek.Expiry
@@ -51,7 +50,7 @@ abstract class MarketPlaceholder: MarketPack {
                 it.contains(moneyPrice) -> list.add(it.replace(moneyPrice, this.money.toString()))
                 it.contains(pointsPrice) -> list.add(it.replace(pointsPrice, this.points.toString()))
                 it.contains(times) -> list.add(it.replace(times, format.format(this.time.toLong())))
-                it.contains(expires) -> list.add(it.replace(expires, Expiry.getExpiryDate(this.expire.toLong() + SetTings.ExpiryTime, false)))
+                it.contains(expires) -> list.add(it.replace(expires, Expiry.getExpiryDate(this.expire, false)))
                 else -> list.add(it)
             }
         }

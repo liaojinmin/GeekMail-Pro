@@ -10,5 +10,7 @@ enum class MenuType {
 
     MARKET,
 
-    MARKETBUY
+    MARKET_BUY,
+
+    MARKET_MANAGER
 }

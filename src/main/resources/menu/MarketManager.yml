@@ -1,13 +1,19 @@
 
 TITLE: '&0 GeekMail-Pro 市场'
-TYPE: Market_Buy
+TYPE: Market_Manager
 Layout:
   - '#########'
-  - '#A##1##2#'
+  - '#2222222#'
+  - '#2222222#'
+  - '#2222222#'
   - '#########'
+  - '<       >'
+
+Bindings:
+  Commands: '市场管理'
 
 Icons:
-  A:
+  2:
     Type: MARKET_ITEM
     display:
       mats: STONE
@@ -15,7 +21,6 @@ Icons:
       lore:
         - ''
         - '------------'
-        - ' &7卖家: &f[seller]'
         - ' &7商品价格:'
         - '   &f[moneyPrice] &e金币'
         - '   &f[pointsPrice] &e点券'
@@ -23,16 +28,21 @@ Icons:
         - ' &7到期时间: &f[expire]'
         - '------------'
         - ''
-  '1':
-    Type: CONFIRM
+        - '&8[&B左键_点击&8] &7# 下架商品'
+  '<':
+    Type: LAST_PAGE
     display:
-      mats: CHEST_MINECART
-      name: '&3# &a确认购买'
-  '2':
-    Type: CANCEL
+      mats: 'IRON_DOOR'
+      name: '&3# &b跳转至'
+      lore:
+        - '&7上一页'
+  '>':
+    Type: NEXT_PAGE
     display:
-      mats: BARRIER
-      name: '&3# &c取消购买'
+      mats: IRON_DOOR
+      name: '&3# &b跳转至'
+      lore:
+        - '&7下一页'
   '#':
     Type: null
     display:

@@ -1,6 +1,5 @@
 package me.geek.mail.scheduler
 
-import me.geek.mail.GeekMail
 import me.geek.mail.api.mail.MailSub
 import me.geek.mail.common.market.Market
 import me.geek.mail.scheduler.redis.Redis
@@ -40,11 +39,14 @@ class RedisImpl(data: RedisData) : Redis() {
                     PLAYER_QUERY -> TODO()
                     PLAYER_INLINE -> TODO()
                 }
+                /*
                 GeekMail.debug("Redis message ${m[0]}")
                 GeekMail.debug("------[Debug]------")
                 GeekMail.debug("服务器: ${m[0]}")
                 GeekMail.debug("消息种类: ${m[1]}")
                 GeekMail.debug("-------------------")
+
+                 */
             }
        // }
     }

@@ -1,13 +1,18 @@
 package me.geek.mail.common.market
 
 import me.geek.mail.api.data.SqlManage
+import me.geek.mail.api.mail.MailBuild
+import me.geek.mail.common.template.Template
 import me.geek.mail.scheduler.redis.RedisMessageType
 import me.geek.mail.scheduler.sql.action
 import me.geek.mail.scheduler.sql.actions
 import me.geek.mail.scheduler.sql.use
+import me.geek.mail.settings.SetTings
 import me.geek.mail.utils.deserializeItemStack
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 import taboolib.common.platform.function.submitAsync
+import taboolib.module.nms.getName
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -28,7 +33,27 @@ object Market {
     }
     @JvmStatic
     fun getMarketListCache(): List<Item> {
-        return MarketCache.map { it.value }
+        val a = MarketCache.values.toMutableList()
+        val c = a.listIterator()
+        while (c.hasNext()) {
+            val v = c.next()
+            if (v.time <= (System.currentTimeMillis() - SetTings.ExpiryTime)) {
+                MarketCache.remove(v.packUid)
+                val quit = Template.getAdminPack(SetTings.market.player_quit_sendPack)
+                MailBuild(quit!!.type, null, v.user).build {
+                    title = quit.title
+                    text = quit.text.replace("{item-name}", v.item.getName())
+                    setItems(arrayOf(v.item))
+                }.sender()
+
+                c.remove()
+            }
+        }
+        return a
+    }
+
+    fun getPlayerAllMarket(player: Player): List<Item> {
+        return MarketCache.values.filter { it.user == player.uniqueId }
     }
 
     @JvmStatic
@@ -68,8 +93,8 @@ object Market {
                 while (res.next()) {
                     val packUid = UUID.fromString(res.getString("uid"))
                     val user = UUID.fromString(res.getString("user"))
-                    val time = res.getString("time")
-                    val points = res.getString("points")
+                    val time = res.getString("time").toLong()
+                    val points = res.getString("points").toInt()
                     val money = res.getString("money").toDouble()
                     val item = res.getString("item").deserializeItemStack()
                     MarketCache[packUid] = Item(packUid, user, time, points, money = money, item = item!!)
@@ -83,7 +108,7 @@ object Market {
             this.prepareStatement("INSERT INTO market_data(`uid`,`user`,`time`,`points`,`money`,`item`) VALUES(?,?,?,?,?,?)").actions { p ->
                 p.setString(1, item.packUid.toString())
                 p.setString(2, item.user.toString())
-                p.setString(3, item.time)
+                p.setString(3, item.time.toString())
                 p.setString(4, item.points.toString())
                 p.setString(5, item.money.toString())
                 p.setString(6, item.itemString)
@@ -93,11 +118,11 @@ object Market {
     }
 
     @Synchronized
-    fun deleteItem(PacKUid: UUID): Boolean {
+    fun deleteItem(pacKUid: UUID): Boolean {
         var a = 0
         SqlManage.getConnection().use {
             this.prepareStatement("DELETE FROM `market_data` WHERE `uid`=?;").actions { s ->
-                s.setString(1, PacKUid.toString())
+                s.setString(1, pacKUid.toString())
                 a = s.executeUpdate()
             }
         }

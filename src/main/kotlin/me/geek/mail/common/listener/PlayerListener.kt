@@ -17,12 +17,14 @@ import me.geek.mail.settings.SetTings
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.inventory.EquipmentSlot
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.adaptPlayer
 import taboolib.common.platform.function.submitAsync
 import taboolib.module.lang.sendLang
 import taboolib.platform.util.isLeftClickBlock
+import taboolib.platform.util.isRightClickBlock
 
 /**
  * 作者: 老廖
@@ -30,7 +32,7 @@ import taboolib.platform.util.isLeftClickBlock
  *
  **/
 object PlayerListener {
-    @SubscribeEvent(priority = EventPriority.LOW, ignoreCancelled = true )
+    @SubscribeEvent(priority = EventPriority.LOW)
     fun onJoin(e: PlayerJoinEvent) {
         submitAsync {
             val player = e.player
@@ -40,7 +42,9 @@ object PlayerListener {
             GeekMail.debug("添加玩家数据..." )
             if (data.uuid == player.uniqueId) {
                 GeekMail.debug("玩家状态解锁..." )
-                MailManage.PlayerLock.remove(player.uniqueId)
+                MailManage.PlayerLock.removeIf {
+                    it == player.uniqueId
+                }
                 var amt = 0
                 data.mailData.forEach { mail ->
                     if (mail.state == MailState.NotObtained) amt++
@@ -69,7 +73,7 @@ object PlayerListener {
     @SubscribeEvent(priority = EventPriority.LOW, ignoreCancelled = true )
     fun onInteract(e: PlayerInteractEvent) {
         SetTings.location?.let {
-            if (e.isLeftClickBlock()) {
+            if ((e.isLeftClickBlock() || e.isRightClickBlock()) && e.hand == EquipmentSlot.HAND) {
                 e.clickedBlock?.location?.let { v ->
                     if (it == v) {
                         e.isCancelled = true

@@ -35,8 +35,6 @@ class MarketBuyMenu(
                 menuData.icon[c]?.let {
                     if (it.iconType == IconType.MARKET_ITEM) {
                         this.inventory.setItem(index, InfoItem)
-                     //   this.inventory.contents[index] = InfoItem
-                        GeekMail.debug("InfoItem -ac ${InfoItem.type}")
                     }
                 }
             }
@@ -69,7 +67,6 @@ class MarketBuyMenu(
                                 i2.runCondition(player) // 扣除玩家需求
                                 Market.remMarketItem(i2.packUid, true) // 删缓存
                                 val name = if (i2.item.itemMeta!!.hasDisplayName()) i2.item.itemMeta!!.displayName else I18n.instance.getName(i2.item)
-
                                 MailBuild(buy.type, null, player.uniqueId).build {
                                     title = buy.title
                                     text = buy.text.replace("{item-name}", name)

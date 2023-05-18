@@ -21,7 +21,7 @@ import java.util.logging.Logger
 /**
  * 作者: 老廖
  * 时间: 2022/10/15
- *
+ * 写的一堆破烂，没时间优化
  **/
 abstract class Redis: RedisApi {
     override var host: String = "127.0.0.1"

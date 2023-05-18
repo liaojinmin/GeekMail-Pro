@@ -1,8 +1,8 @@
 package me.geek.mail.common.kether
 
 
-import me.geek.mail.common.kether.sub.KetherSub
 import me.geek.mail.api.hook.HookPlugin
+import me.geek.mail.common.kether.sub.KetherSub
 import taboolib.library.kether.ParsedAction
 import taboolib.library.kether.QuestContext
 import taboolib.module.kether.KetherParser
@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture
  * 时间: 2022/8/8
  *
  **/
-class GPoints(private val  action: String, private val context: ParsedAction<*>): KetherSub<Boolean>() {
+class GPoints(private val action: String, private val context: ParsedAction<*>): KetherSub<Boolean>() {
     override fun run(frame: QuestContext.Frame): CompletableFuture<Boolean> {
 
         return frame.newFrame(context).run<Any>().thenApply {

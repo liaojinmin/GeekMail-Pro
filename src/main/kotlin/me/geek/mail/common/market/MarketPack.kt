@@ -12,8 +12,8 @@ import java.util.*
 interface MarketPack {
     val packUid: UUID
     val user: UUID
-    val time: String
-    val expire: String
+    val time: Long
+    val expire: Long
     val points: Int
     val money: Double
     val item: ItemStack

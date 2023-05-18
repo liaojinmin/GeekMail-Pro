@@ -33,6 +33,7 @@ class MailMenu(
 
     private val ioc: MutableMap<Int, MailSub> = mutableMapOf()
     override fun build(): MenuBasic {
+
         val data = player.getData()
         var item = this.inventory.contents
         if (data.mailData.isNotEmpty()) {
@@ -136,7 +137,9 @@ class MailMenu(
                     DELETE -> {
                         if (playerData.mailData.size >= 1) {
                             player.closeInventory()
-                            player.getData().mailData.removeIf { mail -> mail.state == MailState.Acquired }
+                            player.getData().mailData.removeIf { mail -> mail.state == MailState.Acquired }.also { a ->
+                                if (a) player.sendLang("玩家-删除邮件-成功")
+                            }
                             sound("BLOCK_SOUL_SAND_STEP",0.7f, 1f)
                         } else sound("BLOCK_NOTE_BLOCK_DIDGERIDOO",0.7f, 1f)
                         return
@@ -149,6 +152,7 @@ class MailMenu(
                                     if (mail.giveAppendix()) {
                                         mail.state = MailState.Acquired
                                         mail.getTime = System.currentTimeMillis()
+                                        player.sendLang("玩家-领取附件-成功", mail.appendixInfo)
                                     }
                                 }
                             }

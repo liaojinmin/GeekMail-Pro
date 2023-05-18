@@ -51,6 +51,21 @@ Market:
   use: true
   player_buy_sendPack: 市场发货模板
   player_sell_sendPack: 市场拍卖模板
+  player_quit_sendPack: 市场下架模板
+  defaultSize: 3
+  permGroup:
+    - priority: 1
+      perm: market.size.player
+      size: 5
+    - priority: 2
+      perm: market.size.vip1
+      size: 10
+    - priority: 3
+      perm: market.size.vip6
+      size: 15
+    - priority: 4
+      perm: market.size.vip8
+      size: 20
 
 # 邮件显示的独立图标
 MailIcon:

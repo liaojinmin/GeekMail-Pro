@@ -3,6 +3,7 @@ package me.geek.mail.common.menu
 import me.geek.mail.GeekMail
 import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.common.menu.action.MailMenu
+import me.geek.mail.common.menu.action.MarketManager
 import me.geek.mail.common.menu.sub.Icon
 import me.geek.mail.common.menu.sub.IconType
 import me.geek.mail.common.menu.sub.MenuData
@@ -51,6 +52,14 @@ object Menu {
         playSound(location, Sound.UI_BUTTON_CLICK, 1f, 2f)
         return true
     }
+
+    fun closeMenu(type: MenuType) {
+        SessionCache.values.forEach {
+            if (it.menuData?.menuType == type) {
+                it.player.closeInventory()
+            }
+        }
+    }
     fun getMenuData(type: MenuType): MenuData {
         return MenuCache.values.find { it.menuType == type } ?: error("未找到该类型菜单，请检查代码或类型相关开发者。。。")
     }
@@ -58,7 +67,8 @@ object Menu {
         when (data.menuType) {
             MenuType.MAIN -> MailMenu(this, data).build()
             MenuType.MARKET -> me.geek.mail.common.menu.action.MarketMenu(this, data).build()
-            MenuType.MARKETBUY -> TODO()
+            MenuType.MARKET_BUY -> TODO()
+            MenuType.MARKET_MANAGER -> MarketManager(this).build()
         }
     }
 
@@ -131,8 +141,21 @@ object Menu {
             icon.mats.contains(ia) -> {
                 if (HookPlugin.itemsAdder.isHook) {
                     val meta = icon.mats.split(":")
-                    HookPlugin.itemsAdder.getItem(meta[1])
-                } else { ItemStack(Material.STONE, 1) }
+                    val itemStack = HookPlugin.itemsAdder.getItem(meta[1])
+                    val itemMeta = itemStack.itemMeta
+                    if (itemMeta != null) {
+                        itemMeta.setDisplayName(icon.name.colorify())
+                        if (icon.lore.size == 1 && icon.lore[0].isEmpty()) {
+                            itemMeta.lore = null
+                        } else {
+                            itemMeta.lore = icon.lore
+                        }
+                        itemStack.itemMeta = itemMeta
+                    }
+                    itemStack
+                } else {
+                    ItemStack(Material.STONE, 1)
+                }
             }
             else -> {
                 val itemStack = try {

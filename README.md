@@ -87,11 +87,11 @@ fun Player.sender(type: String = "MAIL_POINTS", target: UUID) {
 <img src="libs/img/webmail.png" width="50%">
 
 ### 内置的全球市场
-<img src="libs/img/20221030122102.png" width="50%"><img src="libs/img/20221030122125.png" width="50%">
+<img src="https://attachment.mcbbs.net/data/myattachment/forum/202301/27/110403w62g9y68ah89hxgy.png" width="50%"/>
 
 
 ### 1.17+ 物品类型预览
-<img src="libs/img/UFPGA441G.png" width="50%"><img src="libs/img/0221024003228.png" width="50%">
+<img src="libs/img/UFPGA441G.png" width="50%"><img src="https://attachment.mcbbs.net/data/myattachment/forum/202301/27/110545au9kcj5canak2dxk.png" width="50%">
 
 ### ItemsAdder支持
 <img src="https://web-1301331373.cos.ap-guangzhou.myqcloud.com/docs/%7BRF6T%40AH0Y6J%40JWP6PD%7B9%7D7.png" width="50%">

@@ -1,5 +1,6 @@
 package me.geek.mail.common.menu.action
 
+import me.geek.mail.api.mail.MailBuild
 import me.geek.mail.common.market.Item
 import me.geek.mail.common.market.Market
 import me.geek.mail.common.menu.Menu
@@ -7,23 +8,21 @@ import me.geek.mail.common.menu.MenuBasic
 import me.geek.mail.common.menu.sub.IconType
 import me.geek.mail.common.menu.sub.MenuData
 import me.geek.mail.common.menu.sub.MenuType
+import me.geek.mail.common.template.Template
+import me.geek.mail.settings.SetTings
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
+import taboolib.module.nms.getName
 import taboolib.module.nms.i18n.I18n
 
-/**
- * 作者: 老廖
- * 时间: 2023/1/23
- *
- **/
-class MarketMenu(
+class MarketManager(
     override val player: Player,
-    override val menuData: MenuData
+    override val menuData: MenuData = Menu.getMenuData(MenuType.MARKET_MANAGER)
 ): MenuBasic() {
     private val ioc: MutableMap<Int, Item> = mutableMapOf()
 
-    private val itemPack = Market.getMarketListCache()
+    private val itemPack = Market.getPlayerAllMarket(player)
 
     override fun build(): MenuBasic {
         var item = this.inventory.contents
@@ -69,10 +68,9 @@ class MarketMenu(
         return this
 
     }
-    private var cd: Long = 0
+
     override fun onClick(event: InventoryClickEvent) {
         event.isCancelled = true
-        if (cd < System.currentTimeMillis()) cd = System.currentTimeMillis() + 200 else return
         menuData.layout[event.rawSlot].let { char ->
             menuData.icon[char]?.let { icon ->
                 if (icon.command.isNotEmpty()) {
@@ -97,23 +95,27 @@ class MarketMenu(
                         } else sound("BLOCK_NOTE_BLOCK_DIDGERIDOO",1f, 1f)
                         return
                     }
-
                     IconType.MARKET_ITEM -> {
-                        val item = ioc[event.rawSlot] ?: return
-                        val data = Menu.getMenuData(MenuType.MARKET_BUY)
+                        val i1 = ioc[event.rawSlot] ?: return
+                        val i2 = Market.getMarketItem(i1.packUid) ?: return //获取商品
+                        Market.remMarketItem(i2.packUid, true)
+                        val quit = Template.getAdminPack(SetTings.market.player_quit_sendPack)
+                        MailBuild(quit!!.type, null, player.uniqueId).build {
+                            title = quit.title
+                            text = quit.text.replace("{item-name}", i2.item.getName())
+                            setItems(arrayOf(i2.item))
+                        }.sender()
                         player.closeInventory()
-                        MarketBuyMenu(player, data, this.menuData, event.currentItem!!, item.packUid).build()
                         return
                     }
                     else -> return
-
                 }
             }
-
         }
 
     }
 
     override fun onClose(event: InventoryCloseEvent) {
     }
+
 }

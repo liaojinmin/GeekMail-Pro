@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.annotations.Expose
 import me.geek.mail.api.hook.HookPlugin
 import me.geek.mail.scheduler.Exclude
+import me.geek.mail.settings.SetTings
 import me.geek.mail.utils.serializeItemStacks
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -17,15 +18,19 @@ import java.util.*
 data class Item (
     override val packUid: UUID = UUID.randomUUID(),
     override val user: UUID, // 卖家
-    override val time: String,
-    override val expire: String,
+    override val time: Long,
+
     override val points: Int = 0,
     override val money: Double = 0.0,
     @Expose
     override val item: ItemStack
 ): MarketPlaceholder() {
 
+    override val expire: Long = time+SetTings.ExpiryTime
+
     val itemString: String = item.serializeItemStacks()
+
+
 
     override fun addToMarket() {
         Market.addMarketItem(this)

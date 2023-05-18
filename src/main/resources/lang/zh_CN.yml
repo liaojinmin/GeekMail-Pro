@@ -278,6 +278,16 @@ PLAYER-ERROR-LOCK:
   - '&l'
   - '&c    你不能上架空气...'
   - '&f'
+玩家-市场上架-可上架数量不足:
+  - type: sound
+    sound: 'BLOCK_NOTE_BLOCK_DIDGERIDOO'
+    volume: 1
+    pitch: 1
+  - '&1'
+  - '&7  征战领域-市场 &8>&7>&f>'
+  - '&l'
+  - '&c    你不能上架更多的商品了...'
+  - '&f'
 
 CMD-HELP-ADMIN:
   - '  &c管理员: '

@@ -21,6 +21,8 @@ class MailBuild(
     var item: Array<ItemStack>? = emptyArray()
     var command: List<String>? = emptyList()
 
+    private val regex = Regex("^[\u4e00-\u9fa5_a-zA-Z0-9]+$")
+
 
     private val mail: MailSub = MailManage.getMailClass(mailType) ?: error("MailBuild() 提供了错误的类型参数，请联系相应开发者。。。")
 
