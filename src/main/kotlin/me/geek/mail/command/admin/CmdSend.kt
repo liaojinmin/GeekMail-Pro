@@ -35,18 +35,26 @@ object CmdSend: CmdExp {
                         suggestion<CommandSender>(uncheck = true) { _, _ ->
                             listOf("[邮件内容]")
                         }
-                        execute<CommandSender> { sender, context, _ ->
-                            val mailType = context.args()[2]
-                            val title = context.args()[3].colorify()
-                            val args = context.args()[4].colorify().split(" ", limit = 2)
-                            val target = Bukkit.getOfflinePlayer(context.args()[1])
+                        dynamic("附件") {
+                            suggestion<CommandSender>(uncheck = true) { _, _ ->
+                                listOf("[附件内容]", "0")
+                            }
+                            execute<CommandSender> { sender, context, arg ->
+                                val mailType = context["邮件种类"]
+                                val title = context["标题"].colorify()
+                                val text = context["内容"].colorify()
+                                val args = arg.colorify().split(";")
+                                val target = Bukkit.getOfflinePlayer(context["目标玩家"])
 
-                            MailBuild(mailType, if (sender is Player) sender else null, target.uniqueId).build {
-                                this.title = title
-                                this.text = args[0]
-                                if (args.size >= 2) this.additional = args[1]
-                            }.sender()
+                                MailBuild(mailType, if (sender is Player) sender else null, target.uniqueId).build {
+                                    this.title = title
+                                    this.text = text
+                                    if (mailType == "CMD_MAIL") {
+                                        setCommands(args.toMutableList())
+                                    } else this.additional = args[0]
+                                }.sender()
 
+                            }
                         }
                     }
                 }

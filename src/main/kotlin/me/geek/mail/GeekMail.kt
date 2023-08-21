@@ -35,20 +35,18 @@ import kotlin.system.measureTimeMillis
      //   relocate = ["!javax.activation", "!javax.activation_1_1_1_mail"],
         repository = "https://repo1.maven.org/maven2"
     ),
-    RuntimeDependency(value = "org.apache.commons:commons-pool2:2.11.1",
-        test = "org.apache.commons.pool2.impl.GenericObjectPoolConfig",
+    RuntimeDependency(value = "!org.apache.commons:commons-pool2:2.11.1",
+        test = "!org.apache.commons.pool2:ObjectPool",
         transitive = false, ignoreOptional = true, scopes = [DependencyScope.PROVIDED],
     ),
-    RuntimeDependency(value = "redis.clients:jedis:4.2.2",
-        test = "redis.clients.jedis.exceptions.JedisException",
+    RuntimeDependency("!org.slf4j:slf4j-api:1.7.32",
+        test = "!org.slf4j.Logger",
+        transitive = false
+    ),
+    RuntimeDependency(value = "!redis.clients:jedis:4.2.2",
+        relocate = ["!redis.clients.jedis", "!redis.clients.mail.jedis_4_2_2"],
         transitive = false, ignoreOptional = true, scopes = [DependencyScope.PROVIDED]
     ),
-    /*
-    RuntimeDependency(value = "!com.google.code.gson:gson:2.9.1",
-        relocate = ["!com.google.gson", "!com.google.gson2_9_1"],
-    transitive = false, ignoreOptional = true, scopes = [DependencyScope.PROVIDED]
-    ),
-     */
     RuntimeDependency(value = "org.xerial.snappy:snappy-java:1.1.8.4",
         transitive = true, ignoreOptional = false
        // repository = "https://repo1.maven.org/maven2",

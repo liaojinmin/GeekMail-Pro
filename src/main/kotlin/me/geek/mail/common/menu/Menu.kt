@@ -67,7 +67,7 @@ object Menu {
         when (data.menuType) {
             MenuType.MAIN -> MailMenu(this, data).build()
             MenuType.MARKET -> me.geek.mail.common.menu.action.MarketMenu(this, data).build()
-            MenuType.MARKET_BUY -> TODO()
+            MenuType.MARKET_BUY, MenuType.MARKETBUY -> TODO()
             MenuType.MARKET_MANAGER -> MarketManager(this).build()
         }
     }

@@ -37,7 +37,7 @@ taboolib {
 
     relocate("me.geek.mail", group.toString())
     relocate("com.zaxxer.hikari", "com.zaxxer.hikari_4_0_3_mail")
-    relocate("javax.mail", "javax.mail_1_5_0_mail")
+    relocate("redis.clients.jedis", "redis.clients.mail.jedis_4_2_2")
    // relocate("com.google.gson", "com.google.gson2_9_1")
     classifier = null
     version = taboolibVersion

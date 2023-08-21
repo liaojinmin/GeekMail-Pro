@@ -38,41 +38,35 @@ object CmdMail: CmdExp {
                         suggestion<CommandSender>(uncheck = true) { _, _ ->
                             listOf("[邮件内容]")
                         }
-                        execute<Player> { sender, context, _ ->
-                            val mailType = context.args()[2]
-                            val title = context.args()[3].colorify()
-                            val args = context.args()[4].colorify().split(" ", limit = 2)
-                            val target = Bukkit.getOfflinePlayer(context.args()[1])
-                            MailManage.getMailClass(mailType)?.let {
-                                if (sender.hasPermission(it.permission)) {
-                                    try {
-                                        if (it.condition(sender, args[1])) {
-
-                                            // 构建邮件信息 start (第一种方法)
-                                            MailBuild(mailType, sender, target.uniqueId).build {
-                                                this.title = title
-                                                this.text = args[0]
-                                                if (args.size >= 2) this.additional = args[1]
-                                            }.sender()
-                                            // 构建邮件信息 end
-
-                                            /*
-                                            // 构建邮件信息 start (第二种方法)
-                                            MailBuild(mailType, sender, target.uniqueId)
-                                                .setTitle(title)
-                                                .setText(args[0])
-                                                .setAdditional(args[1])
-                                                .sender()
-                                            // 构建邮件信息 end
-                                             */
-
+                        dynamic("附件") {
+                            suggestion<CommandSender>(uncheck = true) { _, _ ->
+                                listOf("[附件内容]", "0")
+                            }
+                            execute<Player> { sender, context, arg ->
+                                val mailType = context["邮件种类"]
+                                val title = context["标题"].colorify()
+                                val text = context["内容"].colorify()
+                                val args = arg.colorify().split(";")
+                                val target = Bukkit.getOfflinePlayer(context["目标玩家"])
+                                MailManage.getMailClass(mailType)?.let {
+                                    if (sender.hasPermission(it.permission)) {
+                                        try {
+                                            if (it.condition(sender, args[0])) {
+                                                // 构建邮件信息 start (第一种方法)
+                                                MailBuild(mailType, sender, target.uniqueId).build {
+                                                    this.title = title
+                                                    this.text = text
+                                                    this.additional = args[0]
+                                                }.sender()
+                                                // 构建邮件信息 end
+                                            }
+                                        } catch (_: IndexOutOfBoundsException) {
+                                            return@execute
                                         }
-                                    } catch (_: IndexOutOfBoundsException) {
-                                        return@execute
+                                    } else {
+                                        sender.sendLang("玩家-没有权限-发送邮件")
+                                        GeekMail.say("&4玩家 &f${sender.name} &4执行命令缺少权限&f ${it.permission}")
                                     }
-                                } else {
-                                    sender.sendLang("玩家-没有权限-发送邮件")
-                                    GeekMail.say("&4玩家 &f${sender.name} &4执行命令缺少权限&f ${it.permission}")
                                 }
                             }
                         }
