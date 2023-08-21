@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import org.bukkit.Bukkit
 import org.jetbrains.annotations.NotNull
 import taboolib.expansion.geek.Expiry
-import taboolib.module.nms.i18n.I18n
+import taboolib.module.nms.getI18nName
 import java.text.SimpleDateFormat
 
 /**
@@ -42,7 +42,7 @@ abstract class MarketPlaceholder: MarketPack {
                 it.contains(itemName) -> {
                     val meta = this.item.itemMeta
                     if (meta != null) {
-                        val display = if (meta.hasDisplayName()) { meta.displayName } else I18n.instance.getName(this.item)
+                        val display = if (meta.hasDisplayName()) { meta.displayName } else this.item.getI18nName()
                         list.add(it.replace(itemName, display))
                     }
                 }
