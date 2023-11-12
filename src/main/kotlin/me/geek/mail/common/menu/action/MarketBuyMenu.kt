@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.ItemStack
-import taboolib.module.nms.i18n.I18n
+import taboolib.module.nms.getName
 import taboolib.platform.util.sendLang
 import java.util.*
 
@@ -66,7 +66,7 @@ class MarketBuyMenu(
                                 }
                                 i2.runCondition(player) // 扣除玩家需求
                                 Market.remMarketItem(i2.packUid, true) // 删缓存
-                                val name = if (i2.item.itemMeta!!.hasDisplayName()) i2.item.itemMeta!!.displayName else I18n.instance.getName(i2.item)
+                                val name = if (i2.item.itemMeta!!.hasDisplayName()) i2.item.itemMeta!!.displayName else i2.item.getName(player)
                                 MailBuild(buy.type, null, player.uniqueId).build {
                                     title = buy.title
                                     text = buy.text.replace("{item-name}", name)

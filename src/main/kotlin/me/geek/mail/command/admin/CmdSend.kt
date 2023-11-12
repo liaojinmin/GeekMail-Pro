@@ -49,7 +49,7 @@ object CmdSend: CmdExp {
                                 MailBuild(mailType, if (sender is Player) sender else null, target.uniqueId).build {
                                     this.title = title
                                     this.text = text
-                                    if (mailType == "CMD_MAIL") {
+                                    if (mailType == "MAIL_CMD") {
                                         setCommands(args.toMutableList())
                                     } else this.additional = args[0]
                                 }.sender()

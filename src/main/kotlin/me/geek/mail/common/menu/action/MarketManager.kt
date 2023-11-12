@@ -14,7 +14,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import taboolib.module.nms.getName
-import taboolib.module.nms.i18n.I18n
 
 class MarketManager(
     override val player: Player,
@@ -43,7 +42,7 @@ class MarketManager(
                                     if (itemMeta != null) {
                                         if (itemMeta.hasDisplayName()) {
                                             itemMeta.setDisplayName(icon.name.replace("[item_name]",itemMeta.displayName))
-                                        } else itemMeta.setDisplayName(icon.name.replace("[item_name]", I18n.instance.getName(itemStack)))
+                                        } else itemMeta.setDisplayName(icon.name.replace("[item_name]", itemStack.getName(player)))
                                         if (itemMeta.hasLore()) {
                                             locLore.addAll(0, itemMeta.lore!!)
                                             itemMeta.lore = locLore

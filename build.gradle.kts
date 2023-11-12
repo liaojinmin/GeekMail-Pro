@@ -54,6 +54,7 @@ repositories {
     maven("https://maven.aliyun.com/repository/central")
     maven("https://jitpack.io")
     maven("https://maven.pkg.github.com/LoneDev6/API-ItemsAdder")
+    maven("https://mvn.lumine.io/repository/maven-public/")
 }
 
 tasks.dokkaHtml.configure {
@@ -62,8 +63,10 @@ tasks.dokkaHtml.configure {
 
 dependencies {
 
-    taboo("ink.ptms:um:1.0.0-beta-20")
+
     dokkaHtmlPlugin("org.jetbrains.dokka:kotlin-as-java-plugin:1.7.20")
+
+    compileOnly("io.lumine.xikage:MythicMobs:4.11.0")
 
     compileOnly(kotlin("stdlib"))
     // Libraries
